@@ -1,0 +1,13 @@
+# MCP Server Dependencies
+mcp>=1.0.0
+google-genai>=0.2.0
+
+# Google Drive and Auth dependencies
+google-auth>=2.23.0
+google-auth-oauthlib>=1.1.0
+google-auth-httplib2>=0.1.1
+google-api-python-client>=2.100.0
+
+# Document handling
+PyPDF2>=3.0.0
+python-docx>=0.8.11

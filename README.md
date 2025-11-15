@@ -1,1 +1,236 @@
-this is a ruff family tree
+# Rufftree RAG System
+
+A Retrieval Augmented Generation (RAG) system for Ruff family documents using Google's Gemini File Search API. This system automatically syncs documents from a Google Drive folder and provides AI-powered search and question answering capabilities.
+
+## Features
+
+- **Document Upload**: Support for PDFs, Google Docs, DOCX, TXT, and Markdown files
+- **Google Drive Sync**: Automatic synchronization from the "rufftree" Google Drive folder
+- **RAG Queries**: Natural language search with AI-generated answers and citations
+- **MCP Integration**: Model Context Protocol server for Claude Desktop integration
+- **Free Storage**: Unlimited free storage in Google's File Search stores
+- **Cost Efficient**: Only pay for initial indexing ($0.15 per 1M tokens), queries are free
+
+## Architecture
+
+```
+Google Drive "rufftree" folder
+        ↓
+sync_drive_documents.py (automatic sync)
+        ↓
+Google File Search Store (separate from longevitypdf)
+        ↓
+mcp_server.py (MCP tools) ← Claude Desktop
+        ↓
+Gemini 2.5 Flash/Pro (RAG queries)
+```
+
+## Setup
+
+### 1. Install Dependencies
+
+```bash
+pip install -r requirements.txt
+```
+
+### 2. Get Google GenAI API Key
+
+1. Visit https://aistudio.google.com/apikey
+2. Create an API key
+3. Add to `.env` file:
+
+```bash
+GOOGLE_GENAI_API_KEY=your_api_key_here
+```
+
+### 3. Set Up Google Drive Service Account (for sync)
+
+1. Go to [Google Cloud Console](https://console.cloud.google.com)
+2. Create a new project or select existing project
+3. Enable the Google Drive API
+4. Create a Service Account:
+   - Go to "IAM & Admin" → "Service Accounts"
+   - Click "Create Service Account"
+   - Give it a name like "rufftree-sync"
+   - Click "Create and Continue"
+   - Skip granting roles (click "Continue")
+   - Click "Done"
+5. Create a JSON key:
+   - Click on the service account you just created
+   - Go to "Keys" tab
+   - Click "Add Key" → "Create new key"
+   - Select "JSON" and click "Create"
+   - Save the downloaded JSON file
+6. Share your Google Drive folder with the service account:
+   - Go to your Google Drive
+   - Find or create the "rufftree" folder
+   - Right-click and select "Share"
+   - Add the service account email (found in the JSON file)
+   - Give it "Viewer" permissions
+7. Add the JSON contents to your environment:
+   ```bash
+   # Copy the entire JSON file contents to this variable
+   GOOGLE_DRIVE_CREDENTIALS='{"type":"service_account","project_id":"..."}'
+   ```
+
+### 4. Configure Claude Desktop (Optional)
+
+Add to your Claude Desktop configuration:
+
+**macOS**: `~/Library/Application Support/Claude/claude_desktop_config.json`
+**Linux**: `~/.config/Claude/claude_desktop_config.json`
+
+```json
+{
+  "mcpServers": {
+    "rufftree": {
+      "command": "python",
+      "args": ["/absolute/path/to/rufftree/mcp_server.py"],
+      "env": {
+        "GOOGLE_GENAI_API_KEY": "your_api_key_here"
+      }
+    }
+  }
+}
+```
+
+## Usage
+
+### Upload Documents Manually
+
+```bash
+# Set up environment
+export GOOGLE_GENAI_API_KEY=your_api_key
+
+# Upload a document
+python test_file_search.py
+# Set DOCUMENT_PATH environment variable to specify a file
+export DOCUMENT_PATH=/path/to/your/document.pdf
+python test_file_search.py
+```
+
+### Sync from Google Drive
+
+```bash
+# Set up environment
+export GOOGLE_GENAI_API_KEY=your_api_key
+export GOOGLE_DRIVE_CREDENTIALS='{"type":"service_account",...}'
+
+# Run sync
+python sync_drive_documents.py
+```
+
+This will:
+1. Connect to your Google Drive
+2. Find the "rufftree" folder
+3. Download new documents (PDFs, Google Docs, etc.)
+4. Upload them to the File Search store
+5. Track synced files to avoid duplicates
+
+### Query Documents
+
+```bash
+# Via test script
+export QUERY="What documents are in the Ruff family archive?"
+python test_file_search.py
+
+# Or use the MCP server with Claude Desktop
+# Just ask Claude questions about the Ruff family!
+```
+
+### MCP Tools
+
+When using Claude Desktop, you'll have access to these tools:
+
+1. **upload_ruff_document** - Upload a document to the RAG system
+2. **query_ruff_documents** - Ask questions about the documents
+3. **list_indexed_documents** - See all uploaded documents
+4. **get_store_info** - View store configuration
+5. **delete_document** - Remove a document from the system
+
+## File Search Store
+
+The Rufftree system uses a **separate** File Search store from the longevitypdf system. This ensures:
+
+- Ruff family documents are kept separate from longevity papers
+- Queries only search relevant Ruff family content
+- Independent cost tracking for each project
+
+**Store Configuration**: `~/.rufftree_mcp/store_config.json`
+**Sync State**: `~/.rufftree_mcp/synced_files.json`
+
+## Supported File Types
+
+- **PDF**: `.pdf`
+- **Microsoft Word**: `.docx`, `.doc`
+- **Text**: `.txt`
+- **Markdown**: `.md`
+- **Google Docs**: Automatically exported as PDF
+
+## Pricing
+
+- **Storage**: FREE (unlimited)
+- **Query embeddings**: FREE
+- **Initial indexing**: $0.15 per 1M tokens (one-time cost)
+
+**Example Cost**: A 20-page document (~10K tokens) costs approximately $0.0015 to index.
+
+## Google Drive Folder Structure
+
+```
+Google Drive/
+└── rufftree/                    # Main folder (share with service account)
+    ├── Family History.pdf
+    ├── Genealogy Records.docx
+    ├── Photos Catalog.txt
+    └── Stories and Memories      # Google Doc (auto-exported as PDF)
+```
+
+## Differences from longevitypdf
+
+| Feature | longevitypdf | rufftree |
+|---------|-------------|----------|
+| **Folder Name** | "longevitypapers" | "rufftree" |
+| **File Search Store** | Separate store | Separate store |
+| **Config Path** | `~/.longevity_papers_mcp/` | `~/.rufftree_mcp/` |
+| **Supported Files** | PDFs only | PDFs, DOCX, TXT, MD, Google Docs |
+| **Purpose** | Scientific papers | Family documents |
+| **MCP Server Name** | "longevity-papers-rag" | "rufftree-rag" |
+
+## Troubleshooting
+
+### Google Drive sync fails
+
+- Verify service account email has access to the "rufftree" folder
+- Check that `GOOGLE_DRIVE_CREDENTIALS` is valid JSON
+- Ensure Google Drive API is enabled in your GCP project
+
+### Documents not appearing in queries
+
+- Wait 10-15 seconds after upload for indexing to complete
+- Check document state with `list_indexed_documents` tool
+- Verify the File Search store name matches in config
+
+### API key errors
+
+- Verify `GOOGLE_GENAI_API_KEY` is set correctly
+- Check API key is enabled at https://aistudio.google.com/apikey
+- Ensure you have quota remaining
+
+## Contributing
+
+This project is adapted from the longevitypdf RAG system. To contribute:
+
+1. Test changes with `test_file_search.py`
+2. Verify Google Drive sync works with `sync_drive_documents.py`
+3. Test MCP integration with Claude Desktop
+
+## License
+
+MIT License - feel free to adapt for your own family archive projects!
+
+## Resources
+
+- [Gemini File Search Documentation](https://ai.google.dev/gemini-api/docs/file-search)
+- [Model Context Protocol](https://modelcontextprotocol.io/)
+- [Google Drive API Documentation](https://developers.google.com/drive)
