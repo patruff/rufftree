@@ -1,0 +1,61 @@
+name: Query Ruff Documents
+
+on:
+  # Allow manual trigger with query input
+  workflow_dispatch:
+    inputs:
+      query:
+        description: 'Question to ask about Ruff family documents'
+        required: true
+        type: string
+      model:
+        description: 'Gemini model to use'
+        required: false
+        type: choice
+        options:
+          - gemini-2.5-flash
+          - gemini-2.5-pro
+        default: 'gemini-2.5-flash'
+
+jobs:
+  query:
+    runs-on: ubuntu-latest
+
+    steps:
+      - name: Checkout repository
+        uses: actions/checkout@v4
+
+      - name: Set up Python
+        uses: actions/setup-python@v4
+        with:
+          python-version: '3.11'
+
+      - name: Install dependencies
+        run: |
+          pip install -r requirements.txt
+
+      - name: Run query
+        env:
+          GOOGLE_GENAI_API_KEY: ${{ secrets.GOOGLE_GENAI_API_KEY }}
+          QUERY: ${{ inputs.query }}
+          MODEL: ${{ inputs.model }}
+        run: |
+          echo "Running query: $QUERY"
+          echo "Using model: $MODEL"
+          python -c "
+          import os
+          from test_file_search import get_client, get_or_create_store, query_documents
+
+          client = get_client()
+          store_name = get_or_create_store(client)
+
+          query = os.getenv('QUERY')
+          model = os.getenv('MODEL', 'gemini-2.5-flash')
+
+          print(f'\n📝 Question: {query}')
+          print('='*80)
+
+          answer, citations = query_documents(client, store_name, query, model)
+
+          print('\n✅ Query completed!')
+          "
