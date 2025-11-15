@@ -43,6 +43,29 @@
             font-size: 1.1em;
         }
 
+        nav {
+            display: flex;
+            gap: 15px;
+            justify-content: center;
+            margin-bottom: 30px;
+            flex-wrap: wrap;
+        }
+
+        nav a {
+            padding: 10px 20px;
+            background: #f8f9fa;
+            color: #667eea;
+            text-decoration: none;
+            border-radius: 8px;
+            transition: all 0.3s;
+            font-weight: 500;
+        }
+
+        nav a:hover {
+            background: #667eea;
+            color: white;
+        }
+
         .instructions {
             background: #f8f9fa;
             border-left: 4px solid #667eea;
@@ -299,6 +322,11 @@
     <div class="container">
         <h1>🌳 Ruff Family Tree</h1>
         <p class="subtitle">A genealogical record of the Ruff family</p>
+
+        <nav>
+            <a href="index.html" style="background: #667eea; color: white;">🌳 Family Tree</a>
+            <a href="queries.html">💬 Ask Questions</a>
+        </nav>
 
         <div class="instructions">
             <h3>📝 How to Edit</h3>

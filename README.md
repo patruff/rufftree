@@ -8,9 +8,22 @@ A Retrieval Augmented Generation (RAG) system for Ruff family documents using Go
 
 The interactive family tree is automatically deployed to GitHub Pages and updates whenever you push changes to the `main` branch.
 
+## 🔒 Privacy & Repository Settings
+
+**Repository Privacy:**
+- **Private Repository + Public Pages**: Keep your repository private (recommended for family privacy) while making the GitHub Pages site public. This allows family members to view the tree and ask questions without accessing source code or RAG system.
+- **Fully Public**: Make everything public if you want to share the entire project openly.
+
+**GitHub Pages with Private Repos:**
+- GitHub Pages works on private repositories with GitHub Pro, Team, or Enterprise
+- Alternatively, you can keep the repo private and deploy only the Pages site publicly
+- Family members only need the URL to view the tree and submit questions
+
 ## Features
 
 - **Interactive Family Tree**: Beautiful web-based visualization of the Ruff family genealogy
+- **Family Query System**: Family members can ask questions, answered via AI RAG with source citations
+- **Query Archive**: All questions and answers stored and displayed on the website
 - **Editable JSON Data**: Manually edit `family_tree.json` to update family members and relationships
 - **Document Upload**: Support for PDFs, Google Docs, DOCX, TXT, and Markdown files
 - **Google Drive Sync**: Automatic synchronization from the "rufftree" Google Drive folder
@@ -156,6 +169,77 @@ To enable the live family tree website:
 6. Visit `https://patruff.github.io/rufftree/` to see it live
 
 **Automatic Updates**: Every time you push changes to `index.html` or `family_tree.json` on the main branch, GitHub Pages will automatically redeploy with your updates.
+
+### Family Query System
+
+Family members can ask questions about the family history, and you can answer them using the RAG system.
+
+#### How It Works:
+
+1. **Family Members Submit Questions**
+   - Visit `queries.html` on the live site
+   - Fill out the question form
+   - Clicking "Submit" creates a GitHub Issue with their question
+
+2. **You Answer Using RAG**
+   ```bash
+   # Set up environment
+   export GOOGLE_GENAI_API_KEY=your_api_key
+
+   # Answer a question interactively
+   python answer_query.py --interactive
+
+   # Or answer directly from command line
+   python answer_query.py "When did the Ruff family immigrate to America?"
+   ```
+
+3. **Answer Appears on Website**
+   - The script queries your RAG system
+   - Saves the answer with citations to `stored_queries.json`
+   - Push to `main` branch
+   - Answer automatically appears on `queries.html`
+
+#### Query Workflow:
+
+```
+Family member visits queries.html
+        ↓
+Submits question via form
+        ↓
+Creates GitHub Issue (you get notified)
+        ↓
+You run: python answer_query.py --interactive
+        ↓
+RAG system generates answer with citations
+        ↓
+Answer saved to stored_queries.json
+        ↓
+Push to main branch
+        ↓
+GitHub Pages updates
+        ↓
+Family member sees answer on queries.html
+```
+
+#### Stored Queries File:
+
+`stored_queries.json` contains all Q&A pairs:
+
+```json
+{
+  "queries": [
+    {
+      "id": "1",
+      "question": "When did the Ruff family immigrate?",
+      "answer": "According to family records...",
+      "citations": ["Immigration Records - Ellis Island"],
+      "askedBy": "Sarah Ruff",
+      "date": "2025-01-10",
+      "answeredBy": "RAG System"
+    }
+  ]
+}
+```
 
 ### Upload Documents Manually
 

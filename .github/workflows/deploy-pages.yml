@@ -7,6 +7,8 @@ on:
     paths:
       - 'index.html'
       - 'family_tree.json'
+      - 'queries.html'
+      - 'stored_queries.json'
       - '.github/workflows/deploy-pages.yml'
 
   # Allows you to run this workflow manually from the Actions tab
