@@ -2,6 +2,12 @@
 
 A Retrieval Augmented Generation (RAG) system for Ruff family documents using Google's Gemini File Search API. This system automatically syncs documents from a Google Drive folder and provides AI-powered search and question answering capabilities.
 
+## 🌳 View the Family Tree Online
+
+**Live Demo**: [https://patruff.github.io/rufftree/](https://patruff.github.io/rufftree/)
+
+The interactive family tree is automatically deployed to GitHub Pages and updates whenever you push changes to the `main` branch.
+
 ## Features
 
 - **Interactive Family Tree**: Beautiful web-based visualization of the Ruff family genealogy
@@ -136,6 +142,20 @@ The tree displays:
 - **Age** (current age or years lived)
 - **Visual indicators**: Green for living, purple for deceased
 - **Statistics**: Total members, living, deceased, and generations
+
+#### Setting Up GitHub Pages
+
+To enable the live family tree website:
+
+1. Go to your GitHub repository settings
+2. Navigate to **Pages** (in the left sidebar)
+3. Under **Build and deployment**:
+   - Source: Select "GitHub Actions"
+4. Push changes to the `main` branch
+5. The workflow will automatically deploy your family tree
+6. Visit `https://patruff.github.io/rufftree/` to see it live
+
+**Automatic Updates**: Every time you push changes to `index.html` or `family_tree.json` on the main branch, GitHub Pages will automatically redeploy with your updates.
 
 ### Upload Documents Manually
 
