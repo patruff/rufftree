@@ -4,6 +4,8 @@ A Retrieval Augmented Generation (RAG) system for Ruff family documents using Go
 
 ## Features
 
+- **Interactive Family Tree**: Beautiful web-based visualization of the Ruff family genealogy
+- **Editable JSON Data**: Manually edit `family_tree.json` to update family members and relationships
 - **Document Upload**: Support for PDFs, Google Docs, DOCX, TXT, and Markdown files
 - **Google Drive Sync**: Automatic synchronization from the "rufftree" Google Drive folder
 - **RAG Queries**: Natural language search with AI-generated answers and citations
@@ -95,6 +97,45 @@ Add to your Claude Desktop configuration:
 ```
 
 ## Usage
+
+### View the Family Tree
+
+Open `index.html` in your web browser to view the interactive family tree visualization.
+
+#### Editing the Family Tree
+
+1. Open `family_tree.json` in any text editor
+2. Edit family member information:
+   - `name`: Full name of the person
+   - `dob`: Birth year in YYYY format
+   - `dod`: Death year in YYYY format, or `"alive"` if living
+   - `spouse`: Optional spouse object with same structure
+   - `children`: Optional array of children
+3. Save the file and refresh `index.html`
+
+Example entry:
+```json
+{
+  "id": "1",
+  "name": "John Ruff",
+  "dob": "1920",
+  "dod": "1995",
+  "spouse": {
+    "id": "2",
+    "name": "Mary Smith",
+    "dob": "1922",
+    "dod": "2000"
+  },
+  "children": [...]
+}
+```
+
+The tree displays:
+- **Name** of each person
+- **Lifespan** (birth year - death year or "Present")
+- **Age** (current age or years lived)
+- **Visual indicators**: Green for living, purple for deceased
+- **Statistics**: Total members, living, deceased, and generations
 
 ### Upload Documents Manually
 

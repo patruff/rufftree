@@ -1,0 +1,143 @@
+{
+  "family": {
+    "name": "Ruff Family Tree",
+    "root": {
+      "id": "1",
+      "name": "John Ruff",
+      "dob": "1920",
+      "dod": "1995",
+      "spouse": {
+        "id": "2",
+        "name": "Mary Smith",
+        "dob": "1922",
+        "dod": "2000"
+      },
+      "children": [
+        {
+          "id": "3",
+          "name": "Robert Ruff",
+          "dob": "1945",
+          "dod": "alive",
+          "spouse": {
+            "id": "4",
+            "name": "Patricia Johnson",
+            "dob": "1947",
+            "dod": "alive"
+          },
+          "children": [
+            {
+              "id": "5",
+              "name": "Michael Ruff",
+              "dob": "1970",
+              "dod": "alive",
+              "spouse": {
+                "id": "6",
+                "name": "Sarah Williams",
+                "dob": "1972",
+                "dod": "alive"
+              },
+              "children": [
+                {
+                  "id": "7",
+                  "name": "Emily Ruff",
+                  "dob": "2000",
+                  "dod": "alive"
+                },
+                {
+                  "id": "8",
+                  "name": "James Ruff",
+                  "dob": "2003",
+                  "dod": "alive"
+                }
+              ]
+            },
+            {
+              "id": "9",
+              "name": "Jennifer Ruff",
+              "dob": "1973",
+              "dod": "alive",
+              "spouse": {
+                "id": "10",
+                "name": "David Brown",
+                "dob": "1971",
+                "dod": "alive"
+              },
+              "children": [
+                {
+                  "id": "11",
+                  "name": "Olivia Brown",
+                  "dob": "2005",
+                  "dod": "alive"
+                }
+              ]
+            }
+          ]
+        },
+        {
+          "id": "12",
+          "name": "Susan Ruff",
+          "dob": "1948",
+          "dod": "alive",
+          "spouse": {
+            "id": "13",
+            "name": "Thomas Davis",
+            "dob": "1946",
+            "dod": "2018"
+          },
+          "children": [
+            {
+              "id": "14",
+              "name": "Christopher Davis",
+              "dob": "1975",
+              "dod": "alive"
+            },
+            {
+              "id": "15",
+              "name": "Amanda Davis",
+              "dob": "1978",
+              "dod": "alive",
+              "spouse": {
+                "id": "16",
+                "name": "Kevin Martinez",
+                "dob": "1976",
+                "dod": "alive"
+              },
+              "children": [
+                {
+                  "id": "17",
+                  "name": "Sophia Martinez",
+                  "dob": "2010",
+                  "dod": "alive"
+                },
+                {
+                  "id": "18",
+                  "name": "Lucas Martinez",
+                  "dob": "2012",
+                  "dod": "alive"
+                }
+              ]
+            }
+          ]
+        }
+      ]
+    }
+  },
+  "_instructions": {
+    "format": "Edit this file to update the family tree. The structure is hierarchical with each person containing optional spouse and children arrays.",
+    "fields": {
+      "id": "Unique identifier (string or number)",
+      "name": "Full name of the person",
+      "dob": "Date of birth in YYYY format",
+      "dod": "Date of death in YYYY format, or 'alive' if still living",
+      "spouse": "Optional object with spouse information (same structure as person)",
+      "children": "Optional array of children (each with same structure)"
+    },
+    "tips": [
+      "Keep the hierarchical structure: root -> children -> grandchildren, etc.",
+      "Spouses are optional - only include if you want to show them",
+      "The 'id' field must be unique across all people",
+      "Use 'alive' for dod if the person is still living",
+      "Years should be 4 digits (YYYY format)"
+    ]
+  }
+}

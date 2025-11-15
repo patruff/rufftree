@@ -1,0 +1,480 @@
+<!DOCTYPE html>
+<html lang="en">
+<head>
+    <meta charset="UTF-8">
+    <meta name="viewport" content="width=device-width, initial-scale=1.0">
+    <title>Ruff Family Tree</title>
+    <style>
+        * {
+            margin: 0;
+            padding: 0;
+            box-sizing: border-box;
+        }
+
+        body {
+            font-family: 'Segoe UI', Tahoma, Geneva, Verdana, sans-serif;
+            background: linear-gradient(135deg, #667eea 0%, #764ba2 100%);
+            min-height: 100vh;
+            padding: 20px;
+            color: #333;
+        }
+
+        .container {
+            max-width: 1400px;
+            margin: 0 auto;
+            background: white;
+            border-radius: 20px;
+            padding: 40px;
+            box-shadow: 0 20px 60px rgba(0, 0, 0, 0.3);
+        }
+
+        h1 {
+            text-align: center;
+            color: #667eea;
+            margin-bottom: 10px;
+            font-size: 2.5em;
+            font-weight: 700;
+        }
+
+        .subtitle {
+            text-align: center;
+            color: #666;
+            margin-bottom: 30px;
+            font-size: 1.1em;
+        }
+
+        .instructions {
+            background: #f8f9fa;
+            border-left: 4px solid #667eea;
+            padding: 15px 20px;
+            margin-bottom: 30px;
+            border-radius: 5px;
+        }
+
+        .instructions h3 {
+            color: #667eea;
+            margin-bottom: 10px;
+        }
+
+        .instructions p {
+            color: #666;
+            line-height: 1.6;
+        }
+
+        .tree {
+            display: flex;
+            justify-content: center;
+            padding: 20px 0;
+            overflow-x: auto;
+        }
+
+        .tree ul {
+            padding-top: 20px;
+            position: relative;
+            transition: all 0.5s;
+            list-style: none;
+        }
+
+        .tree li {
+            float: left;
+            text-align: center;
+            list-style-type: none;
+            position: relative;
+            padding: 20px 5px 0 5px;
+            transition: all 0.5s;
+        }
+
+        /* Connecting lines */
+        .tree li::before, .tree li::after {
+            content: '';
+            position: absolute;
+            top: 0;
+            right: 50%;
+            border-top: 2px solid #667eea;
+            width: 50%;
+            height: 20px;
+        }
+
+        .tree li::after {
+            right: auto;
+            left: 50%;
+            border-left: 2px solid #667eea;
+        }
+
+        /* Remove left connector for first child */
+        .tree li:only-child::after, .tree li:only-child::before {
+            display: none;
+        }
+
+        .tree li:only-child {
+            padding-top: 0;
+        }
+
+        .tree li:first-child::before, .tree li:last-child::after {
+            border: 0 none;
+        }
+
+        .tree li:last-child::before {
+            border-right: 2px solid #667eea;
+            border-radius: 0 5px 0 0;
+        }
+
+        .tree li:first-child::after {
+            border-radius: 5px 0 0 0;
+        }
+
+        /* Downward connectors from parents */
+        .tree ul ul::before {
+            content: '';
+            position: absolute;
+            top: 0;
+            left: 50%;
+            border-left: 2px solid #667eea;
+            width: 0;
+            height: 20px;
+        }
+
+        .tree li .person-card {
+            border: 2px solid #667eea;
+            padding: 15px 20px;
+            display: inline-block;
+            border-radius: 10px;
+            background: linear-gradient(135deg, #667eea 0%, #764ba2 100%);
+            color: white;
+            position: relative;
+            transition: all 0.3s;
+            cursor: pointer;
+            min-width: 180px;
+            box-shadow: 0 4px 6px rgba(0, 0, 0, 0.1);
+        }
+
+        .tree li .person-card:hover {
+            transform: scale(1.05);
+            box-shadow: 0 8px 16px rgba(0, 0, 0, 0.2);
+        }
+
+        .tree li .person-card.alive {
+            background: linear-gradient(135deg, #11998e 0%, #38ef7d 100%);
+            border-color: #11998e;
+        }
+
+        .tree li .person-card .name {
+            font-weight: bold;
+            font-size: 1.1em;
+            margin-bottom: 8px;
+        }
+
+        .tree li .person-card .dates {
+            font-size: 0.9em;
+            opacity: 0.95;
+        }
+
+        .tree li .person-card .status {
+            font-size: 0.85em;
+            margin-top: 5px;
+            padding: 3px 10px;
+            background: rgba(255, 255, 255, 0.2);
+            border-radius: 12px;
+            display: inline-block;
+        }
+
+        .spouse-container {
+            display: flex;
+            gap: 20px;
+            justify-content: center;
+            align-items: center;
+        }
+
+        .spouse-connector {
+            width: 30px;
+            height: 2px;
+            background: #667eea;
+            position: relative;
+        }
+
+        .spouse-connector::before {
+            content: '♥';
+            position: absolute;
+            top: -12px;
+            left: 50%;
+            transform: translateX(-50%);
+            color: #e74c3c;
+            font-size: 1.2em;
+        }
+
+        .legend {
+            margin-top: 30px;
+            padding: 20px;
+            background: #f8f9fa;
+            border-radius: 10px;
+            display: flex;
+            justify-content: center;
+            gap: 30px;
+            flex-wrap: wrap;
+        }
+
+        .legend-item {
+            display: flex;
+            align-items: center;
+            gap: 10px;
+        }
+
+        .legend-box {
+            width: 40px;
+            height: 40px;
+            border-radius: 8px;
+            border: 2px solid;
+        }
+
+        .legend-box.deceased {
+            background: linear-gradient(135deg, #667eea 0%, #764ba2 100%);
+            border-color: #667eea;
+        }
+
+        .legend-box.alive {
+            background: linear-gradient(135deg, #11998e 0%, #38ef7d 100%);
+            border-color: #11998e;
+        }
+
+        .stats {
+            margin-top: 20px;
+            display: flex;
+            justify-content: center;
+            gap: 40px;
+            flex-wrap: wrap;
+        }
+
+        .stat-box {
+            text-align: center;
+            padding: 15px 30px;
+            background: #f8f9fa;
+            border-radius: 10px;
+        }
+
+        .stat-box .number {
+            font-size: 2em;
+            font-weight: bold;
+            color: #667eea;
+        }
+
+        .stat-box .label {
+            color: #666;
+            margin-top: 5px;
+        }
+
+        .error {
+            background: #fee;
+            border: 2px solid #fcc;
+            color: #c00;
+            padding: 20px;
+            border-radius: 10px;
+            margin: 20px 0;
+        }
+
+        @media (max-width: 768px) {
+            .container {
+                padding: 20px;
+            }
+
+            h1 {
+                font-size: 1.8em;
+            }
+
+            .tree li .person-card {
+                min-width: 140px;
+                padding: 12px 15px;
+            }
+
+            .tree li .person-card .name {
+                font-size: 1em;
+            }
+
+            .tree li .person-card .dates {
+                font-size: 0.85em;
+            }
+        }
+    </style>
+</head>
+<body>
+    <div class="container">
+        <h1>🌳 Ruff Family Tree</h1>
+        <p class="subtitle">A genealogical record of the Ruff family</p>
+
+        <div class="instructions">
+            <h3>📝 How to Edit</h3>
+            <p>To update the family tree, edit the <code>family_tree.json</code> file in the root directory.
+               The tree will automatically reflect your changes when you refresh this page.</p>
+        </div>
+
+        <div id="stats" class="stats"></div>
+
+        <div id="tree-container" class="tree">
+            <!-- Tree will be rendered here -->
+        </div>
+
+        <div class="legend">
+            <div class="legend-item">
+                <div class="legend-box deceased"></div>
+                <span>Deceased</span>
+            </div>
+            <div class="legend-item">
+                <div class="legend-box alive"></div>
+                <span>Living</span>
+            </div>
+        </div>
+    </div>
+
+    <script>
+        // Statistics tracking
+        let stats = {
+            total: 0,
+            living: 0,
+            deceased: 0,
+            generations: 0
+        };
+
+        function renderPerson(person, generation = 1) {
+            stats.total++;
+            if (person.dod === 'alive') {
+                stats.living++;
+            } else {
+                stats.deceased++;
+            }
+            stats.generations = Math.max(stats.generations, generation);
+
+            const isAlive = person.dod === 'alive';
+            const lifespan = isAlive ?
+                `${person.dob} - Present` :
+                `${person.dob} - ${person.dod}`;
+
+            const age = isAlive ?
+                `Age ${new Date().getFullYear() - parseInt(person.dob)}` :
+                `Lived ${parseInt(person.dod) - parseInt(person.dob)} years`;
+
+            let html = '<li>';
+
+            // Check if person has a spouse
+            if (person.spouse) {
+                html += '<div class="spouse-container">';
+                html += `
+                    <div class="person-card ${isAlive ? 'alive' : ''}">
+                        <div class="name">${person.name}</div>
+                        <div class="dates">${lifespan}</div>
+                        <div class="status">${age}</div>
+                    </div>
+                `;
+
+                // Count spouse in stats
+                stats.total++;
+                const spouseAlive = person.spouse.dod === 'alive';
+                if (spouseAlive) {
+                    stats.living++;
+                } else {
+                    stats.deceased++;
+                }
+
+                const spouseLifespan = spouseAlive ?
+                    `${person.spouse.dob} - Present` :
+                    `${person.spouse.dob} - ${person.spouse.dod}`;
+
+                const spouseAge = spouseAlive ?
+                    `Age ${new Date().getFullYear() - parseInt(person.spouse.dob)}` :
+                    `Lived ${parseInt(person.spouse.dod) - parseInt(person.spouse.dob)} years`;
+
+                html += '<div class="spouse-connector"></div>';
+                html += `
+                    <div class="person-card ${spouseAlive ? 'alive' : ''}">
+                        <div class="name">${person.spouse.name}</div>
+                        <div class="dates">${spouseLifespan}</div>
+                        <div class="status">${spouseAge}</div>
+                    </div>
+                `;
+                html += '</div>';
+            } else {
+                html += `
+                    <div class="person-card ${isAlive ? 'alive' : ''}">
+                        <div class="name">${person.name}</div>
+                        <div class="dates">${lifespan}</div>
+                        <div class="status">${age}</div>
+                    </div>
+                `;
+            }
+
+            // Render children
+            if (person.children && person.children.length > 0) {
+                html += '<ul>';
+                person.children.forEach(child => {
+                    html += renderPerson(child, generation + 1);
+                });
+                html += '</ul>';
+            }
+
+            html += '</li>';
+            return html;
+        }
+
+        function renderTree(data) {
+            const container = document.getElementById('tree-container');
+
+            if (!data || !data.family || !data.family.root) {
+                container.innerHTML = '<div class="error">Error: Invalid family tree data structure</div>';
+                return;
+            }
+
+            // Reset stats
+            stats = { total: 0, living: 0, deceased: 0, generations: 0 };
+
+            const treeHTML = `
+                <ul>
+                    ${renderPerson(data.family.root)}
+                </ul>
+            `;
+
+            container.innerHTML = treeHTML;
+
+            // Render statistics
+            const statsContainer = document.getElementById('stats');
+            statsContainer.innerHTML = `
+                <div class="stat-box">
+                    <div class="number">${stats.total}</div>
+                    <div class="label">Total Members</div>
+                </div>
+                <div class="stat-box">
+                    <div class="number">${stats.living}</div>
+                    <div class="label">Living</div>
+                </div>
+                <div class="stat-box">
+                    <div class="number">${stats.deceased}</div>
+                    <div class="label">Deceased</div>
+                </div>
+                <div class="stat-box">
+                    <div class="number">${stats.generations}</div>
+                    <div class="label">Generations</div>
+                </div>
+            `;
+        }
+
+        // Load the family tree data
+        fetch('family_tree.json')
+            .then(response => {
+                if (!response.ok) {
+                    throw new Error('Failed to load family_tree.json');
+                }
+                return response.json();
+            })
+            .then(data => {
+                renderTree(data);
+            })
+            .catch(error => {
+                const container = document.getElementById('tree-container');
+                container.innerHTML = `
+                    <div class="error">
+                        <strong>Error loading family tree:</strong><br>
+                        ${error.message}<br><br>
+                        Make sure <code>family_tree.json</code> exists and is valid JSON.
+                    </div>
+                `;
+            });
+    </script>
+</body>
+</html>
