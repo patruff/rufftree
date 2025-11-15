@@ -3,7 +3,7 @@
 <head>
     <meta charset="UTF-8">
     <meta name="viewport" content="width=device-width, initial-scale=1.0">
-    <title>Ruff Family Tree</title>
+    <title>Ruff Family Tree - Interactive</title>
     <style>
         * {
             margin: 0;
@@ -20,7 +20,7 @@
         }
 
         .container {
-            max-width: 1400px;
+            max-width: 1600px;
             margin: 0 auto;
             background: white;
             border-radius: 20px;
@@ -84,115 +84,67 @@
             line-height: 1.6;
         }
 
-        .tree {
+        .tree-container {
             display: flex;
             justify-content: center;
-            padding: 20px 0;
-            overflow-x: auto;
-        }
-
-        .tree ul {
-            padding-top: 20px;
+            align-items: center;
+            min-height: 500px;
+            padding: 40px;
             position: relative;
-            transition: all 0.5s;
-            list-style: none;
+            overflow: auto;
         }
 
-        .tree li {
-            float: left;
-            text-align: center;
-            list-style-type: none;
+        .tree-canvas {
             position: relative;
-            padding: 20px 5px 0 5px;
-            transition: all 0.5s;
+            min-width: 800px;
+            min-height: 600px;
         }
 
-        /* Connecting lines */
-        .tree li::before, .tree li::after {
-            content: '';
+        .person-node {
             position: absolute;
-            top: 0;
-            right: 50%;
-            border-top: 2px solid #667eea;
-            width: 50%;
-            height: 20px;
+            transition: all 0.3s ease;
         }
 
-        .tree li::after {
-            right: auto;
-            left: 50%;
-            border-left: 2px solid #667eea;
-        }
-
-        /* Remove left connector for first child */
-        .tree li:only-child::after, .tree li:only-child::before {
-            display: none;
-        }
-
-        .tree li:only-child {
-            padding-top: 0;
-        }
-
-        .tree li:first-child::before, .tree li:last-child::after {
-            border: 0 none;
-        }
-
-        .tree li:last-child::before {
-            border-right: 2px solid #667eea;
-            border-radius: 0 5px 0 0;
-        }
-
-        .tree li:first-child::after {
-            border-radius: 5px 0 0 0;
-        }
-
-        /* Downward connectors from parents */
-        .tree ul ul::before {
-            content: '';
-            position: absolute;
-            top: 0;
-            left: 50%;
-            border-left: 2px solid #667eea;
-            width: 0;
-            height: 20px;
-        }
-
-        .tree li .person-card {
+        .person-card {
             border: 2px solid #667eea;
             padding: 15px 20px;
-            display: inline-block;
             border-radius: 10px;
             background: linear-gradient(135deg, #667eea 0%, #764ba2 100%);
             color: white;
-            position: relative;
-            transition: all 0.3s;
             cursor: pointer;
             min-width: 180px;
             box-shadow: 0 4px 6px rgba(0, 0, 0, 0.1);
+            transition: all 0.3s;
+            user-select: none;
         }
 
-        .tree li .person-card:hover {
+        .person-card:hover {
             transform: scale(1.05);
             box-shadow: 0 8px 16px rgba(0, 0, 0, 0.2);
         }
 
-        .tree li .person-card.alive {
+        .person-card.alive {
             background: linear-gradient(135deg, #11998e 0%, #38ef7d 100%);
             border-color: #11998e;
         }
 
-        .tree li .person-card .name {
+        .person-card.expanded {
+            border-width: 3px;
+            box-shadow: 0 0 20px rgba(102, 126, 234, 0.5);
+        }
+
+        .person-card .name {
             font-weight: bold;
             font-size: 1.1em;
             margin-bottom: 8px;
         }
 
-        .tree li .person-card .dates {
+        .person-card .dates {
             font-size: 0.9em;
             opacity: 0.95;
         }
 
-        .tree li .person-card .status {
+        .person-card .status {
             font-size: 0.85em;
             margin-top: 5px;
             padding: 3px 10px;
@@ -201,28 +153,33 @@
             display: inline-block;
         }
 
-        .spouse-container {
-            display: flex;
-            gap: 20px;
-            justify-content: center;
-            align-items: center;
-        }
-
-        .spouse-connector {
-            width: 30px;
-            height: 2px;
-            background: #667eea;
-            position: relative;
-        }
-
-        .spouse-connector::before {
-            content: '♥';
+        .person-card .expand-indicator {
             position: absolute;
-            top: -12px;
-            left: 50%;
-            transform: translateX(-50%);
-            color: #e74c3c;
+            top: 5px;
+            right: 8px;
             font-size: 1.2em;
+            opacity: 0.8;
+        }
+
+        .connection-line {
+            position: absolute;
+            background: #667eea;
+            transform-origin: top left;
+            pointer-events: none;
+            z-index: 0;
+        }
+
+        .relationship-label {
+            position: absolute;
+            background: rgba(255, 255, 255, 0.95);
+            padding: 4px 8px;
+            border-radius: 4px;
+            font-size: 0.75em;
+            color: #667eea;
+            font-weight: 600;
+            pointer-events: none;
+            z-index: 10;
+            box-shadow: 0 2px 4px rgba(0, 0, 0, 0.1);
         }
 
         .legend {
@@ -285,13 +242,28 @@
             margin-top: 5px;
         }
 
-        .error {
-            background: #fee;
-            border: 2px solid #fcc;
-            color: #c00;
-            padding: 20px;
+        .controls {
+            text-align: center;
+            margin-bottom: 20px;
+            padding: 15px;
+            background: #f8f9fa;
             border-radius: 10px;
-            margin: 20px 0;
+        }
+
+        .controls button {
+            background: linear-gradient(135deg, #667eea 0%, #764ba2 100%);
+            color: white;
+            border: none;
+            padding: 10px 20px;
+            border-radius: 8px;
+            font-size: 1em;
+            cursor: pointer;
+            margin: 0 5px;
+            transition: all 0.3s;
+        }
+
+        .controls button:hover {
+            transform: scale(1.05);
         }
 
         @media (max-width: 768px) {
@@ -303,17 +275,13 @@
                 font-size: 1.8em;
             }
 
-            .tree li .person-card {
+            .person-card {
                 min-width: 140px;
                 padding: 12px 15px;
             }
 
-            .tree li .person-card .name {
-                font-size: 1em;
-            }
-
-            .tree li .person-card .dates {
-                font-size: 0.85em;
+            .tree-canvas {
+                min-width: 600px;
             }
         }
     </style>
@@ -321,7 +289,7 @@
 <body>
     <div class="container">
         <h1>🌳 Ruff Family Tree</h1>
-        <p class="subtitle">A genealogical record of the Ruff family</p>
+        <p class="subtitle">Click on any person to expand and explore the family</p>
 
         <nav>
             <a href="index.html" style="background: #667eea; color: white;">🌳 Family Tree</a>
@@ -329,15 +297,22 @@
         </nav>
 
         <div class="instructions">
-            <h3>📝 How to Edit</h3>
-            <p>To update the family tree, edit the <code>family_tree.json</code> file in the root directory.
-               The tree will automatically reflect your changes when you refresh this page.</p>
+            <h3>🎯 How to Use</h3>
+            <p>Click on any person's card to expand and reveal their <strong>spouse</strong>, <strong>siblings</strong>, <strong>parents</strong>, and <strong>children</strong>. Click again to collapse. Continue clicking to explore the entire family tree!</p>
+        </div>
+
+        <div class="controls">
+            <button onclick="collapseAll()">Collapse All</button>
+            <button onclick="expandAll()">Expand All</button>
+            <button onclick="resetView()">Reset View</button>
         </div>
 
         <div id="stats" class="stats"></div>
 
-        <div id="tree-container" class="tree">
-            <!-- Tree will be rendered here -->
+        <div class="tree-container">
+            <div id="tree-canvas" class="tree-canvas">
+                <!-- Tree nodes will be rendered here -->
+            </div>
         </div>
 
         <div class="legend">
@@ -349,160 +324,366 @@
                 <div class="legend-box alive"></div>
                 <span>Living</span>
             </div>
+            <div class="legend-item">
+                <span>💡 <strong>Tip:</strong> Click cards to expand/collapse</span>
+            </div>
         </div>
     </div>
 
     <script>
-        // Statistics tracking
-        let stats = {
-            total: 0,
-            living: 0,
-            deceased: 0,
-            generations: 0
+        let familyData = null;
+        let expandedNodes = new Set();
+        let visibleNodes = new Set();
+        let nodePositions = new Map();
+
+        // Layout configuration
+        const LAYOUT = {
+            nodeWidth: 200,
+            nodeHeight: 120,
+            horizontalSpacing: 80,
+            verticalSpacing: 150,
+            spouseSpacing: 250
         };
 
-        function renderPerson(person, generation = 1) {
-            stats.total++;
-            if (person.dod === 'alive') {
-                stats.living++;
-            } else {
-                stats.deceased++;
+        async function loadFamilyData() {
+            try {
+                const response = await fetch('family_tree.json');
+                const data = await response.json();
+                familyData = data.family;
+
+                // Start with the designated start person
+                const startPerson = familyData.startPerson || 'patrick';
+                visibleNodes.add(startPerson);
+
+                renderTree();
+                updateStats();
+            } catch (error) {
+                console.error('Error loading family tree:', error);
+                document.getElementById('tree-canvas').innerHTML =
+                    '<div style="color: red; padding: 20px;">Error loading family tree data</div>';
             }
-            stats.generations = Math.max(stats.generations, generation);
-
-            const isAlive = person.dod === 'alive';
-            const lifespan = isAlive ?
-                `${person.dob} - Present` :
-                `${person.dob} - ${person.dod}`;
-
-            const age = isAlive ?
-                `Age ${new Date().getFullYear() - parseInt(person.dob)}` :
-                `Lived ${parseInt(person.dod) - parseInt(person.dob)} years`;
-
-            let html = '<li>';
-
-            // Check if person has a spouse
-            if (person.spouse) {
-                html += '<div class="spouse-container">';
-                html += `
-                    <div class="person-card ${isAlive ? 'alive' : ''}">
-                        <div class="name">${person.name}</div>
-                        <div class="dates">${lifespan}</div>
-                        <div class="status">${age}</div>
-                    </div>
-                `;
-
-                // Count spouse in stats
-                stats.total++;
-                const spouseAlive = person.spouse.dod === 'alive';
-                if (spouseAlive) {
-                    stats.living++;
-                } else {
-                    stats.deceased++;
-                }
-
-                const spouseLifespan = spouseAlive ?
-                    `${person.spouse.dob} - Present` :
-                    `${person.spouse.dob} - ${person.spouse.dod}`;
-
-                const spouseAge = spouseAlive ?
-                    `Age ${new Date().getFullYear() - parseInt(person.spouse.dob)}` :
-                    `Lived ${parseInt(person.spouse.dod) - parseInt(person.spouse.dob)} years`;
-
-                html += '<div class="spouse-connector"></div>';
-                html += `
-                    <div class="person-card ${spouseAlive ? 'alive' : ''}">
-                        <div class="name">${person.spouse.name}</div>
-                        <div class="dates">${spouseLifespan}</div>
-                        <div class="status">${spouseAge}</div>
-                    </div>
-                `;
-                html += '</div>';
-            } else {
-                html += `
-                    <div class="person-card ${isAlive ? 'alive' : ''}">
-                        <div class="name">${person.name}</div>
-                        <div class="dates">${lifespan}</div>
-                        <div class="status">${age}</div>
-                    </div>
-                `;
-            }
-
-            // Render children
-            if (person.children && person.children.length > 0) {
-                html += '<ul>';
-                person.children.forEach(child => {
-                    html += renderPerson(child, generation + 1);
-                });
-                html += '</ul>';
-            }
-
-            html += '</li>';
-            return html;
         }
 
-        function renderTree(data) {
-            const container = document.getElementById('tree-container');
+        function getPerson(id) {
+            return familyData.people[id];
+        }
 
-            if (!data || !data.family || !data.family.root) {
-                container.innerHTML = '<div class="error">Error: Invalid family tree data structure</div>';
-                return;
+        function toggleNode(personId) {
+            if (expandedNodes.has(personId)) {
+                collapseNode(personId);
+            } else {
+                expandNode(personId);
+            }
+        }
+
+        function expandNode(personId) {
+            const person = getPerson(personId);
+            if (!person) return;
+
+            expandedNodes.add(personId);
+
+            // Add related people to visible set
+            if (person.spouseId) {
+                visibleNodes.add(person.spouseId);
             }
 
-            // Reset stats
-            stats = { total: 0, living: 0, deceased: 0, generations: 0 };
+            person.siblingIds.forEach(id => visibleNodes.add(id));
+            person.parentIds.forEach(id => visibleNodes.add(id));
+            person.childrenIds.forEach(id => visibleNodes.add(id));
 
-            const treeHTML = `
-                <ul>
-                    ${renderPerson(data.family.root)}
-                </ul>
+            renderTree();
+        }
+
+        function collapseNode(personId) {
+            expandedNodes.delete(personId);
+
+            // Remove related people from visible set (but keep if they're expanded or referenced by others)
+            const person = getPerson(personId);
+            if (!person) return;
+
+            const toCheck = [
+                person.spouseId,
+                ...person.siblingIds,
+                ...person.parentIds,
+                ...person.childrenIds
+            ].filter(id => id);
+
+            toCheck.forEach(id => {
+                if (!isNodeNeeded(id)) {
+                    visibleNodes.delete(id);
+                }
+            });
+
+            renderTree();
+        }
+
+        function isNodeNeeded(personId) {
+            if (expandedNodes.has(personId)) return true;
+            if (personId === familyData.startPerson) return true;
+
+            // Check if any expanded node references this person
+            for (const expandedId of expandedNodes) {
+                const expanded = getPerson(expandedId);
+                if (!expanded) continue;
+
+                if (expanded.spouseId === personId) return true;
+                if (expanded.siblingIds.includes(personId)) return true;
+                if (expanded.parentIds.includes(personId)) return true;
+                if (expanded.childrenIds.includes(personId)) return true;
+            }
+
+            return false;
+        }
+
+        function calculateLayout() {
+            nodePositions.clear();
+
+            // Simple force-directed-ish layout
+            const nodes = Array.from(visibleNodes);
+            const centerX = 400;
+            const centerY = 300;
+
+            // Start person in center
+            const startPerson = familyData.startPerson;
+            nodePositions.set(startPerson, { x: centerX, y: centerY });
+
+            // Position relatives around each expanded node
+            expandedNodes.forEach(expandedId => {
+                const person = getPerson(expandedId);
+                if (!person) return;
+
+                const basePos = nodePositions.get(expandedId) || { x: centerX, y: centerY };
+
+                // Position spouse to the right
+                if (person.spouseId && visibleNodes.has(person.spouseId)) {
+                    if (!nodePositions.has(person.spouseId)) {
+                        nodePositions.set(person.spouseId, {
+                            x: basePos.x + LAYOUT.spouseSpacing,
+                            y: basePos.y
+                        });
+                    }
+                }
+
+                // Position parents above
+                person.parentIds.forEach((parentId, index) => {
+                    if (visibleNodes.has(parentId) && !nodePositions.has(parentId)) {
+                        nodePositions.set(parentId, {
+                            x: basePos.x + (index - 0.5) * LAYOUT.spouseSpacing,
+                            y: basePos.y - LAYOUT.verticalSpacing
+                        });
+                    }
+                });
+
+                // Position children below
+                person.childrenIds.forEach((childId, index) => {
+                    if (visibleNodes.has(childId) && !nodePositions.has(childId)) {
+                        const offset = (index - (person.childrenIds.length - 1) / 2) * LAYOUT.horizontalSpacing;
+                        nodePositions.set(childId, {
+                            x: basePos.x + offset,
+                            y: basePos.y + LAYOUT.verticalSpacing
+                        });
+                    }
+                });
+
+                // Position siblings to the left/right
+                person.siblingIds.forEach((siblingId, index) => {
+                    if (visibleNodes.has(siblingId) && !nodePositions.has(siblingId)) {
+                        nodePositions.set(siblingId, {
+                            x: basePos.x - LAYOUT.horizontalSpacing * (index + 1),
+                            y: basePos.y
+                        });
+                    }
+                });
+            });
+
+            // Position any remaining nodes
+            visibleNodes.forEach(nodeId => {
+                if (!nodePositions.has(nodeId)) {
+                    nodePositions.set(nodeId, {
+                        x: centerX + (Math.random() - 0.5) * 400,
+                        y: centerY + (Math.random() - 0.5) * 400
+                    });
+                }
+            });
+        }
+
+        function renderTree() {
+            calculateLayout();
+
+            const canvas = document.getElementById('tree-canvas');
+            canvas.innerHTML = '';
+
+            // Draw connections first (behind nodes)
+            expandedNodes.forEach(expandedId => {
+                const person = getPerson(expandedId);
+                if (!person) return;
+
+                const fromPos = nodePositions.get(expandedId);
+                if (!fromPos) return;
+
+                // Draw line to spouse
+                if (person.spouseId && visibleNodes.has(person.spouseId)) {
+                    const toPos = nodePositions.get(person.spouseId);
+                    if (toPos) {
+                        drawConnection(fromPos, toPos, '♥');
+                    }
+                }
+
+                // Draw lines to parents
+                person.parentIds.forEach(parentId => {
+                    if (visibleNodes.has(parentId)) {
+                        const toPos = nodePositions.get(parentId);
+                        if (toPos) {
+                            drawConnection(fromPos, toPos, 'parent');
+                        }
+                    }
+                });
+
+                // Draw lines to children
+                person.childrenIds.forEach(childId => {
+                    if (visibleNodes.has(childId)) {
+                        const toPos = nodePositions.get(childId);
+                        if (toPos) {
+                            drawConnection(fromPos, toPos, 'child');
+                        }
+                    }
+                });
+
+                // Draw lines to siblings
+                person.siblingIds.forEach(siblingId => {
+                    if (visibleNodes.has(siblingId)) {
+                        const toPos = nodePositions.get(siblingId);
+                        if (toPos) {
+                            drawConnection(fromPos, toPos, 'sibling');
+                        }
+                    }
+                });
+            });
+
+            // Draw nodes
+            visibleNodes.forEach(personId => {
+                renderPerson(personId);
+            });
+        }
+
+        function drawConnection(from, to, type) {
+            const canvas = document.getElementById('tree-canvas');
+
+            const dx = to.x - from.x;
+            const dy = to.y - from.y;
+            const length = Math.sqrt(dx * dx + dy * dy);
+            const angle = Math.atan2(dy, dx) * 180 / Math.PI;
+
+            const line = document.createElement('div');
+            line.className = 'connection-line';
+            line.style.width = length + 'px';
+            line.style.height = '2px';
+            line.style.left = from.x + 'px';
+            line.style.top = from.y + 60 + 'px';
+            line.style.transform = `rotate(${angle}deg)`;
+            line.style.opacity = '0.3';
+
+            canvas.appendChild(line);
+
+            // Add label if needed
+            if (type && type !== 'child') {
+                const label = document.createElement('div');
+                label.className = 'relationship-label';
+                label.textContent = type === '♥' ? '♥' : type;
+                label.style.left = (from.x + to.x) / 2 + 'px';
+                label.style.top = (from.y + to.y) / 2 + 50 + 'px';
+                canvas.appendChild(label);
+            }
+        }
+
+        function renderPerson(personId) {
+            const person = getPerson(personId);
+            if (!person) return;
+
+            const pos = nodePositions.get(personId);
+            if (!pos) return;
+
+            const isAlive = person.dod === 'alive';
+            const isExpanded = expandedNodes.has(personId);
+            const lifespan = isAlive ? `${person.dob} - Present` : `${person.dob} - ${person.dod}`;
+            const age = isAlive
+                ? `Age ${new Date().getFullYear() - parseInt(person.dob)}`
+                : `Lived ${parseInt(person.dod) - parseInt(person.dob)} years`;
+
+            const hasRelatives = person.spouseId ||
+                                person.siblingIds.length > 0 ||
+                                person.parentIds.length > 0 ||
+                                person.childrenIds.length > 0;
+
+            const nodeDiv = document.createElement('div');
+            nodeDiv.className = 'person-node';
+            nodeDiv.style.left = pos.x + 'px';
+            nodeDiv.style.top = pos.y + 'px';
+            nodeDiv.style.zIndex = '10';
+
+            nodeDiv.innerHTML = `
+                <div class="person-card ${isAlive ? 'alive' : ''} ${isExpanded ? 'expanded' : ''}"
+                     onclick="toggleNode('${personId}')">
+                    ${hasRelatives ? `<div class="expand-indicator">${isExpanded ? '−' : '+'}</div>` : ''}
+                    <div class="name">${person.name}</div>
+                    <div class="dates">${lifespan}</div>
+                    <div class="status">${age}</div>
+                </div>
             `;
 
-            container.innerHTML = treeHTML;
+            document.getElementById('tree-canvas').appendChild(nodeDiv);
+        }
 
-            // Render statistics
-            const statsContainer = document.getElementById('stats');
-            statsContainer.innerHTML = `
+        function updateStats() {
+            const total = Object.keys(familyData.people).length;
+            const living = Object.values(familyData.people).filter(p => p.dod === 'alive').length;
+            const deceased = total - living;
+            const visible = visibleNodes.size;
+
+            const statsDiv = document.getElementById('stats');
+            statsDiv.innerHTML = `
                 <div class="stat-box">
-                    <div class="number">${stats.total}</div>
+                    <div class="number">${visible}</div>
+                    <div class="label">Visible</div>
+                </div>
+                <div class="stat-box">
+                    <div class="number">${total}</div>
                     <div class="label">Total Members</div>
                 </div>
                 <div class="stat-box">
-                    <div class="number">${stats.living}</div>
+                    <div class="number">${living}</div>
                     <div class="label">Living</div>
                 </div>
                 <div class="stat-box">
-                    <div class="number">${stats.deceased}</div>
+                    <div class="number">${deceased}</div>
                     <div class="label">Deceased</div>
-                </div>
-                <div class="stat-box">
-                    <div class="number">${stats.generations}</div>
-                    <div class="label">Generations</div>
                 </div>
             `;
         }
 
-        // Load the family tree data
-        fetch('family_tree.json')
-            .then(response => {
-                if (!response.ok) {
-                    throw new Error('Failed to load family_tree.json');
-                }
-                return response.json();
-            })
-            .then(data => {
-                renderTree(data);
-            })
-            .catch(error => {
-                const container = document.getElementById('tree-container');
-                container.innerHTML = `
-                    <div class="error">
-                        <strong>Error loading family tree:</strong><br>
-                        ${error.message}<br><br>
-                        Make sure <code>family_tree.json</code> exists and is valid JSON.
-                    </div>
-                `;
+        function collapseAll() {
+            expandedNodes.clear();
+            visibleNodes.clear();
+            visibleNodes.add(familyData.startPerson);
+            renderTree();
+            updateStats();
+        }
+
+        function expandAll() {
+            Object.keys(familyData.people).forEach(id => {
+                expandedNodes.add(id);
+                visibleNodes.add(id);
             });
+            renderTree();
+            updateStats();
+        }
+
+        function resetView() {
+            collapseAll();
+        }
+
+        // Load the tree on page load
+        loadFamilyData();
     </script>
 </body>
 </html>
