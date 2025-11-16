@@ -25,8 +25,12 @@ def get_client():
 
 
 def get_or_create_store(client):
-    """Get or create the file search store for Ruff family documents."""
-    # First, try to find existing store by listing all stores
+    """
+    Get the existing rufftree File Search store.
+
+    The store 'rufftree-family-documents' should already exist.
+    Store name: fileSearchStores/rufftreefamilydocuments-nrf1ymofronp
+    """
     print("🔍 Searching for existing Ruff family store...")
     try:
         stores = list(client.file_search_stores.list())
@@ -36,75 +40,40 @@ def get_or_create_store(client):
         for store in stores:
             store_display = getattr(store, 'display_name', None) or ''
             store_name_lower = store.name.lower() if store.name else ''
-            print(f"   - Store: {store.name}")
-            print(f"     Display name: {store_display}")
 
             # Check both display name and store name for 'rufftree'
             if ('rufftree' in store_display.lower()) or ('rufftree' in store_name_lower):
-                print(f"📦 Found existing Ruff family store: {store.name}")
+                print(f"📦 Found Ruff family store: {store.name}")
+                print(f"   Display name: {store_display}")
                 # Verify it has documents
                 try:
                     docs = list(client.file_search_stores.documents.list(parent=store.name))
                     print(f"   ✅ Store contains {len(docs)} document(s)")
+                    for doc in docs:
+                        doc_display = getattr(doc, 'display_name', '') or ''
+                        print(f"      - {doc_display}")
                 except Exception as doc_err:
                     print(f"   ⚠️  Could not list documents: {doc_err}")
                 return store.name
-        print(f"   None of the stores match 'rufftree'")
+
+        # No rufftree store found
+        print("❌ No rufftree store found!")
+        print("   Available stores:")
+        for store in stores:
+            store_display = getattr(store, 'display_name', None) or ''
+            print(f"      - {store.name} (display: {store_display})")
+        raise ValueError(
+            "Rufftree File Search store not found. "
+            "The store should have 'rufftree' in its display name or store name."
+        )
+
     except Exception as e:
+        if "not found" in str(e).lower():
+            raise
         print(f"⚠️  Could not list stores: {e}")
         import traceback
         traceback.print_exc()
-
-    # Fall back to config files for backwards compatibility
-    repo_config_path = Path(__file__).parent / ".rufftree_store.json"
-    home_config_path = Path.home() / ".rufftree_mcp" / "store_config.json"
-
-    store_name = None
-
-    # Check repository-level config
-    if repo_config_path.exists():
-        try:
-            with open(repo_config_path) as f:
-                config = json.load(f)
-                store_name = config.get("store_name")
-                if store_name:
-                    print(f"📦 Using store from repo config: {store_name}")
-                    return store_name
-        except Exception as e:
-            print(f"⚠️  Could not load repo store config: {e}")
-
-    # Check home directory config
-    if home_config_path.exists():
-        try:
-            with open(home_config_path) as f:
-                config = json.load(f)
-                store_name = config.get("store_name")
-                if store_name:
-                    print(f"📦 Using store from home config: {store_name}")
-                    return store_name
-        except Exception as e:
-            print(f"⚠️  Could not load home store config: {e}")
-
-    # Create new store if none found
-    print("📦 Creating new file search store for Ruff family documents...")
-    store = client.file_search_stores.create(
-        config={'display_name': 'rufftree'}
-    )
-    store_name = store.name
-    print(f"✅ Created new store: {store_name}")
-    print(f"   Display name: rufftree")
-
-    # Save to config files for reference
-    home_config_path.parent.mkdir(parents=True, exist_ok=True)
-    with open(home_config_path, 'w') as f:
-        json.dump({"store_name": store_name}, f)
-    print(f"💾 Saved store config to {home_config_path}")
-
-    with open(repo_config_path, 'w') as f:
-        json.dump({"store_name": store_name, "created_at": time.strftime('%Y-%m-%d %H:%M:%S')}, f, indent=2)
-    print(f"💾 Saved store config to {repo_config_path}")
-
-    return store_name
+        raise
 
 
 def upload_document(client, store_name, file_path):

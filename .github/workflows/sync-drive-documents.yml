@@ -11,8 +11,6 @@ on:
 jobs:
   sync:
     runs-on: ubuntu-latest
-    permissions:
-      contents: write
 
     steps:
       - name: Checkout repository
@@ -33,13 +31,3 @@ jobs:
           GOOGLE_DRIVE_CREDENTIALS: ${{ secrets.GOOGLE_DRIVE_CREDENTIALS }}
         run: |
           python sync_drive_documents.py
-
-      - name: Commit store config if created
-        run: |
-          if [ -f ".rufftree_store.json" ]; then
-            git config --local user.email "github-actions[bot]@users.noreply.github.com"
-            git config --local user.name "github-actions[bot]"
-            git add .rufftree_store.json
-            git diff --staged --quiet || git commit -m "Update File Search store configuration"
-            git push
-          fi

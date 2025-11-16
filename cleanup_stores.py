@@ -8,8 +8,7 @@ Deletes stores that:
 3. Are not the active rufftree store
 
 Usage:
-    python cleanup_stores.py           # Dry run (show what would be deleted)
-    python cleanup_stores.py --delete  # Actually delete the stores
+    python cleanup_stores.py
 """
 
 import os
@@ -28,16 +27,10 @@ def get_client():
     return genai.Client(api_key=api_key)
 
 
-def cleanup_stores(dry_run=True):
+def cleanup_stores():
     """Delete empty/unnamed File Search stores."""
     print("🧹 File Search Store Cleanup")
     print("=" * 80)
-
-    if dry_run:
-        print("⚠️  DRY RUN MODE - No stores will be deleted")
-        print("    Run with --delete to actually remove stores\n")
-    else:
-        print("🚨 DELETE MODE - Stores WILL be permanently deleted\n")
 
     client = get_client()
 
@@ -119,7 +112,6 @@ def cleanup_stores(dry_run=True):
         for store in to_delete:
             print(f"   🗑️  {store['name']}")
             print(f"      Display: {store['display'] or '(none)'}")
-            print(f"      Documents: {store['docs']}")
             print(f"      Reason: {store['reason']}")
             print()
     else:
@@ -137,12 +129,7 @@ def cleanup_stores(dry_run=True):
         print("\n✅ No stores to delete. All clean!")
         return
 
-    if dry_run:
-        print("\n⚠️  This was a DRY RUN. No stores were deleted.")
-        print("    Run with --delete to actually remove stores.")
-        return
-
-    # Actually delete stores
+    # Delete stores
     print(f"\n🗑️  Deleting {len(to_delete)} store(s)...")
     success_count = 0
     fail_count = 0
@@ -164,17 +151,7 @@ def cleanup_stores(dry_run=True):
 
 def main():
     """Main entry point."""
-    dry_run = '--delete' not in sys.argv
-
-    if not dry_run:
-        # Confirm deletion
-        print("⚠️  WARNING: This will permanently delete File Search stores!")
-        confirm = input("Type 'yes' to confirm deletion: ").strip().lower()
-        if confirm != 'yes':
-            print("❌ Cancelled")
-            sys.exit(0)
-
-    cleanup_stores(dry_run=dry_run)
+    cleanup_stores()
 
 
 if __name__ == "__main__":
