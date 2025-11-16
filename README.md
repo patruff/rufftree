@@ -317,9 +317,14 @@ python test_file_search.py
 
 **Cleanup Empty Stores**:
 ```bash
-# Delete all empty/unused stores
+# Run locally
 python cleanup_stores.py
 ```
+
+Or use the GitHub Action:
+1. Go to Actions tab in your repository
+2. Select "Cleanup Empty File Search Stores"
+3. Click "Run workflow"
 
 The cleanup script will:
 - Keep stores with documents
