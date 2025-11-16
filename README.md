@@ -295,14 +295,39 @@ When using Claude Desktop, you'll have access to these tools:
 
 ## File Search Store
 
-The Rufftree system uses a **separate** File Search store from the longevitypdf system. This ensures:
+The Rufftree system uses a dedicated Google File Search store:
 
-- Ruff family documents are kept separate from longevity papers
+**Store Name**: `fileSearchStores/rufftreefamilydocuments-nrf1ymofronp`
+**Display Name**: `rufftree-family-documents`
+
+The store is automatically discovered by searching for 'rufftree' in the display name or store name. This ensures:
+
+- Ruff family documents are kept separate from other projects
 - Queries only search relevant Ruff family content
-- Independent cost tracking for each project
+- No need to manage config files - the store is auto-discovered
+- Workflows always find the same store
 
-**Store Configuration**: `~/.rufftree_mcp/store_config.json`
-**Sync State**: `~/.rufftree_mcp/synced_files.json`
+### Store Management
+
+**List Store Contents**:
+```bash
+export GOOGLE_GENAI_API_KEY=your_api_key
+python test_file_search.py
+```
+
+**Cleanup Empty Stores**:
+```bash
+# Delete all empty/unused stores
+python cleanup_stores.py
+```
+
+The cleanup script will:
+- Keep stores with documents
+- Keep the active rufftree store
+- Delete empty stores with no display name
+- Delete empty rufftree stores
+
+**Sync State**: `~/.rufftree_mcp/synced_files.json` (local tracking of synced files)
 
 ## Supported File Types
 
