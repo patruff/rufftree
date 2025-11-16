@@ -26,17 +26,35 @@ def get_client():
 
 def get_or_create_store(client):
     """Get or create the file search store for Ruff family documents."""
-    config_path = Path.home() / ".rufftree_mcp" / "store_config.json"
+    # Check multiple locations for store config:
+    # 1. Repository-level config (for CI/CD persistence)
+    # 2. User home directory config (for local development)
+    repo_config_path = Path(__file__).parent / ".rufftree_store.json"
+    home_config_path = Path.home() / ".rufftree_mcp" / "store_config.json"
 
     store_name = None
-    if config_path.exists():
+
+    # First, check repository-level config (highest priority for CI/CD)
+    if repo_config_path.exists():
         try:
-            with open(config_path) as f:
+            with open(repo_config_path) as f:
                 config = json.load(f)
                 store_name = config.get("store_name")
-                print(f"📦 Using existing store: {store_name}")
+                if store_name:
+                    print(f"📦 Using existing store from repo config: {store_name}")
         except Exception as e:
-            print(f"⚠️  Could not load store config: {e}")
+            print(f"⚠️  Could not load repo store config: {e}")
+
+    # Fall back to home directory config
+    if not store_name and home_config_path.exists():
+        try:
+            with open(home_config_path) as f:
+                config = json.load(f)
+                store_name = config.get("store_name")
+                if store_name:
+                    print(f"📦 Using existing store from home config: {store_name}")
+        except Exception as e:
+            print(f"⚠️  Could not load home store config: {e}")
 
     if not store_name:
         print("📦 Creating new file search store for Ruff family documents...")
@@ -46,11 +64,17 @@ def get_or_create_store(client):
         store_name = store.name
         print(f"✅ Created new store: {store_name}")
 
-        # Save store name
-        config_path.parent.mkdir(parents=True, exist_ok=True)
-        with open(config_path, 'w') as f:
+        # Save to both locations
+        # Save to home directory (for local MCP server)
+        home_config_path.parent.mkdir(parents=True, exist_ok=True)
+        with open(home_config_path, 'w') as f:
             json.dump({"store_name": store_name}, f)
-        print(f"💾 Saved store config to {config_path}")
+        print(f"💾 Saved store config to {home_config_path}")
+
+        # Save to repository (for CI/CD persistence)
+        with open(repo_config_path, 'w') as f:
+            json.dump({"store_name": store_name, "created_at": time.strftime('%Y-%m-%d %H:%M:%S')}, f, indent=2)
+        print(f"💾 Saved store config to {repo_config_path}")
 
     return store_name
 
