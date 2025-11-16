@@ -58,40 +58,47 @@ def get_client() -> genai.Client:
 
 
 def get_or_create_store() -> tuple[Any, str]:
-    """Get or create the file search store for Ruff family documents."""
+    """
+    Get the existing rufftree File Search store.
+
+    The store 'rufftree-family-documents' should already exist.
+    Store name: fileSearchStores/rufftreefamilydocuments-nrf1ymofronp
+    """
     global _file_search_store, _store_name
 
     if _file_search_store is None:
         client = get_client()
 
-        # Try to load store name from config
-        config_path = Path.home() / ".rufftree_mcp" / "store_config.json"
-        if config_path.exists():
-            try:
-                with open(config_path) as f:
-                    config = json.load(f)
-                    _store_name = config.get("store_name")
-                    logger.info(f"Loaded existing store name: {_store_name}")
-            except Exception as e:
-                logger.warning(f"Could not load store config: {e}")
+        # Search for existing rufftree store by listing all stores
+        logger.info("Searching for existing Ruff family store...")
+        try:
+            stores = list(client.file_search_stores.list())
+            logger.info(f"Found {len(stores)} total store(s)")
 
-        # Create new store if needed
-        if not _store_name:
-            logger.info("Creating new file search store for Ruff family documents...")
-            _file_search_store = client.file_search_stores.create(
-                config={'display_name': 'rufftree-family-documents'}
+            for store in stores:
+                store_display = getattr(store, 'display_name', None) or ''
+                store_name_lower = store.name.lower() if store.name else ''
+
+                # Check both display name and store name for 'rufftree'
+                if ('rufftree' in store_display.lower()) or ('rufftree' in store_name_lower):
+                    _store_name = store.name
+                    _file_search_store = True  # Placeholder, we just need the name
+                    logger.info(f"Found Ruff family store: {_store_name}")
+                    logger.info(f"Display name: {store_display}")
+                    return _file_search_store, _store_name
+
+            # No rufftree store found
+            logger.error("No rufftree store found!")
+            raise ValueError(
+                "Rufftree File Search store not found. "
+                "The store should have 'rufftree' in its display name or store name."
             )
-            _store_name = _file_search_store.name
-            logger.info(f"Created new file search store: {_store_name}")
 
-            # Save store name
-            config_path.parent.mkdir(parents=True, exist_ok=True)
-            with open(config_path, 'w') as f:
-                json.dump({"store_name": _store_name}, f)
-            logger.info(f"Saved store config to {config_path}")
-        else:
-            # Store exists, we can use it by name
-            _file_search_store = True  # Placeholder, we just need the name
+        except Exception as e:
+            if "not found" in str(e).lower():
+                raise
+            logger.error(f"Could not list stores: {e}")
+            raise
 
     return _file_search_store, _store_name
 

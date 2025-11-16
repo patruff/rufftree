@@ -315,23 +315,6 @@ export GOOGLE_GENAI_API_KEY=your_api_key
 python test_file_search.py
 ```
 
-**Cleanup Empty Stores**:
-```bash
-# Run locally
-python cleanup_stores.py
-```
-
-Or use the GitHub Action:
-1. Go to Actions tab in your repository
-2. Select "Cleanup Empty File Search Stores"
-3. Click "Run workflow"
-
-The cleanup script will:
-- Keep stores with documents
-- Keep the active rufftree store
-- Delete empty stores with no display name
-- Delete empty rufftree stores
-
 **Sync State**: `~/.rufftree_mcp/synced_files.json` (local tracking of synced files)
 
 ## Supported File Types
