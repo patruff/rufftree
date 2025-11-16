@@ -19,7 +19,7 @@ from googleapiclient.http import MediaIoBaseDownload
 import io
 
 # Import our existing file search functions
-from test_file_search import get_client, get_or_create_store, upload_document
+from test_file_search import get_client, get_or_create_store, upload_document, list_documents
 
 
 # Configuration
@@ -173,6 +173,24 @@ def save_synced_files(synced_files: Dict[str, str]):
     print(f"💾 Saved sync state to {STATE_FILE}")
 
 
+def get_indexed_document_names(client, store_name):
+    """Get list of document display names already indexed in File Search store."""
+    try:
+        docs = list(client.file_search_stores.documents.list(parent=store_name))
+        names = set()
+        for doc in docs:
+            if hasattr(doc, 'display_name'):
+                # Remove extension for comparison
+                name = doc.display_name
+                if name.endswith('.pdf'):
+                    name = name[:-4]
+                names.add(name.lower())
+        return names
+    except Exception as e:
+        print(f"⚠️  Could not list indexed documents: {e}")
+        return set()
+
+
 def sync_documents():
     """Main sync function - check Drive folder and upload new documents."""
     print("🔄 Starting Google Drive → File Search sync...")
@@ -192,19 +210,56 @@ def sync_documents():
         print("\nℹ️  No documents found in Google Drive folder")
         return
 
-    # Load previously synced files
-    synced_files = load_synced_files()
-    print(f"\n📋 Previously synced: {len(synced_files)} file(s)")
+    # Initialize File Search client early to check what's already indexed
+    print("\n📦 Initializing File Search...")
+    fs_client = get_client()
+    store_name = get_or_create_store(fs_client)
 
-    # Identify new files
+    # Get documents already indexed in File Search store
+    print("\n🔍 Checking documents already indexed in File Search store...")
+    indexed_names = get_indexed_document_names(fs_client, store_name)
+    print(f"   Found {len(indexed_names)} document(s) already indexed")
+
+    # Load previously synced files (local state)
+    synced_files = load_synced_files()
+    print(f"📋 Local sync state: {len(synced_files)} file(s)")
+
+    # Identify new files - check both local state AND actual File Search store
     new_files = []
+    skipped_already_indexed = []
     for doc in drive_docs:
         file_id = doc['id']
-        if file_id not in synced_files:
-            new_files.append(doc)
+        doc_name = doc['name'].lower()
+
+        # Skip if already in local sync state
+        if file_id in synced_files:
+            continue
+
+        # Skip if already indexed in File Search store (prevents re-upload after state loss)
+        if doc_name in indexed_names:
+            skipped_already_indexed.append(doc['name'])
+            # Update local state to reflect it's synced
+            synced_files[file_id] = {
+                'name': doc['name'],
+                'mime_type': doc['mimeType'],
+                'synced_at': time.strftime('%Y-%m-%d %H:%M:%S'),
+                'size': doc.get('size', 0),
+                'note': 'Already indexed in File Search store'
+            }
+            continue
+
+        new_files.append(doc)
+
+    if skipped_already_indexed:
+        print(f"\n⏭️  Skipping {len(skipped_already_indexed)} document(s) already in File Search store:")
+        for name in skipped_already_indexed:
+            print(f"   - {name}")
 
     if not new_files:
         print("\n✅ All documents are already synced. Nothing to do!")
+        if skipped_already_indexed:
+            # Save updated sync state
+            save_synced_files(synced_files)
         return
 
     print(f"\n🆕 Found {len(new_files)} new document(s) to upload:")
@@ -212,11 +267,6 @@ def sync_documents():
         size_mb = int(doc.get('size', 0)) / (1024 * 1024) if doc.get('size') else 0
         doc_type = "Google Doc" if doc['mimeType'] == 'application/vnd.google-apps.document' else doc['mimeType'].split('/')[-1].upper()
         print(f"  - {doc['name']} ({doc_type}, {size_mb:.2f} MB)" if size_mb > 0 else f"  - {doc['name']} ({doc_type})")
-
-    # Initialize File Search client
-    print("\n📦 Initializing File Search...")
-    fs_client = get_client()
-    store_name = get_or_create_store(fs_client)
 
     # Create temp directory for downloads
     temp_dir = Path("/tmp/rufftree_sync")
