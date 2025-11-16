@@ -58,7 +58,7 @@ def cleanup_stores():
         except Exception:
             pass
 
-        # Decide whether to keep or delete
+        # Only keep rufftree stores with documents - delete everything else
         if is_rufftree and doc_count > 0:
             # Keep active rufftree stores with documents
             to_keep.append({
@@ -67,29 +67,19 @@ def cleanup_stores():
                 'docs': doc_count,
                 'reason': 'Active rufftree store with documents'
             })
-        elif doc_count > 0:
-            # Keep any store with documents
-            to_keep.append({
-                'name': store.name,
-                'display': store_display,
-                'docs': doc_count,
-                'reason': 'Has documents'
-            })
-        elif is_rufftree:
-            # Empty rufftree store - delete
-            to_delete.append({
-                'name': store.name,
-                'display': store_display,
-                'docs': doc_count,
-                'reason': 'Empty rufftree store'
-            })
         else:
-            # No display name and no documents - delete
+            # Delete everything else (empty rufftree stores, non-rufftree stores)
+            if is_rufftree:
+                reason = 'Empty rufftree store'
+            elif doc_count > 0:
+                reason = f'Non-rufftree store with {doc_count} document(s)'
+            else:
+                reason = 'Empty non-rufftree store'
             to_delete.append({
                 'name': store.name,
                 'display': store_display,
                 'docs': doc_count,
-                'reason': 'No display name and empty'
+                'reason': reason
             })
 
     # Report what we'll keep

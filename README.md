@@ -327,10 +327,8 @@ Or use the GitHub Action:
 3. Click "Run workflow"
 
 The cleanup script will:
-- Keep stores with documents
-- Keep the active rufftree store
-- Delete empty stores with no display name
-- Delete empty rufftree stores
+- **Keep** only the active rufftree store with documents
+- **Delete** all other stores (empty or non-rufftree)
 
 **Sync State**: `~/.rufftree_mcp/synced_files.json` (local tracking of synced files)
 
