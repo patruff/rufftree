@@ -1,0 +1,47 @@
+{
+  "queries": [
+    {
+      "id": "1",
+      "question": "When did the Ruff family immigrate to America?",
+      "answer": "According to family records, the Ruff family immigrated to America in the early 1900s, settling initially in Pennsylvania. The earliest documented ancestor in America was Johann Ruff, who arrived in 1905 from Germany.",
+      "citations": [
+        "Immigration Records - Ellis Island Database",
+        "Family Bible - Ruff Family Records"
+      ],
+      "askedBy": "Sarah Ruff",
+      "date": "2025-01-10",
+      "answeredBy": "RAG System"
+    },
+    {
+      "id": "2",
+      "question": "What occupations were common in the Ruff family?",
+      "answer": "Historical records show that many Ruff family members worked in trades and crafts. Common occupations included carpentry, blacksmithing, and later, teaching. In the mid-20th century, several family members became educators and small business owners.",
+      "citations": [
+        "Census Records 1920-1950",
+        "Family Employment History Document"
+      ],
+      "askedBy": "Michael Ruff",
+      "date": "2025-01-05",
+      "answeredBy": "RAG System"
+    }
+  ],
+  "_instructions": {
+    "format": "This file stores questions asked by family members and their AI-generated answers from the RAG system.",
+    "workflow": "1. Family members submit questions via queries.html → 2. Questions create GitHub Issues → 3. You run the question through RAG → 4. Add the answer to this file → 5. Answer appears on the website",
+    "fields": {
+      "id": "Unique identifier for the query",
+      "question": "The question asked by the family member",
+      "answer": "The AI-generated answer from the RAG system",
+      "citations": "Array of source documents cited in the answer",
+      "askedBy": "Name of the person who asked (optional)",
+      "date": "Date the question was answered (YYYY-MM-DD)",
+      "answeredBy": "Who/what answered (usually 'RAG System')"
+    },
+    "tips": [
+      "Add newest queries at the beginning of the array",
+      "Keep citations specific and helpful",
+      "The queries.html page will automatically display new entries",
+      "Use the answer_query.py script to easily add RAG responses"
+    ]
+  }
+}

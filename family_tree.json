@@ -1,0 +1,462 @@
+{
+  "family": {
+    "name": "Ruff Family Tree",
+    "startPerson": "patrick",
+    "people": {
+      "patrick": {
+        "id": "patrick",
+        "name": "Patrick Ruff",
+        "dob": "1985",
+        "dod": "alive",
+        "occupation": "Developer/Scientist",
+        "spouseId": "jenny",
+        "parentIds": ["joe_sr", "debbie"],
+        "siblingIds": ["joe_jr", "sarah", "phil"],
+        "childrenIds": ["patrick_child1", "patrick_child2"]
+      },
+      "jenny": {
+        "id": "jenny",
+        "name": "Jenny Wang",
+        "dob": "1986",
+        "dod": "alive",
+        "occupation": "Lawyer",
+        "phone": "302-463-1675",
+        "spouseId": "patrick",
+        "parentIds": ["jenny_father", "jenny_mother"],
+        "siblingIds": [],
+        "childrenIds": ["patrick_child1", "patrick_child2"]
+      },
+      "patrick_child1": {
+        "id": "patrick_child1",
+        "name": "Child 1 (name unknown)",
+        "dob": "2010",
+        "dod": "alive",
+        "spouseId": null,
+        "parentIds": ["patrick", "jenny"],
+        "siblingIds": ["patrick_child2"],
+        "childrenIds": []
+      },
+      "patrick_child2": {
+        "id": "patrick_child2",
+        "name": "Child 2 (name unknown)",
+        "dob": "2012",
+        "dod": "alive",
+        "spouseId": null,
+        "parentIds": ["patrick", "jenny"],
+        "siblingIds": ["patrick_child1"],
+        "childrenIds": []
+      },
+      "joe_jr": {
+        "id": "joe_jr",
+        "name": "Joe Ruff Jr.",
+        "dob": "1983",
+        "dod": "alive",
+        "occupation": "Facilities",
+        "phone": "302-845-3736",
+        "spouseId": "katie",
+        "parentIds": ["joe_sr", "debbie"],
+        "siblingIds": ["patrick", "sarah", "phil"],
+        "childrenIds": ["kaylin", "cameron", "benjamin"]
+      },
+      "katie": {
+        "id": "katie",
+        "name": "Katie Ruff",
+        "dob": "1984",
+        "dod": "alive",
+        "phone": "302-893-1328",
+        "spouseId": "joe_jr",
+        "parentIds": [],
+        "siblingIds": [],
+        "childrenIds": ["kaylin", "cameron", "benjamin"]
+      },
+      "kaylin": {
+        "id": "kaylin",
+        "name": "Kaylin Ruff",
+        "dob": "2008",
+        "dod": "alive",
+        "spouseId": null,
+        "parentIds": ["joe_jr", "katie"],
+        "siblingIds": ["cameron", "benjamin"],
+        "childrenIds": []
+      },
+      "cameron": {
+        "id": "cameron",
+        "name": "Cameron Ruff",
+        "dob": "2010",
+        "dod": "alive",
+        "spouseId": null,
+        "parentIds": ["joe_jr", "katie"],
+        "siblingIds": ["kaylin", "benjamin"],
+        "childrenIds": []
+      },
+      "benjamin": {
+        "id": "benjamin",
+        "name": "Benjamin Ruff",
+        "dob": "2013",
+        "dod": "alive",
+        "spouseId": null,
+        "parentIds": ["joe_jr", "katie"],
+        "siblingIds": ["kaylin", "cameron"],
+        "childrenIds": []
+      },
+      "sarah": {
+        "id": "sarah",
+        "name": "Sarah Boilon",
+        "dob": "1987",
+        "dod": "alive",
+        "occupation": "Nurse",
+        "phone": "302-750-3828",
+        "maidenName": "Sarah Ruff",
+        "notes": "Baby of the family, was a graduate student in lab with Lorraine Symington",
+        "spouseId": "kevin_boilon",
+        "parentIds": ["joe_sr", "debbie"],
+        "siblingIds": ["joe_jr", "patrick", "phil"],
+        "childrenIds": ["eloise", "darcy"]
+      },
+      "kevin_boilon": {
+        "id": "kevin_boilon",
+        "name": "Kevin Boilon",
+        "dob": "1986",
+        "dod": "alive",
+        "occupation": "Bartender",
+        "phone": "443-547-7056",
+        "spouseId": "sarah",
+        "parentIds": [],
+        "siblingIds": [],
+        "childrenIds": ["eloise", "darcy"]
+      },
+      "eloise": {
+        "id": "eloise",
+        "name": "Eloise Boilon",
+        "dob": "2012",
+        "dod": "alive",
+        "spouseId": null,
+        "parentIds": ["sarah", "kevin_boilon"],
+        "siblingIds": ["darcy"],
+        "childrenIds": []
+      },
+      "darcy": {
+        "id": "darcy",
+        "name": "Darcy Lynn Boilon",
+        "dob": "2015",
+        "dod": "alive",
+        "spouseId": null,
+        "parentIds": ["sarah", "kevin_boilon"],
+        "siblingIds": ["eloise"],
+        "childrenIds": []
+      },
+      "phil": {
+        "id": "phil",
+        "name": "Phil Ruff",
+        "dob": "1990",
+        "dod": "alive",
+        "occupation": "Electrician",
+        "phone": "302-397-4048",
+        "spouseId": "ashley",
+        "parentIds": ["joe_sr", "debbie"],
+        "siblingIds": ["joe_jr", "patrick", "sarah"],
+        "childrenIds": ["logan", "aiden", "tripp", "scout"]
+      },
+      "ashley": {
+        "id": "ashley",
+        "name": "Ashley Ruff",
+        "dob": "1991",
+        "dod": "alive",
+        "phone": "302-542-6144",
+        "spouseId": "phil",
+        "parentIds": [],
+        "siblingIds": [],
+        "childrenIds": ["logan", "aiden", "tripp", "scout"]
+      },
+      "logan": {
+        "id": "logan",
+        "name": "Logan Ruff",
+        "dob": "2010",
+        "dod": "alive",
+        "spouseId": null,
+        "parentIds": ["phil", "ashley"],
+        "siblingIds": ["aiden", "tripp", "scout"],
+        "childrenIds": []
+      },
+      "aiden": {
+        "id": "aiden",
+        "name": "Aiden Ruff",
+        "dob": "2012",
+        "dod": "alive",
+        "spouseId": null,
+        "parentIds": ["phil", "ashley"],
+        "siblingIds": ["logan", "tripp", "scout"],
+        "childrenIds": []
+      },
+      "tripp": {
+        "id": "tripp",
+        "name": "Tripp Ruff",
+        "dob": "2015",
+        "dod": "alive",
+        "spouseId": null,
+        "parentIds": ["phil", "ashley"],
+        "siblingIds": ["logan", "aiden", "scout"],
+        "childrenIds": []
+      },
+      "scout": {
+        "id": "scout",
+        "name": "Scout Ruff",
+        "dob": "2018",
+        "dod": "alive",
+        "spouseId": null,
+        "parentIds": ["phil", "ashley"],
+        "siblingIds": ["logan", "aiden", "tripp"],
+        "childrenIds": []
+      },
+      "joe_sr": {
+        "id": "joe_sr",
+        "name": "Joe Ruff Sr.",
+        "dob": "1960",
+        "dod": "alive",
+        "occupation": "Laborer",
+        "spouseId": "debbie",
+        "parentIds": ["grandfather_ruff", "grandmother_ruff"],
+        "siblingIds": ["yogi", "freddie", "tommy", "john", "mary_ruff", "bridget", "anne_ruff", "anita", "winifred"],
+        "childrenIds": ["joe_jr", "patrick", "sarah", "phil"]
+      },
+      "debbie": {
+        "id": "debbie",
+        "name": "Debbie Ruff",
+        "dob": "1962",
+        "dod": "alive",
+        "maidenName": "Debbie Miller",
+        "occupation": "Teacher",
+        "phone": "302-530-1232",
+        "spouseId": "joe_sr",
+        "parentIds": ["stan_sr", "annette"],
+        "siblingIds": ["stan_miller", "beth_bradley", "lynn_miller"],
+        "childrenIds": ["joe_jr", "patrick", "sarah", "phil"]
+      },
+      "annette": {
+        "id": "annette",
+        "name": "Annette Ludke",
+        "dob": "1935",
+        "dod": "alive",
+        "phone": "443-941-4280",
+        "spouseId": "stan_sr",
+        "parentIds": [],
+        "siblingIds": [],
+        "childrenIds": ["debbie", "stan_miller", "beth_bradley", "lynn_miller"]
+      },
+      "stan_sr": {
+        "id": "stan_sr",
+        "name": "Stan Miller Sr.",
+        "dob": "1933",
+        "dod": "1995",
+        "occupation": "Carpenter",
+        "spouseId": "annette",
+        "parentIds": [],
+        "siblingIds": [],
+        "childrenIds": ["debbie", "stan_miller", "beth_bradley", "lynn_miller"]
+      },
+      "grandfather_ruff": {
+        "id": "grandfather_ruff",
+        "name": "Grandfather Ruff (name unknown)",
+        "dob": "1930",
+        "dod": "1990",
+        "spouseId": "grandmother_ruff",
+        "parentIds": [],
+        "siblingIds": [],
+        "childrenIds": ["yogi", "freddie", "tommy", "john", "joe_sr", "mary_ruff", "bridget", "anne_ruff", "anita", "winifred"]
+      },
+      "grandmother_ruff": {
+        "id": "grandmother_ruff",
+        "name": "Grandmother Ruff (name unknown)",
+        "dob": "1932",
+        "dod": "1992",
+        "spouseId": "grandfather_ruff",
+        "parentIds": [],
+        "siblingIds": [],
+        "childrenIds": ["yogi", "freddie", "tommy", "john", "joe_sr", "mary_ruff", "bridget", "anne_ruff", "anita", "winifred"]
+      },
+      "yogi": {
+        "id": "yogi",
+        "name": "Eugene 'Yogi' Ruff",
+        "dob": "1955",
+        "dod": "alive",
+        "spouseId": null,
+        "parentIds": ["grandfather_ruff", "grandmother_ruff"],
+        "siblingIds": ["freddie", "tommy", "john", "joe_sr", "mary_ruff", "bridget", "anne_ruff", "anita", "winifred"],
+        "childrenIds": []
+      },
+      "freddie": {
+        "id": "freddie",
+        "name": "Freddie 'Beaver' Ruff",
+        "dob": "1958",
+        "dod": "alive",
+        "spouseId": null,
+        "parentIds": ["grandfather_ruff", "grandmother_ruff"],
+        "siblingIds": ["yogi", "tommy", "john", "joe_sr", "mary_ruff", "bridget", "anne_ruff", "anita", "winifred"],
+        "childrenIds": []
+      },
+      "tommy": {
+        "id": "tommy",
+        "name": "Tommy Ruff",
+        "dob": "1963",
+        "dod": "alive",
+        "spouseId": null,
+        "parentIds": ["grandfather_ruff", "grandmother_ruff"],
+        "siblingIds": ["yogi", "freddie", "john", "joe_sr", "mary_ruff", "bridget", "anne_ruff", "anita", "winifred"],
+        "childrenIds": []
+      },
+      "john": {
+        "id": "john",
+        "name": "John Ruff",
+        "dob": "1965",
+        "dod": "alive",
+        "spouseId": null,
+        "parentIds": ["grandfather_ruff", "grandmother_ruff"],
+        "siblingIds": ["yogi", "freddie", "tommy", "joe_sr", "mary_ruff", "bridget", "anne_ruff", "anita", "winifred"],
+        "childrenIds": []
+      },
+      "mary_ruff": {
+        "id": "mary_ruff",
+        "name": "Mary Ruff",
+        "dob": "1957",
+        "dod": "alive",
+        "spouseId": null,
+        "parentIds": ["grandfather_ruff", "grandmother_ruff"],
+        "siblingIds": ["yogi", "freddie", "tommy", "john", "joe_sr", "bridget", "anne_ruff", "anita", "winifred"],
+        "childrenIds": []
+      },
+      "bridget": {
+        "id": "bridget",
+        "name": "Bridget Ruff",
+        "dob": "1959",
+        "dod": "alive",
+        "spouseId": null,
+        "parentIds": ["grandfather_ruff", "grandmother_ruff"],
+        "siblingIds": ["yogi", "freddie", "tommy", "john", "joe_sr", "mary_ruff", "anne_ruff", "anita", "winifred"],
+        "childrenIds": []
+      },
+      "anne_ruff": {
+        "id": "anne_ruff",
+        "name": "Anne Ruff",
+        "dob": "1961",
+        "dod": "alive",
+        "spouseId": null,
+        "parentIds": ["grandfather_ruff", "grandmother_ruff"],
+        "siblingIds": ["yogi", "freddie", "tommy", "john", "joe_sr", "mary_ruff", "bridget", "anita", "winifred"],
+        "childrenIds": []
+      },
+      "anita": {
+        "id": "anita",
+        "name": "Anita Ruff",
+        "dob": "1964",
+        "dod": "alive",
+        "spouseId": null,
+        "parentIds": ["grandfather_ruff", "grandmother_ruff"],
+        "siblingIds": ["yogi", "freddie", "tommy", "john", "joe_sr", "mary_ruff", "bridget", "anne_ruff", "winifred"],
+        "childrenIds": []
+      },
+      "winifred": {
+        "id": "winifred",
+        "name": "Winifred Ruff",
+        "dob": "1966",
+        "dod": "alive",
+        "spouseId": null,
+        "parentIds": ["grandfather_ruff", "grandmother_ruff"],
+        "siblingIds": ["yogi", "freddie", "tommy", "john", "joe_sr", "mary_ruff", "bridget", "anne_ruff", "anita"],
+        "childrenIds": []
+      },
+      "stan_miller": {
+        "id": "stan_miller",
+        "name": "Stan Miller Jr.",
+        "dob": "1964",
+        "dod": "alive",
+        "occupation": "Architect",
+        "spouseId": null,
+        "parentIds": ["stan_sr", "annette"],
+        "siblingIds": ["debbie", "beth_bradley", "lynn_miller"],
+        "childrenIds": []
+      },
+      "beth_bradley": {
+        "id": "beth_bradley",
+        "name": "Beth Miller Bradley",
+        "dob": "1958",
+        "dod": "alive",
+        "maidenName": "Beth Miller",
+        "notes": "Known as the best aunt in the world, very youthful, healthy and fun to be around",
+        "spouseId": "bryan_bradley",
+        "parentIds": ["stan_sr", "annette"],
+        "siblingIds": ["debbie", "stan_miller", "lynn_miller"],
+        "childrenIds": []
+      },
+      "bryan_bradley": {
+        "id": "bryan_bradley",
+        "name": "Bryan Bradley",
+        "dob": "1956",
+        "dod": "alive",
+        "spouseId": "beth_bradley",
+        "parentIds": [],
+        "siblingIds": [],
+        "childrenIds": []
+      },
+      "lynn_miller": {
+        "id": "lynn_miller",
+        "name": "Lynn Miller",
+        "dob": "1960",
+        "dod": "alive",
+        "spouseId": null,
+        "parentIds": ["stan_sr", "annette"],
+        "siblingIds": ["debbie", "stan_miller", "beth_bradley"],
+        "childrenIds": []
+      },
+      "jenny_father": {
+        "id": "jenny_father",
+        "name": "Jenny's Father (name unknown)",
+        "dob": "1960",
+        "dod": "alive",
+        "spouseId": "jenny_mother",
+        "parentIds": [],
+        "siblingIds": [],
+        "childrenIds": ["jenny"]
+      },
+      "jenny_mother": {
+        "id": "jenny_mother",
+        "name": "Jenny's Mother (name unknown)",
+        "dob": "1962",
+        "dod": "alive",
+        "spouseId": "jenny_father",
+        "parentIds": [],
+        "siblingIds": [],
+        "childrenIds": ["jenny"]
+      }
+    }
+  },
+  "_instructions": {
+    "format": "This file contains a flat list of all family members with relationship IDs. Edit this to update the expandable family tree.",
+    "fields": {
+      "id": "Unique identifier (string)",
+      "name": "Full name of the person",
+      "dob": "Date of birth in YYYY format",
+      "dod": "Date of death in YYYY format, or 'alive' if still living",
+      "occupation": "Optional occupation/job title",
+      "phone": "Optional phone number",
+      "maidenName": "Optional maiden name for married women",
+      "notes": "Optional notes or interesting facts",
+      "spouseId": "ID of spouse, or null if no spouse",
+      "parentIds": "Array of parent IDs (usually 2, can be 0-2)",
+      "siblingIds": "Array of sibling IDs",
+      "childrenIds": "Array of children IDs"
+    },
+    "expandable_tree": {
+      "description": "The tree starts with the person specified in 'startPerson'. Clicking a node expands to show their spouse, siblings, and parents. Clicking parents shows their siblings and parents, etc.",
+      "start_person": "Set 'startPerson' to the ID of the person to start the tree with (e.g., 'patrick')"
+    },
+    "tips": [
+      "All IDs must be unique strings",
+      "Use null for spouseId if person has no spouse",
+      "Empty arrays [] for parentIds, siblingIds, or childrenIds if none exist",
+      "Relationships should be bidirectional (if A is parent of B, B should be in A's childrenIds)",
+      "Use 'alive' for dod if the person is still living",
+      "Years should be 4 digits (YYYY format)",
+      "Optional fields: occupation, phone, maidenName, notes - add as needed"
+    ]
+  }
+}
