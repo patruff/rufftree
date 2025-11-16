@@ -178,16 +178,21 @@ def get_indexed_document_names(client, store_name):
     try:
         docs = list(client.file_search_stores.documents.list(parent=store_name))
         names = set()
+        print(f"   Indexed documents in store:")
         for doc in docs:
-            if hasattr(doc, 'display_name'):
-                # Remove extension for comparison
-                name = doc.display_name
-                if name.endswith('.pdf'):
-                    name = name[:-4]
-                names.add(name.lower())
+            doc_display = getattr(doc, 'display_name', '') or ''
+            if doc_display:
+                # Store both with and without extension for matching
+                names.add(doc_display.lower())
+                # Also add without extension
+                if doc_display.endswith('.pdf'):
+                    names.add(doc_display[:-4].lower())
+                print(f"      - {doc_display}")
         return names
     except Exception as e:
         print(f"⚠️  Could not list indexed documents: {e}")
+        import traceback
+        traceback.print_exc()
         return set()
 
 

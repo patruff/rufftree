@@ -30,13 +30,30 @@ def get_or_create_store(client):
     print("🔍 Searching for existing Ruff family store...")
     try:
         stores = list(client.file_search_stores.list())
+        print(f"   Found {len(stores)} total store(s)")
+
+        # Look for store with 'rufftree' in display name OR in store name
         for store in stores:
-            if hasattr(store, 'display_name') and 'rufftree' in store.display_name.lower():
-                print(f"📦 Found existing store: {store.name} (display: {store.display_name})")
+            store_display = getattr(store, 'display_name', None) or ''
+            store_name_lower = store.name.lower() if store.name else ''
+            print(f"   - Store: {store.name}")
+            print(f"     Display name: {store_display}")
+
+            # Check both display name and store name for 'rufftree'
+            if ('rufftree' in store_display.lower()) or ('rufftree' in store_name_lower):
+                print(f"📦 Found existing Ruff family store: {store.name}")
+                # Verify it has documents
+                try:
+                    docs = list(client.file_search_stores.documents.list(parent=store.name))
+                    print(f"   ✅ Store contains {len(docs)} document(s)")
+                except Exception as doc_err:
+                    print(f"   ⚠️  Could not list documents: {doc_err}")
                 return store.name
-        print(f"   Found {len(stores)} store(s), none match 'rufftree'")
+        print(f"   None of the stores match 'rufftree'")
     except Exception as e:
         print(f"⚠️  Could not list stores: {e}")
+        import traceback
+        traceback.print_exc()
 
     # Fall back to config files for backwards compatibility
     repo_config_path = Path(__file__).parent / ".rufftree_store.json"
@@ -71,10 +88,11 @@ def get_or_create_store(client):
     # Create new store if none found
     print("📦 Creating new file search store for Ruff family documents...")
     store = client.file_search_stores.create(
-        config={'display_name': 'rufftree-family-documents'}
+        config={'display_name': 'rufftree'}
     )
     store_name = store.name
     print(f"✅ Created new store: {store_name}")
+    print(f"   Display name: rufftree")
 
     # Save to config files for reference
     home_config_path.parent.mkdir(parents=True, exist_ok=True)
@@ -90,7 +108,7 @@ def get_or_create_store(client):
 
 
 def upload_document(client, store_name, file_path):
-    """Upload a document to the file search store."""
+    """Upload a document to the file search store with verification."""
     file_path = Path(file_path).resolve()
 
     if not file_path.exists():
@@ -102,6 +120,18 @@ def upload_document(client, store_name, file_path):
         raise ValueError(f"File must be one of {supported_extensions}, got: {file_path.suffix}")
 
     print(f"\n📤 Uploading {file_path.name}...")
+
+    # Check for duplicate before uploading
+    print("   Checking for duplicates...")
+    try:
+        existing_docs = list(client.file_search_stores.documents.list(parent=store_name))
+        for doc in existing_docs:
+            doc_display = getattr(doc, 'display_name', '') or ''
+            if doc_display.lower() == file_path.name.lower():
+                print(f"   ⚠️  Document '{file_path.name}' already exists in store, skipping upload")
+                return None
+    except Exception as e:
+        print(f"   ⚠️  Could not check for duplicates: {e}")
 
     # Upload file to the file search store
     operation = client.file_search_stores.upload_to_file_search_store(
@@ -125,48 +155,42 @@ def upload_document(client, store_name, file_path):
         elapsed = int(time.time() - start_time)
         print(f"  ⏱️  {elapsed}s elapsed...", end='\r')
 
-    print(f"\n✅ Successfully uploaded and indexed: {file_path.name}")
+    print(f"\n✅ Upload operation completed for: {file_path.name}")
 
-    # Debug: Print operation result
-    print("\n🔍 DEBUG - Upload Operation Result:")
-    print(f"   Operation name: {operation.name}")
-    print(f"   Operation done: {operation.done}")
-    if hasattr(operation, 'response'):
-        print(f"   Operation response: {operation.response}")
-    if hasattr(operation, 'metadata'):
-        print(f"   Operation metadata: {operation.metadata}")
-
-    # Try to list documents immediately after upload
-    print("\n🔍 DEBUG - Attempting to list documents immediately after upload:")
+    # Verify upload was successful
+    print("\n🔍 Verifying upload...")
+    upload_verified = False
     try:
-        immediate_list = client.file_search_stores.documents.list(parent=store_name)
-        docs = list(immediate_list)
-        if docs:
-            print(f"   ✅ Found {len(docs)} document(s) immediately")
-            for doc in docs:
-                print(f"      - Doc: {doc.name}, State: {doc.state if hasattr(doc, 'state') else 'unknown'}")
-        else:
-            print("   ⚠️  No documents found immediately after upload")
-    except Exception as e:
-        print(f"   ❌ Error listing documents: {e}")
+        # Check operation response for document name
+        if hasattr(operation, 'response') and operation.response:
+            if hasattr(operation.response, 'document_name'):
+                print(f"   ✅ Document created: {operation.response.document_name}")
+                upload_verified = True
 
-    # Wait a bit more to ensure documents are fully indexed and available
-    print("\n⏳ Waiting 10 seconds for documents to be fully available...")
-    time.sleep(10)
+        # Also verify by listing documents
+        docs = list(client.file_search_stores.documents.list(parent=store_name))
+        found_doc = None
+        for doc in docs:
+            doc_display = getattr(doc, 'display_name', '') or ''
+            if doc_display.lower() == file_path.name.lower():
+                found_doc = doc
+                break
 
-    # List documents again after waiting
-    print("\n🔍 DEBUG - Listing documents after 10-second wait:")
-    try:
-        delayed_list = client.file_search_stores.documents.list(parent=store_name)
-        docs = list(delayed_list)
-        if docs:
-            print(f"   ✅ Found {len(docs)} document(s) after wait")
-            for doc in docs:
-                print(f"      - Doc: {doc.name}, State: {doc.state if hasattr(doc, 'state') else 'unknown'}")
+        if found_doc:
+            state = getattr(found_doc, 'state', 'unknown')
+            print(f"   ✅ Document verified in store: {found_doc.name}")
+            print(f"   📊 State: {state}")
+            upload_verified = True
         else:
-            print("   ⚠️  Still no documents found after waiting")
+            print(f"   ⚠️  Document not found in store listing after upload")
+
     except Exception as e:
-        print(f"   ❌ Error listing documents: {e}")
+        print(f"   ❌ Error verifying upload: {e}")
+
+    if upload_verified:
+        print(f"✅ Successfully uploaded and verified: {file_path.name}")
+    else:
+        print(f"⚠️  Upload completed but verification uncertain for: {file_path.name}")
 
     return operation
 
