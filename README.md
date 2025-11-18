@@ -22,7 +22,12 @@ The interactive family tree is automatically deployed to GitHub Pages and update
 ## Features
 
 - **Interactive Family Tree**: Beautiful web-based visualization of the Ruff family genealogy
-- **Person Generator**: Web-based form to easily create new family members with structured data
+- **Person Generator**: Modern web application with gradient purple UI for creating family member profiles
+  - 47 positive attributes (funny, smart, kind, fit, etc.) with multi-select checkboxes
+  - Big Five (OCEAN) personality sliders with smart auto-mapping from attributes
+  - Autocomplete fields for occupation (100+ jobs) and location (100+ US cities)
+  - Structured dropdowns for physical traits, education, life timeline, and more
+  - One-click JSON download or clipboard copy for easy integration
 - **Automated Integration**: GitHub Action workflow to integrate generated people into the family tree
 - **Family Query System**: Family members can ask questions, answered via AI RAG with source citations
 - **Query Archive**: All questions and answers stored and displayed on the website
@@ -127,15 +132,95 @@ Open `index.html` in your web browser to view the interactive family tree visual
 
 #### Using the Person Generator (Recommended)
 
-1. Visit `person_generator.html` on the live site or locally
-2. Fill out the form with family member details:
-   - **Required**: First name
-   - **Optional**: Last name (defaults to "Ruff"), hair color, height, decade born/deceased, education, occupation, cause of death, notes
-3. Click "Generate Person"
-4. Download the JSON file
-5. Add the file to the `generated_people/` folder in the repository
-6. Push to the repository or run the "Integrate Generated People" workflow
-7. The person will be automatically added to `family_tree.json`
+The Person Generator is a beautiful, user-friendly web application designed to make it easy to create structured family member profiles. The interface features a modern gradient purple design with a clean, organized form layout.
+
+**Accessing the Generator:**
+- Visit `person_generator.html` on the live site at [https://patruff.github.io/rufftree/person_generator.html](https://patruff.github.io/rufftree/person_generator.html)
+- Or open it locally in your browser
+
+**UI Components:**
+
+The form is organized into several sections with a two-column grid layout:
+
+1. **Basic Information**
+   - **First Name** (required): Text input field
+   - **Last Name**: Text input, defaults to "Ruff"
+
+2. **Physical Characteristics**
+   - **Hair Color**: Dropdown with options (Blonde, Brunette, Redhead, Black, Gray, White, Bald)
+   - **Height**: Dropdown (Short, Medium, Tall)
+
+3. **Life Timeline**
+   - **Decade Born**: Dropdown from 1900s to 2020s
+   - **Year Born (exact)**: Number input for precise birth year (e.g., 1985)
+   - **Status**: Dropdown (Alive/Deceased)
+   - **Decade Deceased**: Only shown if status is "Deceased"
+   - **Year Deceased (exact)**: Number input for precise death year
+   - **Cause of Death**: Only shown if status is "Deceased" (Cancer, Heart Disease, Stroke, Accident, Natural Causes, Other)
+
+4. **Education & Career**
+   - **Education Level**: Dropdown (Elementary, High School, Some College, College Degree, Master's, PhD)
+   - **Occupation**: Autocomplete field with 100+ common occupations (Teacher, Engineer, Doctor, etc.) - type to search or select from dropdown
+
+5. **Location**
+   - **Location (City, State)**: Autocomplete field with 100+ major US cities in "City, ST" format (e.g., "New York, NY", "San Francisco, CA") - type to search or browse
+
+6. **✨ Positive Attributes** (New Interactive Section)
+   - Multi-select checkbox grid displaying 47 positive attributes
+   - Attributes are displayed in a responsive grid with clean, rounded checkboxes
+   - Click any attribute to select/deselect (multiple selections allowed)
+   - Selected attributes get purple highlighting for visual feedback
+   - Available attributes include:
+     - **Personality**: Funny, Kind, Compassionate, Outgoing, Friendly, Charming, Charismatic, Witty, Cheerful
+     - **Intelligence**: Smart, Intelligent, Creative, Curious
+     - **Work Ethic**: Hardworking, Disciplined, Organized, Reliable, Clean
+     - **Physical**: Fit, Athletic, Handsome, Pretty, Beautiful, Attractive, Stylish, Elegant
+     - **Character**: Loyal, Honest, Generous, Humble, Brave, Courageous, Bold, Patient, Calm, Confident, Optimistic
+     - **Social**: Caring, Supportive, Empathetic, Thoughtful, Polite, Respectful, Modest, Energetic
+   - **Smart OCEAN Mapping**: Each attribute automatically maps to Big Five personality traits (see below)
+
+7. **🧠 Personality (Big Five / OCEAN)**
+   - Five interactive sliders (0-100 scale) with real-time value display
+   - Each slider has purple gradient styling matching the app theme
+   - **Openness (O)**: Imaginative, curious, open to new experiences
+   - **Conscientiousness (C)**: Organized, responsible, dependable
+   - **Extraversion (E)**: Outgoing, energetic, sociable
+   - **Neuroticism (N)**: Emotional stability, calm vs. anxious
+   - **Agreeableness (A)**: Kind, cooperative, trusting
+   - **Priority System**:
+     - If you manually adjust sliders, those values are used (slider values take priority)
+     - If sliders remain at default (50) but attributes are selected, personality is auto-calculated from attribute mappings
+     - This allows quick entry via attributes or precise control via sliders
+
+8. **Notes**
+   - Large text area for additional information, stories, or details
+
+**Attribute-to-OCEAN Mapping Examples:**
+- "Funny" → Extraversion: 70, Agreeableness: 65
+- "Smart" → Openness: 75
+- "Organized" → Conscientiousness: 80
+- "Calm" → Neuroticism: 30 (lower = more calm)
+- "Kind" → Agreeableness: 80
+- "Confident" → Extraversion: 75, Neuroticism: 30
+
+When multiple attributes are selected, the system averages the mapped values for each OCEAN trait to create a personality profile.
+
+**Generating & Downloading:**
+
+1. Fill out the form fields (only first name is required)
+2. Select positive attributes by clicking checkboxes
+3. Adjust personality sliders if you want precise control (optional)
+4. Click the purple **"Generate Person"** button
+5. Preview the generated JSON in the output section
+6. Click **"Download JSON"** to save the file as `[firstname]_[timestamp].json`
+7. Or click **"Copy to Clipboard"** to copy the JSON data
+
+**Integration Workflow:**
+
+1. Download the JSON file from the generator
+2. Add the file to the `generated_people/` folder in the repository
+3. Push to the repository or run the "Integrate Generated People" workflow
+4. The person will be automatically added to `family_tree.json`
 
 #### Manual Editing
 
