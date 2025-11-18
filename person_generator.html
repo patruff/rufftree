@@ -149,9 +149,83 @@
             box-shadow: 0 10px 20px rgba(108, 117, 125, 0.3);
         }
 
+        .section-header {
+            grid-column: 1 / -1;
+            font-size: 20px;
+            color: #333;
+            margin-top: 20px;
+            margin-bottom: 10px;
+            padding-bottom: 10px;
+            border-bottom: 2px solid #667eea;
+        }
+
+        .slider-group {
+            display: flex;
+            flex-direction: column;
+            gap: 5px;
+        }
+
+        .slider-container {
+            display: flex;
+            align-items: center;
+            gap: 10px;
+        }
+
+        .slider-label {
+            min-width: 180px;
+            font-size: 13px;
+        }
+
+        .slider-value {
+            min-width: 40px;
+            text-align: center;
+            font-weight: 600;
+            color: #667eea;
+        }
+
+        input[type="range"] {
+            flex: 1;
+            height: 8px;
+            border-radius: 5px;
+            background: #e0e0e0;
+            outline: none;
+            -webkit-appearance: none;
+        }
+
+        input[type="range"]::-webkit-slider-thumb {
+            -webkit-appearance: none;
+            appearance: none;
+            width: 20px;
+            height: 20px;
+            border-radius: 50%;
+            background: linear-gradient(135deg, #667eea 0%, #764ba2 100%);
+            cursor: pointer;
+            box-shadow: 0 2px 5px rgba(0, 0, 0, 0.2);
+        }
+
+        input[type="range"]::-moz-range-thumb {
+            width: 20px;
+            height: 20px;
+            border-radius: 50%;
+            background: linear-gradient(135deg, #667eea 0%, #764ba2 100%);
+            cursor: pointer;
+            box-shadow: 0 2px 5px rgba(0, 0, 0, 0.2);
+            border: none;
+        }
+
+        .trait-description {
+            font-size: 11px;
+            color: #666;
+            margin-top: 2px;
+        }
+
         @media (max-width: 768px) {
             .form-grid {
                 grid-template-columns: 1fr;
+            }
+
+            .slider-label {
+                min-width: 140px;
             }
         }
     </style>
@@ -286,6 +360,63 @@
                     <input type="text" id="occupation" placeholder="e.g., Teacher, Engineer, Retired">
                 </div>
 
+                <h3 class="section-header">🧠 Personality (Big Five / OCEAN)</h3>
+
+                <div class="form-group full-width">
+                    <div class="slider-group">
+                        <div class="slider-container">
+                            <span class="slider-label">Openness (O)</span>
+                            <input type="range" id="openness" min="0" max="100" value="50" oninput="updateSliderValue('openness')">
+                            <span class="slider-value" id="opennessValue">50</span>
+                        </div>
+                        <div class="trait-description">Imaginative, curious, open to new experiences</div>
+                    </div>
+                </div>
+
+                <div class="form-group full-width">
+                    <div class="slider-group">
+                        <div class="slider-container">
+                            <span class="slider-label">Conscientiousness (C)</span>
+                            <input type="range" id="conscientiousness" min="0" max="100" value="50" oninput="updateSliderValue('conscientiousness')">
+                            <span class="slider-value" id="conscientiousnessValue">50</span>
+                        </div>
+                        <div class="trait-description">Organized, responsible, dependable</div>
+                    </div>
+                </div>
+
+                <div class="form-group full-width">
+                    <div class="slider-group">
+                        <div class="slider-container">
+                            <span class="slider-label">Extraversion (E)</span>
+                            <input type="range" id="extraversion" min="0" max="100" value="50" oninput="updateSliderValue('extraversion')">
+                            <span class="slider-value" id="extraversionValue">50</span>
+                        </div>
+                        <div class="trait-description">Outgoing, energetic, sociable</div>
+                    </div>
+                </div>
+
+                <div class="form-group full-width">
+                    <div class="slider-group">
+                        <div class="slider-container">
+                            <span class="slider-label">Agreeableness (A)</span>
+                            <input type="range" id="agreeableness" min="0" max="100" value="50" oninput="updateSliderValue('agreeableness')">
+                            <span class="slider-value" id="agreeablenessValue">50</span>
+                        </div>
+                        <div class="trait-description">Kind, cooperative, trusting</div>
+                    </div>
+                </div>
+
+                <div class="form-group full-width">
+                    <div class="slider-group">
+                        <div class="slider-container">
+                            <span class="slider-label">Neuroticism (N)</span>
+                            <input type="range" id="neuroticism" min="0" max="100" value="50" oninput="updateSliderValue('neuroticism')">
+                            <span class="slider-value" id="neuroticismValue">50</span>
+                        </div>
+                        <div class="trait-description">Emotional stability, calm vs. anxious</div>
+                    </div>
+                </div>
+
                 <div class="form-group full-width">
                     <label for="notes">Notes</label>
                     <textarea id="notes" placeholder="Any additional information about this person..."></textarea>
@@ -307,6 +438,13 @@
 
     <script>
         let generatedData = null;
+
+        // Update slider value display
+        function updateSliderValue(sliderId) {
+            const slider = document.getElementById(sliderId);
+            const valueDisplay = document.getElementById(sliderId + 'Value');
+            valueDisplay.textContent = slider.value;
+        }
 
         // Show/hide deceased-related fields
         document.getElementById('status').addEventListener('change', function() {
@@ -372,6 +510,20 @@
 
             const occupation = document.getElementById('occupation').value.trim();
             if (occupation) person.occupation = occupation;
+
+            // Big Five Personality Traits
+            const personality = {
+                openness: parseInt(document.getElementById('openness').value),
+                conscientiousness: parseInt(document.getElementById('conscientiousness').value),
+                extraversion: parseInt(document.getElementById('extraversion').value),
+                agreeableness: parseInt(document.getElementById('agreeableness').value),
+                neuroticism: parseInt(document.getElementById('neuroticism').value)
+            };
+
+            // Only add personality if at least one trait is not default (50)
+            if (Object.values(personality).some(val => val !== 50)) {
+                person.personality = personality;
+            }
 
             const notes = document.getElementById('notes').value.trim();
             if (notes) person.notes = notes;
