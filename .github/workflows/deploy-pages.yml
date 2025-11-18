@@ -9,6 +9,7 @@ on:
       - 'family_tree.json'
       - 'queries.html'
       - 'stored_queries.json'
+      - 'person_generator.html'
       - '.github/workflows/deploy-pages.yml'
 
   # Allows you to run this workflow manually from the Actions tab
