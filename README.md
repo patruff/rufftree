@@ -22,6 +22,8 @@ The interactive family tree is automatically deployed to GitHub Pages and update
 ## Features
 
 - **Interactive Family Tree**: Beautiful web-based visualization of the Ruff family genealogy
+- **Person Generator**: Web-based form to easily create new family members with structured data
+- **Automated Integration**: GitHub Action workflow to integrate generated people into the family tree
 - **Family Query System**: Family members can ask questions, answered via AI RAG with source citations
 - **Query Archive**: All questions and answers stored and displayed on the website
 - **Editable JSON Data**: Manually edit `family_tree.json` to update family members and relationships
@@ -121,31 +123,41 @@ Add to your Claude Desktop configuration:
 
 Open `index.html` in your web browser to view the interactive family tree visualization.
 
-#### Editing the Family Tree
+### Adding Family Members
+
+#### Using the Person Generator (Recommended)
+
+1. Visit `person_generator.html` on the live site or locally
+2. Fill out the form with family member details:
+   - **Required**: First name
+   - **Optional**: Last name (defaults to "Ruff"), hair color, height, decade born/deceased, education, occupation, cause of death, notes
+3. Click "Generate Person"
+4. Download the JSON file
+5. Add the file to the `generated_people/` folder in the repository
+6. Push to the repository or run the "Integrate Generated People" workflow
+7. The person will be automatically added to `family_tree.json`
+
+#### Manual Editing
 
 1. Open `family_tree.json` in any text editor
 2. Edit family member information:
    - `name`: Full name of the person
    - `dob`: Birth year in YYYY format
    - `dod`: Death year in YYYY format, or `"alive"` if living
-   - `spouse`: Optional spouse object with same structure
-   - `children`: Optional array of children
+   - `spouseId`, `parentIds`, `siblingIds`, `childrenIds`: Relationship IDs
 3. Save the file and refresh `index.html`
 
 Example entry:
 ```json
 {
-  "id": "1",
+  "id": "john_ruff",
   "name": "John Ruff",
   "dob": "1920",
   "dod": "1995",
-  "spouse": {
-    "id": "2",
-    "name": "Mary Smith",
-    "dob": "1922",
-    "dod": "2000"
-  },
-  "children": [...]
+  "spouseId": "mary_smith",
+  "parentIds": [],
+  "siblingIds": [],
+  "childrenIds": ["jane_ruff"]
 }
 ```
 
