@@ -470,6 +470,110 @@
                     </datalist>
                 </div>
 
+                <div class="form-group full-width">
+                    <label for="location">Location (City, State)</label>
+                    <input type="text" id="location" list="locations" placeholder="e.g., New York, NY">
+                    <datalist id="locations">
+                        <option value="New York, NY">
+                        <option value="Los Angeles, CA">
+                        <option value="Chicago, IL">
+                        <option value="Houston, TX">
+                        <option value="Phoenix, AZ">
+                        <option value="Philadelphia, PA">
+                        <option value="San Antonio, TX">
+                        <option value="San Diego, CA">
+                        <option value="Dallas, TX">
+                        <option value="San Jose, CA">
+                        <option value="Austin, TX">
+                        <option value="Jacksonville, FL">
+                        <option value="Fort Worth, TX">
+                        <option value="Columbus, OH">
+                        <option value="Indianapolis, IN">
+                        <option value="Charlotte, NC">
+                        <option value="San Francisco, CA">
+                        <option value="Seattle, WA">
+                        <option value="Denver, CO">
+                        <option value="Washington, DC">
+                        <option value="Boston, MA">
+                        <option value="Nashville, TN">
+                        <option value="El Paso, TX">
+                        <option value="Detroit, MI">
+                        <option value="Portland, OR">
+                        <option value="Las Vegas, NV">
+                        <option value="Memphis, TN">
+                        <option value="Louisville, KY">
+                        <option value="Baltimore, MD">
+                        <option value="Milwaukee, WI">
+                        <option value="Albuquerque, NM">
+                        <option value="Tucson, AZ">
+                        <option value="Fresno, CA">
+                        <option value="Sacramento, CA">
+                        <option value="Kansas City, MO">
+                        <option value="Mesa, AZ">
+                        <option value="Atlanta, GA">
+                        <option value="Omaha, NE">
+                        <option value="Colorado Springs, CO">
+                        <option value="Raleigh, NC">
+                        <option value="Miami, FL">
+                        <option value="Long Beach, CA">
+                        <option value="Virginia Beach, VA">
+                        <option value="Oakland, CA">
+                        <option value="Minneapolis, MN">
+                        <option value="Tulsa, OK">
+                        <option value="Tampa, FL">
+                        <option value="Arlington, TX">
+                        <option value="New Orleans, LA">
+                        <option value="Wichita, KS">
+                        <option value="Cleveland, OH">
+                        <option value="Bakersfield, CA">
+                        <option value="Aurora, CO">
+                        <option value="Anaheim, CA">
+                        <option value="Honolulu, HI">
+                        <option value="Santa Ana, CA">
+                        <option value="Riverside, CA">
+                        <option value="Corpus Christi, TX">
+                        <option value="Lexington, KY">
+                        <option value="St. Louis, MO">
+                        <option value="Pittsburgh, PA">
+                        <option value="Anchorage, AK">
+                        <option value="Stockton, CA">
+                        <option value="Cincinnati, OH">
+                        <option value="St. Paul, MN">
+                        <option value="Toledo, OH">
+                        <option value="Greensboro, NC">
+                        <option value="Newark, NJ">
+                        <option value="Plano, TX">
+                        <option value="Henderson, NV">
+                        <option value="Lincoln, NE">
+                        <option value="Buffalo, NY">
+                        <option value="Jersey City, NJ">
+                        <option value="Chula Vista, CA">
+                        <option value="Orlando, FL">
+                        <option value="Norfolk, VA">
+                        <option value="Chandler, AZ">
+                        <option value="Laredo, TX">
+                        <option value="Madison, WI">
+                        <option value="Durham, NC">
+                        <option value="Lubbock, TX">
+                        <option value="Winston-Salem, NC">
+                        <option value="Garland, TX">
+                        <option value="Glendale, AZ">
+                        <option value="Hialeah, FL">
+                        <option value="Reno, NV">
+                        <option value="Baton Rouge, LA">
+                        <option value="Irvine, CA">
+                        <option value="Chesapeake, VA">
+                        <option value="Irving, TX">
+                        <option value="Scottsdale, AZ">
+                        <option value="North Las Vegas, NV">
+                        <option value="Fremont, CA">
+                        <option value="Gilbert, AZ">
+                        <option value="San Bernardino, CA">
+                        <option value="Boise, ID">
+                        <option value="Birmingham, AL">
+                    </datalist>
+                </div>
+
                 <h3 class="section-header">🧠 Personality (Big Five / OCEAN)</h3>
 
                 <div class="form-group full-width">
@@ -620,6 +724,9 @@
 
             const occupation = document.getElementById('occupation').value.trim();
             if (occupation) person.occupation = occupation;
+
+            const location = document.getElementById('location').value.trim();
+            if (location) person.location = location;
 
             // Big Five Personality Traits
             const personality = {
