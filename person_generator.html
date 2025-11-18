@@ -219,6 +219,53 @@
             margin-top: 2px;
         }
 
+        .attributes-grid {
+            display: grid;
+            grid-template-columns: repeat(auto-fill, minmax(150px, 1fr));
+            gap: 12px;
+            margin-top: 10px;
+        }
+
+        .attribute-checkbox {
+            display: flex;
+            align-items: center;
+            gap: 8px;
+            padding: 8px 12px;
+            background: #f8f9fa;
+            border-radius: 6px;
+            cursor: pointer;
+            transition: all 0.2s;
+            border: 2px solid transparent;
+        }
+
+        .attribute-checkbox:hover {
+            background: #e9ecef;
+        }
+
+        .attribute-checkbox input[type="checkbox"] {
+            cursor: pointer;
+            width: 18px;
+            height: 18px;
+            accent-color: #667eea;
+        }
+
+        .attribute-checkbox input[type="checkbox"]:checked + label {
+            font-weight: 600;
+            color: #667eea;
+        }
+
+        .attribute-checkbox.selected {
+            background: #e7e9ff;
+            border-color: #667eea;
+        }
+
+        .attribute-checkbox label {
+            cursor: pointer;
+            margin: 0;
+            font-size: 14px;
+            user-select: none;
+        }
+
         @media (max-width: 768px) {
             .form-grid {
                 grid-template-columns: 1fr;
@@ -226,6 +273,10 @@
 
             .slider-label {
                 min-width: 140px;
+            }
+
+            .attributes-grid {
+                grid-template-columns: repeat(auto-fill, minmax(120px, 1fr));
             }
         }
     </style>
@@ -574,6 +625,14 @@
                     </datalist>
                 </div>
 
+                <h3 class="section-header">✨ Positive Attributes</h3>
+
+                <div class="form-group full-width">
+                    <div class="attributes-grid" id="attributesGrid">
+                        <!-- Attributes will be populated by JavaScript -->
+                    </div>
+                </div>
+
                 <h3 class="section-header">🧠 Personality (Big Five / OCEAN)</h3>
 
                 <div class="form-group full-width">
@@ -653,6 +712,132 @@
     <script>
         let generatedData = null;
 
+        // Define attributes and their OCEAN mappings
+        const attributes = [
+            { name: 'Funny', ocean: { extraversion: 70, agreeableness: 65 } },
+            { name: 'Kind', ocean: { agreeableness: 80 } },
+            { name: 'Compassionate', ocean: { agreeableness: 80, openness: 60 } },
+            { name: 'Outgoing', ocean: { extraversion: 80 } },
+            { name: 'Friendly', ocean: { extraversion: 70, agreeableness: 70 } },
+            { name: 'Smart', ocean: { openness: 75 } },
+            { name: 'Intelligent', ocean: { openness: 75 } },
+            { name: 'Creative', ocean: { openness: 80 } },
+            { name: 'Organized', ocean: { conscientiousness: 80 } },
+            { name: 'Reliable', ocean: { conscientiousness: 80, agreeableness: 65 } },
+            { name: 'Hardworking', ocean: { conscientiousness: 85 } },
+            { name: 'Disciplined', ocean: { conscientiousness: 80 } },
+            { name: 'Clean', ocean: { conscientiousness: 75 } },
+            { name: 'Fit', ocean: { conscientiousness: 70 } },
+            { name: 'Athletic', ocean: { conscientiousness: 70, extraversion: 60 } },
+            { name: 'Adventurous', ocean: { openness: 80, extraversion: 70 } },
+            { name: 'Curious', ocean: { openness: 80 } },
+            { name: 'Calm', ocean: { neuroticism: 30 } },
+            { name: 'Patient', ocean: { agreeableness: 75, neuroticism: 35 } },
+            { name: 'Confident', ocean: { extraversion: 75, neuroticism: 30 } },
+            { name: 'Optimistic', ocean: { neuroticism: 25, extraversion: 65 } },
+            { name: 'Energetic', ocean: { extraversion: 80 } },
+            { name: 'Loyal', ocean: { agreeableness: 80, conscientiousness: 70 } },
+            { name: 'Honest', ocean: { agreeableness: 75, conscientiousness: 70 } },
+            { name: 'Generous', ocean: { agreeableness: 80 } },
+            { name: 'Humble', ocean: { agreeableness: 70, neuroticism: 40 } },
+            { name: 'Charming', ocean: { extraversion: 75, agreeableness: 70 } },
+            { name: 'Charismatic', ocean: { extraversion: 85 } },
+            { name: 'Witty', ocean: { openness: 70, extraversion: 65 } },
+            { name: 'Thoughtful', ocean: { agreeableness: 75, openness: 65 } },
+            { name: 'Caring', ocean: { agreeableness: 80 } },
+            { name: 'Supportive', ocean: { agreeableness: 80 } },
+            { name: 'Empathetic', ocean: { agreeableness: 80, openness: 65 } },
+            { name: 'Cheerful', ocean: { extraversion: 75, neuroticism: 30 } },
+            { name: 'Polite', ocean: { agreeableness: 75 } },
+            { name: 'Respectful', ocean: { agreeableness: 75, conscientiousness: 65 } },
+            { name: 'Modest', ocean: { agreeableness: 70 } },
+            { name: 'Humble', ocean: { agreeableness: 70 } },
+            { name: 'Brave', ocean: { neuroticism: 25, openness: 65 } },
+            { name: 'Courageous', ocean: { neuroticism: 25, extraversion: 65 } },
+            { name: 'Bold', ocean: { extraversion: 75, neuroticism: 30 } },
+            { name: 'Handsome', ocean: {} },
+            { name: 'Pretty', ocean: {} },
+            { name: 'Beautiful', ocean: {} },
+            { name: 'Attractive', ocean: {} },
+            { name: 'Stylish', ocean: { openness: 65 } },
+            { name: 'Elegant', ocean: { conscientiousness: 65 } }
+        ];
+
+        // Populate attributes grid
+        function populateAttributes() {
+            const grid = document.getElementById('attributesGrid');
+            attributes.forEach((attr, index) => {
+                const div = document.createElement('div');
+                div.className = 'attribute-checkbox';
+                div.id = `attr-container-${index}`;
+
+                const checkbox = document.createElement('input');
+                checkbox.type = 'checkbox';
+                checkbox.id = `attr-${index}`;
+                checkbox.value = attr.name;
+
+                const label = document.createElement('label');
+                label.htmlFor = `attr-${index}`;
+                label.textContent = attr.name;
+
+                checkbox.addEventListener('change', function() {
+                    if (this.checked) {
+                        div.classList.add('selected');
+                    } else {
+                        div.classList.remove('selected');
+                    }
+                });
+
+                div.appendChild(checkbox);
+                div.appendChild(label);
+                grid.appendChild(div);
+            });
+        }
+
+        // Calculate OCEAN values from selected attributes
+        function calculateOceanFromAttributes(selectedAttrs) {
+            const ocean = {
+                openness: 50,
+                conscientiousness: 50,
+                extraversion: 50,
+                agreeableness: 50,
+                neuroticism: 50
+            };
+
+            if (selectedAttrs.length === 0) return ocean;
+
+            // Collect all values for each trait
+            const traitValues = {
+                openness: [],
+                conscientiousness: [],
+                extraversion: [],
+                agreeableness: [],
+                neuroticism: []
+            };
+
+            selectedAttrs.forEach(attrName => {
+                const attr = attributes.find(a => a.name === attrName);
+                if (attr && attr.ocean) {
+                    Object.keys(attr.ocean).forEach(trait => {
+                        traitValues[trait].push(attr.ocean[trait]);
+                    });
+                }
+            });
+
+            // Average the values for each trait
+            Object.keys(traitValues).forEach(trait => {
+                if (traitValues[trait].length > 0) {
+                    const sum = traitValues[trait].reduce((a, b) => a + b, 0);
+                    ocean[trait] = Math.round(sum / traitValues[trait].length);
+                }
+            });
+
+            return ocean;
+        }
+
+        // Initialize attributes on page load
+        document.addEventListener('DOMContentLoaded', populateAttributes);
+
         // Update slider value display
         function updateSliderValue(sliderId) {
             const slider = document.getElementById(sliderId);
@@ -728,8 +913,19 @@
             const location = document.getElementById('location').value.trim();
             if (location) person.location = location;
 
-            // Big Five Personality Traits
-            const personality = {
+            // Collect selected attributes
+            const selectedAttributes = [];
+            document.querySelectorAll('#attributesGrid input[type="checkbox"]:checked').forEach(checkbox => {
+                selectedAttributes.push(checkbox.value);
+            });
+
+            // Add attributes to person if any selected
+            if (selectedAttributes.length > 0) {
+                person.attributes = selectedAttributes;
+            }
+
+            // Big Five Personality Traits - check if sliders were manually adjusted
+            const sliderValues = {
                 openness: parseInt(document.getElementById('openness').value),
                 conscientiousness: parseInt(document.getElementById('conscientiousness').value),
                 extraversion: parseInt(document.getElementById('extraversion').value),
@@ -737,8 +933,19 @@
                 neuroticism: parseInt(document.getElementById('neuroticism').value)
             };
 
-            // Only add personality if at least one trait is not default (50)
-            if (Object.values(personality).some(val => val !== 50)) {
+            const slidersChanged = Object.values(sliderValues).some(val => val !== 50);
+
+            let personality;
+            if (slidersChanged) {
+                // If sliders were manually adjusted, use slider values (priority)
+                personality = sliderValues;
+            } else if (selectedAttributes.length > 0) {
+                // If sliders are at default but attributes are selected, calculate from attributes
+                personality = calculateOceanFromAttributes(selectedAttributes);
+            }
+
+            // Only add personality if we have values to add
+            if (personality && Object.values(personality).some(val => val !== 50)) {
                 person.personality = personality;
             }
 
