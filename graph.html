@@ -1,0 +1,626 @@
+<!DOCTYPE html>
+<html lang="en">
+<head>
+    <meta charset="UTF-8">
+    <meta name="viewport" content="width=device-width, initial-scale=1.0">
+    <title>Ruff Family Graph - Interactive Network</title>
+    <script type="text/javascript" src="https://unpkg.com/vis-network/standalone/umd/vis-network.min.js"></script>
+    <style>
+        * {
+            margin: 0;
+            padding: 0;
+            box-sizing: border-box;
+        }
+
+        body {
+            font-family: 'Segoe UI', Tahoma, Geneva, Verdana, sans-serif;
+            background: linear-gradient(135deg, #667eea 0%, #764ba2 100%);
+            min-height: 100vh;
+            padding: 20px;
+            color: #333;
+        }
+
+        .container {
+            max-width: 1800px;
+            margin: 0 auto;
+            background: white;
+            border-radius: 20px;
+            padding: 40px;
+            box-shadow: 0 20px 60px rgba(0, 0, 0, 0.3);
+        }
+
+        h1 {
+            text-align: center;
+            color: #667eea;
+            margin-bottom: 10px;
+            font-size: 2.5em;
+            font-weight: 700;
+        }
+
+        .subtitle {
+            text-align: center;
+            color: #666;
+            margin-bottom: 30px;
+            font-size: 1.1em;
+        }
+
+        nav {
+            display: flex;
+            gap: 15px;
+            justify-content: center;
+            margin-bottom: 30px;
+            flex-wrap: wrap;
+        }
+
+        nav a {
+            padding: 10px 20px;
+            background: #f8f9fa;
+            color: #667eea;
+            text-decoration: none;
+            border-radius: 8px;
+            transition: all 0.3s;
+            font-weight: 500;
+        }
+
+        nav a:hover {
+            background: #667eea;
+            color: white;
+        }
+
+        .instructions {
+            background: #f8f9fa;
+            border-left: 4px solid #667eea;
+            padding: 15px 20px;
+            margin-bottom: 30px;
+            border-radius: 5px;
+        }
+
+        .instructions h3 {
+            color: #667eea;
+            margin-bottom: 10px;
+        }
+
+        .instructions p {
+            color: #666;
+            line-height: 1.6;
+            margin-bottom: 8px;
+        }
+
+        .graph-wrapper {
+            display: flex;
+            gap: 20px;
+            height: 700px;
+        }
+
+        #mynetwork {
+            flex: 1;
+            border: 2px solid #e0e0e0;
+            border-radius: 10px;
+            background: #fafafa;
+        }
+
+        .info-panel {
+            width: 350px;
+            background: #f8f9fa;
+            border-radius: 10px;
+            padding: 20px;
+            overflow-y: auto;
+        }
+
+        .info-panel h3 {
+            color: #667eea;
+            margin-bottom: 15px;
+            font-size: 1.3em;
+        }
+
+        .info-panel .no-selection {
+            color: #999;
+            font-style: italic;
+            text-align: center;
+            margin-top: 50px;
+        }
+
+        .person-info {
+            display: none;
+        }
+
+        .person-info.active {
+            display: block;
+        }
+
+        .info-item {
+            margin-bottom: 15px;
+            padding-bottom: 15px;
+            border-bottom: 1px solid #ddd;
+        }
+
+        .info-item:last-child {
+            border-bottom: none;
+        }
+
+        .info-label {
+            font-weight: 600;
+            color: #667eea;
+            margin-bottom: 5px;
+            font-size: 0.9em;
+        }
+
+        .info-value {
+            color: #333;
+            font-size: 1em;
+        }
+
+        .legend {
+            background: #f8f9fa;
+            border-radius: 10px;
+            padding: 20px;
+            margin-top: 20px;
+        }
+
+        .legend h4 {
+            color: #667eea;
+            margin-bottom: 15px;
+        }
+
+        .legend-item {
+            display: flex;
+            align-items: center;
+            margin-bottom: 10px;
+        }
+
+        .legend-line {
+            width: 40px;
+            height: 3px;
+            margin-right: 10px;
+        }
+
+        .legend-line.parent {
+            background: #4CAF50;
+        }
+
+        .legend-line.spouse {
+            background: #E91E63;
+        }
+
+        .legend-line.sibling {
+            background: #FF9800;
+        }
+
+        .controls {
+            background: #f8f9fa;
+            border-radius: 10px;
+            padding: 15px;
+            margin-bottom: 20px;
+            display: flex;
+            gap: 10px;
+            flex-wrap: wrap;
+            justify-content: center;
+        }
+
+        .controls button {
+            padding: 8px 16px;
+            background: #667eea;
+            color: white;
+            border: none;
+            border-radius: 6px;
+            cursor: pointer;
+            font-weight: 500;
+            transition: all 0.3s;
+        }
+
+        .controls button:hover {
+            background: #5568d3;
+            transform: translateY(-2px);
+        }
+
+        .controls button:active {
+            transform: translateY(0);
+        }
+
+        .related-list {
+            list-style: none;
+            padding: 0;
+        }
+
+        .related-list li {
+            padding: 5px 0;
+            color: #555;
+        }
+
+        .related-list li:before {
+            content: "→ ";
+            color: #667eea;
+            font-weight: bold;
+        }
+    </style>
+</head>
+<body>
+    <div class="container">
+        <h1>🌐 Ruff Family Graph</h1>
+        <p class="subtitle">Interactive Network Visualization</p>
+
+        <nav>
+            <a href="index.html">🌳 Family Tree</a>
+            <a href="graph.html" style="background: #667eea; color: white;">📊 Family Graph</a>
+            <a href="queries.html">💬 Ask Questions</a>
+            <a href="person_generator.html">👤 Add Person</a>
+        </nav>
+
+        <div class="instructions">
+            <h3>How to Use</h3>
+            <p>🖱️ <strong>Click and drag</strong> nodes to rearrange the graph</p>
+            <p>👆 <strong>Click a person</strong> to view their information in the panel on the right</p>
+            <p>🔍 <strong>Scroll to zoom</strong> in and out of the graph</p>
+            <p>🎯 <strong>Double-click</strong> a node to focus on that person and their immediate connections</p>
+        </div>
+
+        <div class="controls">
+            <button onclick="resetView()">🎯 Reset View</button>
+            <button onclick="fitNetwork()">📐 Fit All</button>
+            <button onclick="togglePhysics()">⚡ Toggle Physics</button>
+        </div>
+
+        <div class="graph-wrapper">
+            <div id="mynetwork"></div>
+
+            <div class="info-panel">
+                <h3>Person Details</h3>
+                <div class="no-selection">
+                    Click on a person in the graph to view their details
+                </div>
+                <div class="person-info" id="personInfo"></div>
+
+                <div class="legend">
+                    <h4>Relationship Types</h4>
+                    <div class="legend-item">
+                        <div class="legend-line parent"></div>
+                        <span>Parent-Child</span>
+                    </div>
+                    <div class="legend-item">
+                        <div class="legend-line spouse"></div>
+                        <span>Spouse</span>
+                    </div>
+                    <div class="legend-item">
+                        <div class="legend-line sibling"></div>
+                        <span>Sibling</span>
+                    </div>
+                </div>
+            </div>
+        </div>
+    </div>
+
+    <script>
+        let network;
+        let allNodes = [];
+        let allEdges = [];
+        let familyData = {};
+        let physicsEnabled = true;
+
+        // Load family data and create graph
+        fetch('family_tree.json')
+            .then(response => response.json())
+            .then(data => {
+                familyData = data.family;
+                createGraph(familyData);
+            })
+            .catch(error => {
+                console.error('Error loading family data:', error);
+                alert('Error loading family data. Please check family_tree.json exists.');
+            });
+
+        function createGraph(family) {
+            const people = family.people;
+
+            // Create nodes from people
+            allNodes = Object.values(people).map(person => {
+                const age = calculateAge(person.dob, person.dod);
+                const isAlive = person.dod === 'alive';
+
+                return {
+                    id: person.id,
+                    label: person.name.split(' ')[0], // First name only for cleaner display
+                    title: `${person.name}\n${age}${isAlive ? ' years old' : ''}`,
+                    shape: 'dot',
+                    size: 25,
+                    color: {
+                        background: isAlive ? '#4CAF50' : '#9E9E9E',
+                        border: '#333',
+                        highlight: {
+                            background: '#667eea',
+                            border: '#333'
+                        }
+                    },
+                    font: {
+                        size: 14,
+                        color: '#333',
+                        face: 'Segoe UI'
+                    },
+                    person: person // Store full person data
+                };
+            });
+
+            // Create edges from relationships
+            allEdges = [];
+            const processedEdges = new Set(); // Avoid duplicate edges
+
+            Object.values(people).forEach(person => {
+                // Parent-child relationships (green)
+                if (person.parentIds) {
+                    person.parentIds.forEach(parentId => {
+                        const edgeId = [parentId, person.id].sort().join('-') + '-parent';
+                        if (!processedEdges.has(edgeId)) {
+                            allEdges.push({
+                                from: parentId,
+                                to: person.id,
+                                color: { color: '#4CAF50' },
+                                width: 2,
+                                arrows: { to: { enabled: true, scaleFactor: 0.5 } },
+                                smooth: { type: 'continuous' },
+                                title: 'Parent-Child'
+                            });
+                            processedEdges.add(edgeId);
+                        }
+                    });
+                }
+
+                // Spouse relationships (pink)
+                if (person.spouseId) {
+                    const edgeId = [person.id, person.spouseId].sort().join('-') + '-spouse';
+                    if (!processedEdges.has(edgeId)) {
+                        allEdges.push({
+                            from: person.id,
+                            to: person.spouseId,
+                            color: { color: '#E91E63' },
+                            width: 3,
+                            smooth: { type: 'continuous' },
+                            dashes: false,
+                            title: 'Spouse'
+                        });
+                        processedEdges.add(edgeId);
+                    }
+                }
+
+                // Sibling relationships (orange)
+                if (person.siblingIds) {
+                    person.siblingIds.forEach(siblingId => {
+                        const edgeId = [person.id, siblingId].sort().join('-') + '-sibling';
+                        if (!processedEdges.has(edgeId)) {
+                            allEdges.push({
+                                from: person.id,
+                                to: siblingId,
+                                color: { color: '#FF9800' },
+                                width: 1.5,
+                                smooth: { type: 'continuous' },
+                                dashes: [5, 5],
+                                title: 'Sibling'
+                            });
+                            processedEdges.add(edgeId);
+                        }
+                    });
+                }
+            });
+
+            // Create network
+            const container = document.getElementById('mynetwork');
+            const data = {
+                nodes: new vis.DataSet(allNodes),
+                edges: new vis.DataSet(allEdges)
+            };
+
+            const options = {
+                physics: {
+                    enabled: true,
+                    barnesHut: {
+                        gravitationalConstant: -2000,
+                        centralGravity: 0.3,
+                        springLength: 150,
+                        springConstant: 0.04,
+                        damping: 0.09,
+                        avoidOverlap: 0.5
+                    },
+                    stabilization: {
+                        iterations: 200
+                    }
+                },
+                interaction: {
+                    dragNodes: true,
+                    dragView: true,
+                    zoomView: true,
+                    hover: true,
+                    tooltipDelay: 200
+                },
+                nodes: {
+                    borderWidth: 2,
+                    shadow: true
+                },
+                edges: {
+                    smooth: {
+                        type: 'continuous'
+                    },
+                    shadow: true
+                }
+            };
+
+            network = new vis.Network(container, data, options);
+
+            // Event listeners
+            network.on('click', function(params) {
+                if (params.nodes.length > 0) {
+                    const nodeId = params.nodes[0];
+                    const person = people[nodeId];
+                    showPersonInfo(person);
+                }
+            });
+
+            network.on('doubleClick', function(params) {
+                if (params.nodes.length > 0) {
+                    focusOnNode(params.nodes[0]);
+                }
+            });
+
+            // Stabilization progress
+            network.on('stabilizationProgress', function(params) {
+                console.log('Stabilization progress:', Math.round(params.iterations / params.total * 100) + '%');
+            });
+
+            network.on('stabilizationIterationsDone', function() {
+                console.log('Graph stabilized');
+                network.setOptions({ physics: false });
+                physicsEnabled = false;
+            });
+        }
+
+        function showPersonInfo(person) {
+            const infoPanel = document.getElementById('personInfo');
+            const noSelection = document.querySelector('.no-selection');
+
+            noSelection.style.display = 'none';
+            infoPanel.classList.add('active');
+
+            const age = calculateAge(person.dob, person.dod);
+            const isAlive = person.dod === 'alive';
+
+            let html = `
+                <div class="info-item">
+                    <div class="info-label">Name</div>
+                    <div class="info-value">${person.name}</div>
+                </div>
+                <div class="info-item">
+                    <div class="info-label">Birth Year</div>
+                    <div class="info-value">${person.dob}</div>
+                </div>
+                <div class="info-item">
+                    <div class="info-label">Status</div>
+                    <div class="info-value">${isAlive ? '✅ Alive' : '❌ Deceased (' + person.dod + ')'}</div>
+                </div>
+                <div class="info-item">
+                    <div class="info-label">Age</div>
+                    <div class="info-value">${age}${isAlive ? ' years old' : ''}</div>
+                </div>
+            `;
+
+            if (person.occupation) {
+                html += `
+                    <div class="info-item">
+                        <div class="info-label">Occupation</div>
+                        <div class="info-value">${person.occupation}</div>
+                    </div>
+                `;
+            }
+
+            if (person.phone) {
+                html += `
+                    <div class="info-item">
+                        <div class="info-label">Phone</div>
+                        <div class="info-value">${person.phone}</div>
+                    </div>
+                `;
+            }
+
+            // Relationships
+            if (person.spouseId) {
+                const spouse = familyData.people[person.spouseId];
+                html += `
+                    <div class="info-item">
+                        <div class="info-label">Spouse</div>
+                        <div class="info-value">${spouse ? spouse.name : person.spouseId}</div>
+                    </div>
+                `;
+            }
+
+            if (person.parentIds && person.parentIds.length > 0) {
+                html += `
+                    <div class="info-item">
+                        <div class="info-label">Parents</div>
+                        <ul class="related-list">
+                            ${person.parentIds.map(id => {
+                                const parent = familyData.people[id];
+                                return `<li>${parent ? parent.name : id}</li>`;
+                            }).join('')}
+                        </ul>
+                    </div>
+                `;
+            }
+
+            if (person.childrenIds && person.childrenIds.length > 0) {
+                html += `
+                    <div class="info-item">
+                        <div class="info-label">Children</div>
+                        <ul class="related-list">
+                            ${person.childrenIds.map(id => {
+                                const child = familyData.people[id];
+                                return `<li>${child ? child.name : id}</li>`;
+                            }).join('')}
+                        </ul>
+                    </div>
+                `;
+            }
+
+            if (person.siblingIds && person.siblingIds.length > 0) {
+                html += `
+                    <div class="info-item">
+                        <div class="info-label">Siblings</div>
+                        <ul class="related-list">
+                            ${person.siblingIds.map(id => {
+                                const sibling = familyData.people[id];
+                                return `<li>${sibling ? sibling.name : id}</li>`;
+                            }).join('')}
+                        </ul>
+                    </div>
+                `;
+            }
+
+            infoPanel.innerHTML = html;
+        }
+
+        function calculateAge(dob, dod) {
+            const birthYear = parseInt(dob);
+            const endYear = dod === 'alive' ? new Date().getFullYear() : parseInt(dod);
+            return endYear - birthYear;
+        }
+
+        function resetView() {
+            network.fit({
+                animation: {
+                    duration: 1000,
+                    easingFunction: 'easeInOutQuad'
+                }
+            });
+        }
+
+        function fitNetwork() {
+            network.fit({
+                animation: {
+                    duration: 1000,
+                    easingFunction: 'easeInOutQuad'
+                }
+            });
+        }
+
+        function togglePhysics() {
+            physicsEnabled = !physicsEnabled;
+            network.setOptions({ physics: physicsEnabled });
+            if (physicsEnabled) {
+                setTimeout(() => {
+                    network.setOptions({ physics: false });
+                    physicsEnabled = false;
+                }, 3000);
+            }
+        }
+
+        function focusOnNode(nodeId) {
+            network.focus(nodeId, {
+                scale: 1.5,
+                animation: {
+                    duration: 1000,
+                    easingFunction: 'easeInOutQuad'
+                }
+            });
+
+            // Highlight connected nodes
+            const connectedNodes = network.getConnectedNodes(nodeId);
+            network.selectNodes([nodeId, ...connectedNodes]);
+        }
+    </script>
+</body>
+</html>
