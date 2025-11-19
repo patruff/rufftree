@@ -618,6 +618,15 @@
                                 person.parentIds.length > 0 ||
                                 person.childrenIds.length > 0;
 
+            // Format ethnicity for tooltip
+            let ethnicityTooltip = '';
+            if (person.ethnicity && Object.keys(person.ethnicity).length > 0) {
+                ethnicityTooltip = Object.entries(person.ethnicity)
+                    .sort((a, b) => b[1] - a[1])
+                    .map(([country, pct]) => `${country}: ${pct}%`)
+                    .join(', ');
+            }
+
             const nodeDiv = document.createElement('div');
             nodeDiv.className = 'person-node';
             nodeDiv.style.left = pos.x + 'px';
@@ -626,7 +635,8 @@
 
             nodeDiv.innerHTML = `
                 <div class="person-card ${isAlive ? 'alive' : ''} ${isExpanded ? 'expanded' : ''}"
-                     onclick="toggleNode('${personId}')">
+                     onclick="toggleNode('${personId}')"
+                     ${ethnicityTooltip ? `title="Ethnicity: ${ethnicityTooltip}"` : ''}>
                     ${hasRelatives ? `<div class="expand-indicator">${isExpanded ? '−' : '+'}</div>` : ''}
                     <div class="name">${person.name}</div>
                     <div class="dates">${lifespan}</div>

@@ -24,7 +24,14 @@
           "patrick_child2"
         ],
         "generation": "Millennial",
-        "from_pat": 0
+        "from_pat": 0,
+        "ethnicity": {
+          "German": 34,
+          "Irish": 32,
+          "English": 18,
+          "Scottish": 8,
+          "Polish": 8
+        }
       },
       "jenny": {
         "id": "jenny",
@@ -44,7 +51,10 @@
           "patrick_child2"
         ],
         "generation": "Millennial",
-        "from_pat": 0
+        "from_pat": 0,
+        "ethnicity": {
+          "Chinese": 100
+        }
       },
       "patrick_child1": {
         "id": "patrick_child1",
@@ -61,7 +71,15 @@
         ],
         "childrenIds": [],
         "generation": "Generation Z",
-        "from_pat": 1
+        "from_pat": 1,
+        "ethnicity": {
+          "German": 17,
+          "Irish": 16,
+          "English": 9,
+          "Scottish": 4,
+          "Polish": 4,
+          "Chinese": 50
+        }
       },
       "patrick_child2": {
         "id": "patrick_child2",
@@ -78,7 +96,15 @@
         ],
         "childrenIds": [],
         "generation": "Generation Z",
-        "from_pat": 1
+        "from_pat": 1,
+        "ethnicity": {
+          "German": 17,
+          "Irish": 16,
+          "English": 9,
+          "Scottish": 4,
+          "Polish": 4,
+          "Chinese": 50
+        }
       },
       "joe_jr": {
         "id": "joe_jr",
@@ -103,7 +129,14 @@
           "benjamin"
         ],
         "generation": "Millennial",
-        "from_pat": 0
+        "from_pat": 0,
+        "ethnicity": {
+          "German": 34,
+          "Irish": 32,
+          "English": 18,
+          "Scottish": 8,
+          "Polish": 8
+        }
       },
       "katie": {
         "id": "katie",
@@ -120,7 +153,12 @@
           "benjamin"
         ],
         "generation": "Millennial",
-        "from_pat": 0
+        "from_pat": 0,
+        "ethnicity": {
+          "Irish": 40,
+          "German": 30,
+          "English": 30
+        }
       },
       "kaylin": {
         "id": "kaylin",
@@ -138,7 +176,14 @@
         ],
         "childrenIds": [],
         "generation": "Generation Z",
-        "from_pat": 1
+        "from_pat": 1,
+        "ethnicity": {
+          "German": 32,
+          "Irish": 36,
+          "English": 24,
+          "Scottish": 4,
+          "Polish": 4
+        }
       },
       "cameron": {
         "id": "cameron",
@@ -156,7 +201,14 @@
         ],
         "childrenIds": [],
         "generation": "Generation Z",
-        "from_pat": 1
+        "from_pat": 1,
+        "ethnicity": {
+          "German": 32,
+          "Irish": 36,
+          "English": 24,
+          "Scottish": 4,
+          "Polish": 4
+        }
       },
       "benjamin": {
         "id": "benjamin",
@@ -174,7 +226,14 @@
         ],
         "childrenIds": [],
         "generation": "Generation Alpha",
-        "from_pat": 2
+        "from_pat": 2,
+        "ethnicity": {
+          "German": 32,
+          "Irish": 36,
+          "English": 24,
+          "Scottish": 4,
+          "Polish": 4
+        }
       },
       "sarah": {
         "id": "sarah",
@@ -200,7 +259,14 @@
           "darcy"
         ],
         "generation": "Millennial",
-        "from_pat": 0
+        "from_pat": 0,
+        "ethnicity": {
+          "German": 34,
+          "Irish": 32,
+          "English": 18,
+          "Scottish": 8,
+          "Polish": 8
+        }
       },
       "kevin_boilon": {
         "id": "kevin_boilon",
@@ -217,7 +283,11 @@
           "darcy"
         ],
         "generation": "Millennial",
-        "from_pat": 0
+        "from_pat": 0,
+        "ethnicity": {
+          "French": 60,
+          "Irish": 40
+        }
       },
       "eloise": {
         "id": "eloise",
@@ -234,7 +304,15 @@
         ],
         "childrenIds": [],
         "generation": "Generation Z",
-        "from_pat": 1
+        "from_pat": 1,
+        "ethnicity": {
+          "German": 17,
+          "Irish": 36,
+          "English": 9,
+          "Scottish": 4,
+          "Polish": 4,
+          "French": 30
+        }
       },
       "darcy": {
         "id": "darcy",
@@ -251,7 +329,15 @@
         ],
         "childrenIds": [],
         "generation": "Generation Alpha",
-        "from_pat": 2
+        "from_pat": 2,
+        "ethnicity": {
+          "German": 17,
+          "Irish": 36,
+          "English": 9,
+          "Scottish": 4,
+          "Polish": 4,
+          "French": 30
+        }
       },
       "phil": {
         "id": "phil",
@@ -277,7 +363,14 @@
           "scout"
         ],
         "generation": "Millennial",
-        "from_pat": 0
+        "from_pat": 0,
+        "ethnicity": {
+          "German": 34,
+          "Irish": 32,
+          "English": 18,
+          "Scottish": 8,
+          "Polish": 8
+        }
       },
       "ashley": {
         "id": "ashley",
@@ -295,7 +388,12 @@
           "scout"
         ],
         "generation": "Millennial",
-        "from_pat": 0
+        "from_pat": 0,
+        "ethnicity": {
+          "English": 40,
+          "Scottish": 30,
+          "Irish": 30
+        }
       },
       "logan": {
         "id": "logan",
@@ -314,7 +412,14 @@
         ],
         "childrenIds": [],
         "generation": "Generation Z",
-        "from_pat": 1
+        "from_pat": 1,
+        "ethnicity": {
+          "German": 17,
+          "Irish": 31,
+          "English": 29,
+          "Scottish": 19,
+          "Polish": 4
+        }
       },
       "aiden": {
         "id": "aiden",
@@ -333,7 +438,14 @@
         ],
         "childrenIds": [],
         "generation": "Generation Z",
-        "from_pat": 1
+        "from_pat": 1,
+        "ethnicity": {
+          "German": 17,
+          "Irish": 31,
+          "English": 29,
+          "Scottish": 19,
+          "Polish": 4
+        }
       },
       "tripp": {
         "id": "tripp",
@@ -352,7 +464,14 @@
         ],
         "childrenIds": [],
         "generation": "Generation Alpha",
-        "from_pat": 2
+        "from_pat": 2,
+        "ethnicity": {
+          "German": 17,
+          "Irish": 31,
+          "English": 29,
+          "Scottish": 19,
+          "Polish": 4
+        }
       },
       "scout": {
         "id": "scout",
@@ -371,7 +490,14 @@
         ],
         "childrenIds": [],
         "generation": "Generation Alpha",
-        "from_pat": 2
+        "from_pat": 2,
+        "ethnicity": {
+          "German": 17,
+          "Irish": 31,
+          "English": 29,
+          "Scottish": 19,
+          "Polish": 4
+        }
       },
       "joe_sr": {
         "id": "joe_sr",
@@ -402,7 +528,12 @@
           "phil"
         ],
         "generation": "Baby Boomer",
-        "from_pat": -2
+        "from_pat": -2,
+        "ethnicity": {
+          "German": 25,
+          "Irish": 55,
+          "English": 20
+        }
       },
       "debbie": {
         "id": "debbie",
@@ -429,7 +560,14 @@
           "phil"
         ],
         "generation": "Baby Boomer",
-        "from_pat": -2
+        "from_pat": -2,
+        "ethnicity": {
+          "German": 45,
+          "English": 15,
+          "Scottish": 15,
+          "Polish": 15,
+          "Irish": 10
+        }
       },
       "annette": {
         "id": "annette",
@@ -447,7 +585,12 @@
           "lynn_miller"
         ],
         "generation": "Silent Generation",
-        "from_pat": -3
+        "from_pat": -3,
+        "ethnicity": {
+          "German": 50,
+          "Polish": 30,
+          "Irish": 20
+        }
       },
       "stan_sr": {
         "id": "stan_sr",
@@ -465,7 +608,12 @@
           "lynn_miller"
         ],
         "generation": "Silent Generation",
-        "from_pat": -3
+        "from_pat": -3,
+        "ethnicity": {
+          "German": 40,
+          "English": 30,
+          "Scottish": 30
+        }
       },
       "grandfather_ruff": {
         "id": "grandfather_ruff",
@@ -488,7 +636,11 @@
           "winifred"
         ],
         "generation": "Silent Generation",
-        "from_pat": -3
+        "from_pat": -3,
+        "ethnicity": {
+          "German": 50,
+          "Irish": 50
+        }
       },
       "grandmother_ruff": {
         "id": "grandmother_ruff",
@@ -511,7 +663,11 @@
           "winifred"
         ],
         "generation": "Silent Generation",
-        "from_pat": -3
+        "from_pat": -3,
+        "ethnicity": {
+          "Irish": 60,
+          "English": 40
+        }
       },
       "yogi": {
         "id": "yogi",
@@ -536,7 +692,12 @@
         ],
         "childrenIds": [],
         "generation": "Baby Boomer",
-        "from_pat": -2
+        "from_pat": -2,
+        "ethnicity": {
+          "German": 25,
+          "Irish": 55,
+          "English": 20
+        }
       },
       "freddie": {
         "id": "freddie",
@@ -561,7 +722,12 @@
         ],
         "childrenIds": [],
         "generation": "Baby Boomer",
-        "from_pat": -2
+        "from_pat": -2,
+        "ethnicity": {
+          "German": 25,
+          "Irish": 55,
+          "English": 20
+        }
       },
       "tommy": {
         "id": "tommy",
@@ -586,7 +752,12 @@
         ],
         "childrenIds": [],
         "generation": "Baby Boomer",
-        "from_pat": -2
+        "from_pat": -2,
+        "ethnicity": {
+          "German": 25,
+          "Irish": 55,
+          "English": 20
+        }
       },
       "john": {
         "id": "john",
@@ -611,7 +782,12 @@
         ],
         "childrenIds": [],
         "generation": "Generation X",
-        "from_pat": -1
+        "from_pat": -1,
+        "ethnicity": {
+          "German": 25,
+          "Irish": 55,
+          "English": 20
+        }
       },
       "mary_ruff": {
         "id": "mary_ruff",
@@ -636,7 +812,12 @@
         ],
         "childrenIds": [],
         "generation": "Baby Boomer",
-        "from_pat": -2
+        "from_pat": -2,
+        "ethnicity": {
+          "German": 25,
+          "Irish": 55,
+          "English": 20
+        }
       },
       "bridget": {
         "id": "bridget",
@@ -661,7 +842,12 @@
         ],
         "childrenIds": [],
         "generation": "Baby Boomer",
-        "from_pat": -2
+        "from_pat": -2,
+        "ethnicity": {
+          "German": 25,
+          "Irish": 55,
+          "English": 20
+        }
       },
       "anne_ruff": {
         "id": "anne_ruff",
@@ -686,7 +872,12 @@
         ],
         "childrenIds": [],
         "generation": "Baby Boomer",
-        "from_pat": -2
+        "from_pat": -2,
+        "ethnicity": {
+          "German": 25,
+          "Irish": 55,
+          "English": 20
+        }
       },
       "anita": {
         "id": "anita",
@@ -711,7 +902,12 @@
         ],
         "childrenIds": [],
         "generation": "Baby Boomer",
-        "from_pat": -2
+        "from_pat": -2,
+        "ethnicity": {
+          "German": 25,
+          "Irish": 55,
+          "English": 20
+        }
       },
       "winifred": {
         "id": "winifred",
@@ -736,7 +932,12 @@
         ],
         "childrenIds": [],
         "generation": "Generation X",
-        "from_pat": -1
+        "from_pat": -1,
+        "ethnicity": {
+          "German": 25,
+          "Irish": 55,
+          "English": 20
+        }
       },
       "stan_miller": {
         "id": "stan_miller",
@@ -756,7 +957,14 @@
         ],
         "childrenIds": [],
         "generation": "Baby Boomer",
-        "from_pat": -2
+        "from_pat": -2,
+        "ethnicity": {
+          "German": 45,
+          "English": 15,
+          "Scottish": 15,
+          "Polish": 15,
+          "Irish": 10
+        }
       },
       "beth_bradley": {
         "id": "beth_bradley",
@@ -777,7 +985,14 @@
         ],
         "childrenIds": [],
         "generation": "Baby Boomer",
-        "from_pat": -2
+        "from_pat": -2,
+        "ethnicity": {
+          "German": 45,
+          "English": 15,
+          "Scottish": 15,
+          "Polish": 15,
+          "Irish": 10
+        }
       },
       "bryan_bradley": {
         "id": "bryan_bradley",
@@ -789,7 +1004,12 @@
         "siblingIds": [],
         "childrenIds": [],
         "generation": "Baby Boomer",
-        "from_pat": -2
+        "from_pat": -2,
+        "ethnicity": {
+          "English": 50,
+          "Welsh": 30,
+          "Irish": 20
+        }
       },
       "lynn_miller": {
         "id": "lynn_miller",
@@ -808,7 +1028,14 @@
         ],
         "childrenIds": [],
         "generation": "Baby Boomer",
-        "from_pat": -2
+        "from_pat": -2,
+        "ethnicity": {
+          "German": 45,
+          "English": 15,
+          "Scottish": 15,
+          "Polish": 15,
+          "Irish": 10
+        }
       },
       "jenny_father": {
         "id": "jenny_father",
@@ -822,7 +1049,10 @@
           "jenny"
         ],
         "generation": "Baby Boomer",
-        "from_pat": -2
+        "from_pat": -2,
+        "ethnicity": {
+          "Chinese": 100
+        }
       },
       "jenny_mother": {
         "id": "jenny_mother",
@@ -836,7 +1066,10 @@
           "jenny"
         ],
         "generation": "Baby Boomer",
-        "from_pat": -2
+        "from_pat": -2,
+        "ethnicity": {
+          "Chinese": 100
+        }
       }
     }
   },
@@ -856,7 +1089,8 @@
       "siblingIds": "Array of sibling IDs",
       "childrenIds": "Array of children IDs",
       "generation": "Generation label (e.g., 'Millennial', 'Baby Boomer', 'Generation Z')",
-      "from_pat": "Integer showing generations from Patrick Ruff (Millennial = 0, Gen X = -1, Gen Z = +1, etc.)"
+      "from_pat": "Integer showing generations from Patrick Ruff (Millennial = 0, Gen X = -1, Gen Z = +1, etc.)",
+      "ethnicity": "Optional: Object mapping countries to percentages (must sum to 100). Calculated from parents if not manually set."
     },
     "expandable_tree": {
       "description": "The tree starts with the person specified in 'startPerson'. Clicking a node expands to show their spouse, siblings, and parents. Clicking parents shows their siblings and parents, etc.",

@@ -529,6 +529,19 @@
                 `;
             }
 
+            if (person.ethnicity && Object.keys(person.ethnicity).length > 0) {
+                const ethnicityStr = Object.entries(person.ethnicity)
+                    .sort((a, b) => b[1] - a[1]) // Sort by percentage descending
+                    .map(([country, pct]) => `${country}: ${pct}%`)
+                    .join(', ');
+                html += `
+                    <div class="info-item">
+                        <div class="info-label">Ethnicity</div>
+                        <div class="info-value">${ethnicityStr}</div>
+                    </div>
+                `;
+            }
+
             // Relationships
             if (person.spouseId) {
                 const spouse = familyData.people[person.spouseId];

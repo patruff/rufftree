@@ -219,6 +219,21 @@
             margin-top: 2px;
         }
 
+        .ethnicity-row {
+            display: flex;
+            gap: 10px;
+            align-items: center;
+            margin-bottom: 10px;
+        }
+
+        .ethnicity-country {
+            flex: 2;
+        }
+
+        .ethnicity-percent {
+            flex: 1;
+        }
+
         .attributes-grid {
             display: grid;
             grid-template-columns: repeat(auto-fill, minmax(150px, 1fr));
@@ -632,6 +647,19 @@
                     </datalist>
                 </div>
 
+                <h3 class="section-header">🌍 Ethnicity (Optional)</h3>
+                <div class="form-group full-width">
+                    <label>Ancestry Breakdown (must total 100%)</label>
+                    <div id="ethnicityEntries">
+                        <div class="ethnicity-row">
+                            <input type="text" class="ethnicity-country" placeholder="Country (e.g., Irish)" style="flex: 2;">
+                            <input type="number" class="ethnicity-percent" placeholder="%" min="0" max="100" style="flex: 1;">
+                            <button type="button" onclick="addEthnicityRow()" style="padding: 8px 12px; margin-left: 5px;">+</button>
+                        </div>
+                    </div>
+                    <div id="ethnicityTotal" style="margin-top: 10px; font-size: 14px; color: #666;"></div>
+                </div>
+
                 <h3 class="section-header">✨ Positive Attributes</h3>
 
                 <div class="form-group full-width">
@@ -845,6 +873,53 @@
         // Initialize attributes on page load
         document.addEventListener('DOMContentLoaded', populateAttributes);
 
+        // Ethnicity functions
+        function addEthnicityRow() {
+            const container = document.getElementById('ethnicityEntries');
+            const row = document.createElement('div');
+            row.className = 'ethnicity-row';
+            row.innerHTML = `
+                <input type="text" class="ethnicity-country" placeholder="Country (e.g., Irish)" style="flex: 2;">
+                <input type="number" class="ethnicity-percent" placeholder="%" min="0" max="100" style="flex: 1;" oninput="updateEthnicityTotal()">
+                <button type="button" onclick="removeEthnicityRow(this)" style="padding: 8px 12px; margin-left: 5px;">−</button>
+            `;
+            container.appendChild(row);
+            updateEthnicityTotal();
+        }
+
+        function removeEthnicityRow(button) {
+            button.parentElement.remove();
+            updateEthnicityTotal();
+        }
+
+        function updateEthnicityTotal() {
+            const percentInputs = document.querySelectorAll('.ethnicity-percent');
+            let total = 0;
+            percentInputs.forEach(input => {
+                const value = parseInt(input.value) || 0;
+                total += value;
+            });
+
+            const totalDiv = document.getElementById('ethnicityTotal');
+            if (total === 0) {
+                totalDiv.textContent = '';
+            } else if (total === 100) {
+                totalDiv.textContent = `Total: ${total}% ✓`;
+                totalDiv.style.color = '#4CAF50';
+            } else {
+                totalDiv.textContent = `Total: ${total}% (must equal 100%)`;
+                totalDiv.style.color = '#e74c3c';
+            }
+        }
+
+        // Add event listener to first ethnicity input
+        document.addEventListener('DOMContentLoaded', () => {
+            const firstPercentInput = document.querySelector('.ethnicity-percent');
+            if (firstPercentInput) {
+                firstPercentInput.addEventListener('input', updateEthnicityTotal);
+            }
+        });
+
         // Update slider value display
         function updateSliderValue(sliderId) {
             const slider = document.getElementById(sliderId);
@@ -919,6 +994,29 @@
 
             const location = document.getElementById('location').value.trim();
             if (location) person.location = location;
+
+            // Collect ethnicity data
+            const ethnicityRows = document.querySelectorAll('.ethnicity-row');
+            const ethnicity = {};
+            let ethnicityTotal = 0;
+
+            ethnicityRows.forEach(row => {
+                const country = row.querySelector('.ethnicity-country').value.trim();
+                const percent = parseInt(row.querySelector('.ethnicity-percent').value) || 0;
+
+                if (country && percent > 0) {
+                    ethnicity[country] = percent;
+                    ethnicityTotal += percent;
+                }
+            });
+
+            // Only add ethnicity if it totals 100%
+            if (ethnicityTotal === 100 && Object.keys(ethnicity).length > 0) {
+                person.ethnicity = ethnicity;
+            } else if (ethnicityTotal > 0 && ethnicityTotal !== 100) {
+                alert(`Ethnicity percentages must total 100% (currently ${ethnicityTotal}%)`);
+                return;
+            }
 
             // Collect selected attributes
             const selectedAttributes = [];
