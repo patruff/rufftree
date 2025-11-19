@@ -1091,7 +1091,9 @@
       "generation": "Generation label (e.g., 'Millennial', 'Baby Boomer', 'Generation Z')",
       "from_pat": "Integer showing generations from Patrick Ruff (Millennial = 0, Gen X = -1, Gen Z = +1, etc.)",
       "ethnicity": "Optional: Object mapping countries to percentages (must sum to 100). Calculated from parents if not manually set.",
-      "heritable_risk": "Optional: Object mapping health conditions to risk levels (low/moderate/high/very-high). Auto-calculated from parents' causes of death."
+      "causeOfDeath": "Optional: String for deceased individuals indicating what they died from (e.g., 'heart-attack', 'pancreatic-cancer')",
+      "health_condition": "Optional: Array of strings for ongoing/chronic health conditions (e.g., ['diabetes', 'heart-disease']). Applies to both living and deceased.",
+      "heritable_risk": "Optional: Object mapping health conditions to risk levels (low/moderate/high/very-high). Auto-calculated from parents' health conditions and causes of death."
     },
     "expandable_tree": {
       "description": "The tree starts with the person specified in 'startPerson'. Clicking a node expands to show their spouse, siblings, and parents. Clicking parents shows their siblings and parents, etc.",

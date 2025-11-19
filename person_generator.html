@@ -234,6 +234,13 @@
             flex: 1;
         }
 
+        .health-condition-row {
+            display: flex;
+            gap: 10px;
+            align-items: center;
+            margin-bottom: 10px;
+        }
+
         .attributes-grid {
             display: grid;
             grid-template-columns: repeat(auto-fill, minmax(150px, 1fr));
@@ -484,6 +491,69 @@
                             <option value="other">Other</option>
                         </optgroup>
                     </select>
+                </div>
+
+                <h3 class="section-header">🏥 Health Conditions (Optional)</h3>
+                <div class="form-group full-width">
+                    <label>Chronic/Ongoing Health Conditions (applies to living and deceased)</label>
+                    <div id="healthConditionEntries">
+                        <div class="health-condition-row">
+                            <select class="health-condition-select" style="flex: 1;">
+                                <option value="">-- Select a condition --</option>
+                                <optgroup label="Cancer">
+                                    <option value="lung-cancer">Lung Cancer</option>
+                                    <option value="breast-cancer">Breast Cancer</option>
+                                    <option value="colon-cancer">Colon Cancer</option>
+                                    <option value="pancreatic-cancer">Pancreatic Cancer</option>
+                                    <option value="prostate-cancer">Prostate Cancer</option>
+                                    <option value="liver-cancer">Liver Cancer</option>
+                                    <option value="stomach-cancer">Stomach Cancer</option>
+                                    <option value="esophageal-cancer">Esophageal Cancer</option>
+                                    <option value="leukemia">Leukemia</option>
+                                    <option value="lymphoma">Lymphoma</option>
+                                    <option value="brain-cancer">Brain Cancer</option>
+                                    <option value="ovarian-cancer">Ovarian Cancer</option>
+                                    <option value="skin-cancer">Skin Cancer (Melanoma)</option>
+                                </optgroup>
+                                <optgroup label="Cardiovascular">
+                                    <option value="heart-disease">Heart Disease</option>
+                                    <option value="coronary-heart-disease">Coronary Heart Disease</option>
+                                    <option value="heart-failure">Heart Failure</option>
+                                    <option value="high-blood-pressure">High Blood Pressure (Hypertension)</option>
+                                    <option value="atrial-fibrillation">Atrial Fibrillation</option>
+                                </optgroup>
+                                <optgroup label="Respiratory">
+                                    <option value="copd">COPD</option>
+                                    <option value="asthma">Asthma</option>
+                                    <option value="emphysema">Emphysema</option>
+                                </optgroup>
+                                <optgroup label="Neurological">
+                                    <option value="alzheimers">Alzheimer's Disease</option>
+                                    <option value="dementia">Dementia</option>
+                                    <option value="parkinsons">Parkinson's Disease</option>
+                                    <option value="als">ALS</option>
+                                    <option value="epilepsy">Epilepsy</option>
+                                    <option value="multiple-sclerosis">Multiple Sclerosis</option>
+                                </optgroup>
+                                <optgroup label="Metabolic & Endocrine">
+                                    <option value="diabetes">Diabetes</option>
+                                    <option value="thyroid-disease">Thyroid Disease</option>
+                                    <option value="obesity">Obesity</option>
+                                </optgroup>
+                                <optgroup label="Other">
+                                    <option value="kidney-disease">Kidney Disease</option>
+                                    <option value="liver-disease">Liver Disease</option>
+                                    <option value="arthritis">Arthritis</option>
+                                    <option value="osteoporosis">Osteoporosis</option>
+                                    <option value="depression">Depression</option>
+                                    <option value="anxiety">Anxiety</option>
+                                    <option value="autoimmune-disease">Autoimmune Disease</option>
+                                </optgroup>
+                            </select>
+                            <button type="button" onclick="addHealthConditionRow()" style="padding: 8px 12px; margin-left: 5px;">+</button>
+                        </div>
+                    </div>
+                    <div style="margin-top: 5px; font-size: 12px; color: #666;">Add multiple conditions if applicable</div>
                 </div>
 
                 <div class="form-group full-width">
@@ -950,6 +1020,76 @@
             updateEthnicityTotal();
         }
 
+        function addHealthConditionRow() {
+            const container = document.getElementById('healthConditionEntries');
+            const row = document.createElement('div');
+            row.className = 'health-condition-row';
+            row.innerHTML = `
+                <select class="health-condition-select" style="flex: 1;">
+                    <option value="">-- Select a condition --</option>
+                    <optgroup label="Cancer">
+                        <option value="lung-cancer">Lung Cancer</option>
+                        <option value="breast-cancer">Breast Cancer</option>
+                        <option value="colon-cancer">Colon Cancer</option>
+                        <option value="pancreatic-cancer">Pancreatic Cancer</option>
+                        <option value="prostate-cancer">Prostate Cancer</option>
+                        <option value="liver-cancer">Liver Cancer</option>
+                        <option value="stomach-cancer">Stomach Cancer</option>
+                        <option value="esophageal-cancer">Esophageal Cancer</option>
+                        <option value="leukemia">Leukemia</option>
+                        <option value="lymphoma">Lymphoma</option>
+                        <option value="brain-cancer">Brain Cancer</option>
+                        <option value="ovarian-cancer">Ovarian Cancer</option>
+                        <option value="skin-cancer">Skin Cancer (Melanoma)</option>
+                    </optgroup>
+                    <optgroup label="Cardiovascular">
+                        <option value="heart-disease">Heart Disease</option>
+                        <option value="coronary-heart-disease">Coronary Heart Disease</option>
+                        <option value="heart-failure">Heart Failure</option>
+                        <option value="high-blood-pressure">High Blood Pressure (Hypertension)</option>
+                        <option value="atrial-fibrillation">Atrial Fibrillation</option>
+                    </optgroup>
+                    <optgroup label="Respiratory">
+                        <option value="copd">COPD</option>
+                        <option value="asthma">Asthma</option>
+                        <option value="emphysema">Emphysema</option>
+                    </optgroup>
+                    <optgroup label="Neurological">
+                        <option value="alzheimers">Alzheimer's Disease</option>
+                        <option value="dementia">Dementia</option>
+                        <option value="parkinsons">Parkinson's Disease</option>
+                        <option value="als">ALS</option>
+                        <option value="epilepsy">Epilepsy</option>
+                        <option value="multiple-sclerosis">Multiple Sclerosis</option>
+                    </optgroup>
+                    <optgroup label="Metabolic & Endocrine">
+                        <option value="diabetes">Diabetes</option>
+                        <option value="thyroid-disease">Thyroid Disease</option>
+                        <option value="obesity">Obesity</option>
+                    </optgroup>
+                    <optgroup label="Other">
+                        <option value="kidney-disease">Kidney Disease</option>
+                        <option value="liver-disease">Liver Disease</option>
+                        <option value="arthritis">Arthritis</option>
+                        <option value="osteoporosis">Osteoporosis</option>
+                        <option value="depression">Depression</option>
+                        <option value="anxiety">Anxiety</option>
+                        <option value="autoimmune-disease">Autoimmune Disease</option>
+                    </optgroup>
+                </select>
+                <button type="button" onclick="removeHealthConditionRow(this)" style="padding: 8px 12px; margin-left: 5px;">−</button>
+            `;
+            container.appendChild(row);
+        }
+
+        function removeHealthConditionRow(button) {
+            // Don't remove if it's the last row
+            const container = document.getElementById('healthConditionEntries');
+            if (container.children.length > 1) {
+                button.parentElement.remove();
+            }
+        }
+
         function updateEthnicityTotal() {
             const percentInputs = document.querySelectorAll('.ethnicity-percent');
             let total = 0;
@@ -1074,6 +1214,21 @@
             } else if (ethnicityTotal > 0 && ethnicityTotal !== 100) {
                 alert(`Ethnicity percentages must total 100% (currently ${ethnicityTotal}%)`);
                 return;
+            }
+
+            // Collect health conditions
+            const healthConditionSelects = document.querySelectorAll('.health-condition-select');
+            const healthConditions = [];
+
+            healthConditionSelects.forEach(select => {
+                const condition = select.value;
+                if (condition && !healthConditions.includes(condition)) {
+                    healthConditions.push(condition);
+                }
+            });
+
+            if (healthConditions.length > 0) {
+                person.health_condition = healthConditions;
             }
 
             // Collect selected attributes

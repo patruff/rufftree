@@ -1,13 +1,13 @@
 #!/usr/bin/env python3
 """
-Script to add heritable_risk field based on parents' causes of death.
+Script to add heritable_risk field based on parents' causes of death and health conditions.
 Tracks genetic predisposition to various conditions.
 """
 
 import json
 
-# Mapping of causes of death to their heritable risk factors
-# Format: cause_of_death -> (risk_condition, base_risk_multiplier)
+# Mapping of health conditions and causes of death to their heritable risk factors
+# Format: condition -> (risk_condition, base_risk_multiplier)
 HEREDITARY_CONDITIONS = {
     # Cancers with strong hereditary components
     'breast-cancer': ('breast-cancer', 2.0),
@@ -19,23 +19,42 @@ HEREDITARY_CONDITIONS = {
     'lung-cancer': ('lung-cancer', 1.3),  # Some genetic component
     'melanoma': ('melanoma', 1.5),
     'skin-cancer': ('melanoma', 1.5),
+    'liver-cancer': ('liver-cancer', 1.3),
+    'esophageal-cancer': ('esophageal-cancer', 1.4),
+    'brain-cancer': ('brain-cancer', 1.3),
 
     # Cardiovascular
     'heart-attack': ('heart-disease', 1.8),
     'heart-failure': ('heart-disease', 1.7),
     'coronary-heart-disease': ('heart-disease', 2.0),
+    'heart-disease': ('heart-disease', 2.0),
     'stroke': ('stroke', 1.5),
     'aneurysm': ('aneurysm', 1.8),
+    'high-blood-pressure': ('hypertension', 1.6),
+    'atrial-fibrillation': ('atrial-fibrillation', 1.4),
 
     # Neurological
     'alzheimers': ('alzheimers', 2.0),
     'dementia': ('dementia', 1.7),
     'parkinsons': ('parkinsons', 1.5),
     'als': ('als', 1.2),
+    'epilepsy': ('epilepsy', 1.5),
+    'multiple-sclerosis': ('multiple-sclerosis', 1.4),
 
-    # Metabolic/Other
+    # Metabolic/Endocrine
     'diabetes': ('diabetes', 2.5),
+    'thyroid-disease': ('thyroid-disease', 1.8),
+    'obesity': ('obesity', 1.7),
+
+    # Other
     'kidney-disease': ('kidney-disease', 1.5),
+    'liver-disease': ('liver-disease', 1.4),
+    'copd': ('copd', 1.4),
+    'asthma': ('asthma', 1.5),
+    'osteoporosis': ('osteoporosis', 1.6),
+    'autoimmune-disease': ('autoimmune-disease', 1.7),
+    'depression': ('depression', 1.5),
+    'anxiety': ('anxiety', 1.4),
 
     # General cancer catch-all
     'cancer-unspecified': ('cancer-general', 1.2),
@@ -68,7 +87,7 @@ def calculate_risk_level(multiplier, count):
 
 def analyze_family_causes(person, people):
     """
-    Analyze causes of death in family to determine heritable risks.
+    Analyze causes of death and health conditions in family to determine heritable risks.
 
     Args:
         person: The person object
@@ -85,8 +104,9 @@ def analyze_family_causes(person, people):
         for parent_id in person['parentIds']:
             if parent_id in people:
                 parent = people[parent_id]
-                cause = parent.get('causeOfDeath')
 
+                # Check cause of death
+                cause = parent.get('causeOfDeath')
                 if cause and cause in HEREDITARY_CONDITIONS:
                     risk_condition, multiplier = HEREDITARY_CONDITIONS[cause]
 
@@ -94,6 +114,18 @@ def analyze_family_causes(person, people):
                         condition_counts[risk_condition] = {'count': 0, 'multiplier': multiplier}
 
                     condition_counts[risk_condition]['count'] += 1
+
+                # Check health conditions
+                health_conditions = parent.get('health_condition', [])
+                if isinstance(health_conditions, list):
+                    for condition in health_conditions:
+                        if condition in HEREDITARY_CONDITIONS:
+                            risk_condition, multiplier = HEREDITARY_CONDITIONS[condition]
+
+                            if risk_condition not in condition_counts:
+                                condition_counts[risk_condition] = {'count': 0, 'multiplier': multiplier}
+
+                            condition_counts[risk_condition]['count'] += 1
 
     # Calculate risk levels
     for condition, data in condition_counts.items():
@@ -126,7 +158,7 @@ def main():
 
     # Update documentation
     if '_instructions' in data:
-        data['_instructions']['fields']['heritable_risk'] = "Optional: Object mapping health conditions to risk levels (low/moderate/high/very-high). Auto-calculated from parents' causes of death."
+        data['_instructions']['fields']['heritable_risk'] = "Optional: Object mapping health conditions to risk levels (low/moderate/high/very-high). Auto-calculated from parents' health conditions and causes of death."
 
     # Save updated data
     with open('family_tree.json', 'w') as f:

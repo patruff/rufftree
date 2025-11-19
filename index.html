@@ -630,6 +630,20 @@
                 tooltip += `Ethnicity: ${ethnicityStr}`;
             }
 
+            // Add health conditions
+            if (person.health_condition && person.health_condition.length > 0) {
+                const conditionsStr = person.health_condition
+                    .map(condition => {
+                        return condition.split('-')
+                            .map(word => word.charAt(0).toUpperCase() + word.slice(1))
+                            .join(' ');
+                    })
+                    .join(', ');
+
+                if (tooltip) tooltip += '\n';
+                tooltip += `Health Conditions: ${conditionsStr}`;
+            }
+
             // Add heritable risk
             if (person.heritable_risk && Object.keys(person.heritable_risk).length > 0) {
                 const riskStr = Object.entries(person.heritable_risk)
