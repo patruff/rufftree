@@ -611,6 +611,7 @@
             const age = isAlive
                 ? `Age ${new Date().getFullYear() - parseInt(person.dob)}`
                 : `Lived ${parseInt(person.dod) - parseInt(person.dob)} years`;
+            const generation = person.generation ? person.generation : '';
 
             const hasRelatives = person.spouseId ||
                                 person.siblingIds.length > 0 ||
@@ -630,6 +631,7 @@
                     <div class="name">${person.name}</div>
                     <div class="dates">${lifespan}</div>
                     <div class="status">${age}</div>
+                    ${generation ? `<div class="status" style="font-size: 11px; opacity: 0.8;">${generation}</div>` : ''}
                 </div>
             `;
 

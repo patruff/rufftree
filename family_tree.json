@@ -10,9 +10,21 @@
         "dod": "alive",
         "occupation": "Developer/Scientist",
         "spouseId": "jenny",
-        "parentIds": ["joe_sr", "debbie"],
-        "siblingIds": ["joe_jr", "sarah", "phil"],
-        "childrenIds": ["patrick_child1", "patrick_child2"]
+        "parentIds": [
+          "joe_sr",
+          "debbie"
+        ],
+        "siblingIds": [
+          "joe_jr",
+          "sarah",
+          "phil"
+        ],
+        "childrenIds": [
+          "patrick_child1",
+          "patrick_child2"
+        ],
+        "generation": "Millennial",
+        "from_pat": 0
       },
       "jenny": {
         "id": "jenny",
@@ -22,9 +34,17 @@
         "occupation": "Lawyer",
         "phone": "302-463-1675",
         "spouseId": "patrick",
-        "parentIds": ["jenny_father", "jenny_mother"],
+        "parentIds": [
+          "jenny_father",
+          "jenny_mother"
+        ],
         "siblingIds": [],
-        "childrenIds": ["patrick_child1", "patrick_child2"]
+        "childrenIds": [
+          "patrick_child1",
+          "patrick_child2"
+        ],
+        "generation": "Millennial",
+        "from_pat": 0
       },
       "patrick_child1": {
         "id": "patrick_child1",
@@ -32,9 +52,16 @@
         "dob": "2010",
         "dod": "alive",
         "spouseId": null,
-        "parentIds": ["patrick", "jenny"],
-        "siblingIds": ["patrick_child2"],
-        "childrenIds": []
+        "parentIds": [
+          "patrick",
+          "jenny"
+        ],
+        "siblingIds": [
+          "patrick_child2"
+        ],
+        "childrenIds": [],
+        "generation": "Generation Z",
+        "from_pat": 1
       },
       "patrick_child2": {
         "id": "patrick_child2",
@@ -42,9 +69,16 @@
         "dob": "2012",
         "dod": "alive",
         "spouseId": null,
-        "parentIds": ["patrick", "jenny"],
-        "siblingIds": ["patrick_child1"],
-        "childrenIds": []
+        "parentIds": [
+          "patrick",
+          "jenny"
+        ],
+        "siblingIds": [
+          "patrick_child1"
+        ],
+        "childrenIds": [],
+        "generation": "Generation Z",
+        "from_pat": 1
       },
       "joe_jr": {
         "id": "joe_jr",
@@ -54,9 +88,22 @@
         "occupation": "Facilities",
         "phone": "302-845-3736",
         "spouseId": "katie",
-        "parentIds": ["joe_sr", "debbie"],
-        "siblingIds": ["patrick", "sarah", "phil"],
-        "childrenIds": ["kaylin", "cameron", "benjamin"]
+        "parentIds": [
+          "joe_sr",
+          "debbie"
+        ],
+        "siblingIds": [
+          "patrick",
+          "sarah",
+          "phil"
+        ],
+        "childrenIds": [
+          "kaylin",
+          "cameron",
+          "benjamin"
+        ],
+        "generation": "Millennial",
+        "from_pat": 0
       },
       "katie": {
         "id": "katie",
@@ -67,7 +114,13 @@
         "spouseId": "joe_jr",
         "parentIds": [],
         "siblingIds": [],
-        "childrenIds": ["kaylin", "cameron", "benjamin"]
+        "childrenIds": [
+          "kaylin",
+          "cameron",
+          "benjamin"
+        ],
+        "generation": "Millennial",
+        "from_pat": 0
       },
       "kaylin": {
         "id": "kaylin",
@@ -75,9 +128,17 @@
         "dob": "2008",
         "dod": "alive",
         "spouseId": null,
-        "parentIds": ["joe_jr", "katie"],
-        "siblingIds": ["cameron", "benjamin"],
-        "childrenIds": []
+        "parentIds": [
+          "joe_jr",
+          "katie"
+        ],
+        "siblingIds": [
+          "cameron",
+          "benjamin"
+        ],
+        "childrenIds": [],
+        "generation": "Generation Z",
+        "from_pat": 1
       },
       "cameron": {
         "id": "cameron",
@@ -85,9 +146,17 @@
         "dob": "2010",
         "dod": "alive",
         "spouseId": null,
-        "parentIds": ["joe_jr", "katie"],
-        "siblingIds": ["kaylin", "benjamin"],
-        "childrenIds": []
+        "parentIds": [
+          "joe_jr",
+          "katie"
+        ],
+        "siblingIds": [
+          "kaylin",
+          "benjamin"
+        ],
+        "childrenIds": [],
+        "generation": "Generation Z",
+        "from_pat": 1
       },
       "benjamin": {
         "id": "benjamin",
@@ -95,9 +164,17 @@
         "dob": "2013",
         "dod": "alive",
         "spouseId": null,
-        "parentIds": ["joe_jr", "katie"],
-        "siblingIds": ["kaylin", "cameron"],
-        "childrenIds": []
+        "parentIds": [
+          "joe_jr",
+          "katie"
+        ],
+        "siblingIds": [
+          "kaylin",
+          "cameron"
+        ],
+        "childrenIds": [],
+        "generation": "Generation Alpha",
+        "from_pat": 2
       },
       "sarah": {
         "id": "sarah",
@@ -109,9 +186,21 @@
         "maidenName": "Sarah Ruff",
         "notes": "Baby of the family, was a graduate student in lab with Lorraine Symington",
         "spouseId": "kevin_boilon",
-        "parentIds": ["joe_sr", "debbie"],
-        "siblingIds": ["joe_jr", "patrick", "phil"],
-        "childrenIds": ["eloise", "darcy"]
+        "parentIds": [
+          "joe_sr",
+          "debbie"
+        ],
+        "siblingIds": [
+          "joe_jr",
+          "patrick",
+          "phil"
+        ],
+        "childrenIds": [
+          "eloise",
+          "darcy"
+        ],
+        "generation": "Millennial",
+        "from_pat": 0
       },
       "kevin_boilon": {
         "id": "kevin_boilon",
@@ -123,7 +212,12 @@
         "spouseId": "sarah",
         "parentIds": [],
         "siblingIds": [],
-        "childrenIds": ["eloise", "darcy"]
+        "childrenIds": [
+          "eloise",
+          "darcy"
+        ],
+        "generation": "Millennial",
+        "from_pat": 0
       },
       "eloise": {
         "id": "eloise",
@@ -131,9 +225,16 @@
         "dob": "2012",
         "dod": "alive",
         "spouseId": null,
-        "parentIds": ["sarah", "kevin_boilon"],
-        "siblingIds": ["darcy"],
-        "childrenIds": []
+        "parentIds": [
+          "sarah",
+          "kevin_boilon"
+        ],
+        "siblingIds": [
+          "darcy"
+        ],
+        "childrenIds": [],
+        "generation": "Generation Z",
+        "from_pat": 1
       },
       "darcy": {
         "id": "darcy",
@@ -141,9 +242,16 @@
         "dob": "2015",
         "dod": "alive",
         "spouseId": null,
-        "parentIds": ["sarah", "kevin_boilon"],
-        "siblingIds": ["eloise"],
-        "childrenIds": []
+        "parentIds": [
+          "sarah",
+          "kevin_boilon"
+        ],
+        "siblingIds": [
+          "eloise"
+        ],
+        "childrenIds": [],
+        "generation": "Generation Alpha",
+        "from_pat": 2
       },
       "phil": {
         "id": "phil",
@@ -153,9 +261,23 @@
         "occupation": "Electrician",
         "phone": "302-397-4048",
         "spouseId": "ashley",
-        "parentIds": ["joe_sr", "debbie"],
-        "siblingIds": ["joe_jr", "patrick", "sarah"],
-        "childrenIds": ["logan", "aiden", "tripp", "scout"]
+        "parentIds": [
+          "joe_sr",
+          "debbie"
+        ],
+        "siblingIds": [
+          "joe_jr",
+          "patrick",
+          "sarah"
+        ],
+        "childrenIds": [
+          "logan",
+          "aiden",
+          "tripp",
+          "scout"
+        ],
+        "generation": "Millennial",
+        "from_pat": 0
       },
       "ashley": {
         "id": "ashley",
@@ -166,7 +288,14 @@
         "spouseId": "phil",
         "parentIds": [],
         "siblingIds": [],
-        "childrenIds": ["logan", "aiden", "tripp", "scout"]
+        "childrenIds": [
+          "logan",
+          "aiden",
+          "tripp",
+          "scout"
+        ],
+        "generation": "Millennial",
+        "from_pat": 0
       },
       "logan": {
         "id": "logan",
@@ -174,9 +303,18 @@
         "dob": "2010",
         "dod": "alive",
         "spouseId": null,
-        "parentIds": ["phil", "ashley"],
-        "siblingIds": ["aiden", "tripp", "scout"],
-        "childrenIds": []
+        "parentIds": [
+          "phil",
+          "ashley"
+        ],
+        "siblingIds": [
+          "aiden",
+          "tripp",
+          "scout"
+        ],
+        "childrenIds": [],
+        "generation": "Generation Z",
+        "from_pat": 1
       },
       "aiden": {
         "id": "aiden",
@@ -184,9 +322,18 @@
         "dob": "2012",
         "dod": "alive",
         "spouseId": null,
-        "parentIds": ["phil", "ashley"],
-        "siblingIds": ["logan", "tripp", "scout"],
-        "childrenIds": []
+        "parentIds": [
+          "phil",
+          "ashley"
+        ],
+        "siblingIds": [
+          "logan",
+          "tripp",
+          "scout"
+        ],
+        "childrenIds": [],
+        "generation": "Generation Z",
+        "from_pat": 1
       },
       "tripp": {
         "id": "tripp",
@@ -194,9 +341,18 @@
         "dob": "2015",
         "dod": "alive",
         "spouseId": null,
-        "parentIds": ["phil", "ashley"],
-        "siblingIds": ["logan", "aiden", "scout"],
-        "childrenIds": []
+        "parentIds": [
+          "phil",
+          "ashley"
+        ],
+        "siblingIds": [
+          "logan",
+          "aiden",
+          "scout"
+        ],
+        "childrenIds": [],
+        "generation": "Generation Alpha",
+        "from_pat": 2
       },
       "scout": {
         "id": "scout",
@@ -204,9 +360,18 @@
         "dob": "2018",
         "dod": "alive",
         "spouseId": null,
-        "parentIds": ["phil", "ashley"],
-        "siblingIds": ["logan", "aiden", "tripp"],
-        "childrenIds": []
+        "parentIds": [
+          "phil",
+          "ashley"
+        ],
+        "siblingIds": [
+          "logan",
+          "aiden",
+          "tripp"
+        ],
+        "childrenIds": [],
+        "generation": "Generation Alpha",
+        "from_pat": 2
       },
       "joe_sr": {
         "id": "joe_sr",
@@ -215,9 +380,29 @@
         "dod": "alive",
         "occupation": "Laborer",
         "spouseId": "debbie",
-        "parentIds": ["grandfather_ruff", "grandmother_ruff"],
-        "siblingIds": ["yogi", "freddie", "tommy", "john", "mary_ruff", "bridget", "anne_ruff", "anita", "winifred"],
-        "childrenIds": ["joe_jr", "patrick", "sarah", "phil"]
+        "parentIds": [
+          "grandfather_ruff",
+          "grandmother_ruff"
+        ],
+        "siblingIds": [
+          "yogi",
+          "freddie",
+          "tommy",
+          "john",
+          "mary_ruff",
+          "bridget",
+          "anne_ruff",
+          "anita",
+          "winifred"
+        ],
+        "childrenIds": [
+          "joe_jr",
+          "patrick",
+          "sarah",
+          "phil"
+        ],
+        "generation": "Baby Boomer",
+        "from_pat": -2
       },
       "debbie": {
         "id": "debbie",
@@ -228,9 +413,23 @@
         "occupation": "Teacher",
         "phone": "302-530-1232",
         "spouseId": "joe_sr",
-        "parentIds": ["stan_sr", "annette"],
-        "siblingIds": ["stan_miller", "beth_bradley", "lynn_miller"],
-        "childrenIds": ["joe_jr", "patrick", "sarah", "phil"]
+        "parentIds": [
+          "stan_sr",
+          "annette"
+        ],
+        "siblingIds": [
+          "stan_miller",
+          "beth_bradley",
+          "lynn_miller"
+        ],
+        "childrenIds": [
+          "joe_jr",
+          "patrick",
+          "sarah",
+          "phil"
+        ],
+        "generation": "Baby Boomer",
+        "from_pat": -2
       },
       "annette": {
         "id": "annette",
@@ -241,7 +440,14 @@
         "spouseId": "stan_sr",
         "parentIds": [],
         "siblingIds": [],
-        "childrenIds": ["debbie", "stan_miller", "beth_bradley", "lynn_miller"]
+        "childrenIds": [
+          "debbie",
+          "stan_miller",
+          "beth_bradley",
+          "lynn_miller"
+        ],
+        "generation": "Silent Generation",
+        "from_pat": -3
       },
       "stan_sr": {
         "id": "stan_sr",
@@ -252,7 +458,14 @@
         "spouseId": "annette",
         "parentIds": [],
         "siblingIds": [],
-        "childrenIds": ["debbie", "stan_miller", "beth_bradley", "lynn_miller"]
+        "childrenIds": [
+          "debbie",
+          "stan_miller",
+          "beth_bradley",
+          "lynn_miller"
+        ],
+        "generation": "Silent Generation",
+        "from_pat": -3
       },
       "grandfather_ruff": {
         "id": "grandfather_ruff",
@@ -262,7 +475,20 @@
         "spouseId": "grandmother_ruff",
         "parentIds": [],
         "siblingIds": [],
-        "childrenIds": ["yogi", "freddie", "tommy", "john", "joe_sr", "mary_ruff", "bridget", "anne_ruff", "anita", "winifred"]
+        "childrenIds": [
+          "yogi",
+          "freddie",
+          "tommy",
+          "john",
+          "joe_sr",
+          "mary_ruff",
+          "bridget",
+          "anne_ruff",
+          "anita",
+          "winifred"
+        ],
+        "generation": "Silent Generation",
+        "from_pat": -3
       },
       "grandmother_ruff": {
         "id": "grandmother_ruff",
@@ -272,7 +498,20 @@
         "spouseId": "grandfather_ruff",
         "parentIds": [],
         "siblingIds": [],
-        "childrenIds": ["yogi", "freddie", "tommy", "john", "joe_sr", "mary_ruff", "bridget", "anne_ruff", "anita", "winifred"]
+        "childrenIds": [
+          "yogi",
+          "freddie",
+          "tommy",
+          "john",
+          "joe_sr",
+          "mary_ruff",
+          "bridget",
+          "anne_ruff",
+          "anita",
+          "winifred"
+        ],
+        "generation": "Silent Generation",
+        "from_pat": -3
       },
       "yogi": {
         "id": "yogi",
@@ -280,9 +519,24 @@
         "dob": "1955",
         "dod": "alive",
         "spouseId": null,
-        "parentIds": ["grandfather_ruff", "grandmother_ruff"],
-        "siblingIds": ["freddie", "tommy", "john", "joe_sr", "mary_ruff", "bridget", "anne_ruff", "anita", "winifred"],
-        "childrenIds": []
+        "parentIds": [
+          "grandfather_ruff",
+          "grandmother_ruff"
+        ],
+        "siblingIds": [
+          "freddie",
+          "tommy",
+          "john",
+          "joe_sr",
+          "mary_ruff",
+          "bridget",
+          "anne_ruff",
+          "anita",
+          "winifred"
+        ],
+        "childrenIds": [],
+        "generation": "Baby Boomer",
+        "from_pat": -2
       },
       "freddie": {
         "id": "freddie",
@@ -290,9 +544,24 @@
         "dob": "1958",
         "dod": "alive",
         "spouseId": null,
-        "parentIds": ["grandfather_ruff", "grandmother_ruff"],
-        "siblingIds": ["yogi", "tommy", "john", "joe_sr", "mary_ruff", "bridget", "anne_ruff", "anita", "winifred"],
-        "childrenIds": []
+        "parentIds": [
+          "grandfather_ruff",
+          "grandmother_ruff"
+        ],
+        "siblingIds": [
+          "yogi",
+          "tommy",
+          "john",
+          "joe_sr",
+          "mary_ruff",
+          "bridget",
+          "anne_ruff",
+          "anita",
+          "winifred"
+        ],
+        "childrenIds": [],
+        "generation": "Baby Boomer",
+        "from_pat": -2
       },
       "tommy": {
         "id": "tommy",
@@ -300,9 +569,24 @@
         "dob": "1963",
         "dod": "alive",
         "spouseId": null,
-        "parentIds": ["grandfather_ruff", "grandmother_ruff"],
-        "siblingIds": ["yogi", "freddie", "john", "joe_sr", "mary_ruff", "bridget", "anne_ruff", "anita", "winifred"],
-        "childrenIds": []
+        "parentIds": [
+          "grandfather_ruff",
+          "grandmother_ruff"
+        ],
+        "siblingIds": [
+          "yogi",
+          "freddie",
+          "john",
+          "joe_sr",
+          "mary_ruff",
+          "bridget",
+          "anne_ruff",
+          "anita",
+          "winifred"
+        ],
+        "childrenIds": [],
+        "generation": "Baby Boomer",
+        "from_pat": -2
       },
       "john": {
         "id": "john",
@@ -310,9 +594,24 @@
         "dob": "1965",
         "dod": "alive",
         "spouseId": null,
-        "parentIds": ["grandfather_ruff", "grandmother_ruff"],
-        "siblingIds": ["yogi", "freddie", "tommy", "joe_sr", "mary_ruff", "bridget", "anne_ruff", "anita", "winifred"],
-        "childrenIds": []
+        "parentIds": [
+          "grandfather_ruff",
+          "grandmother_ruff"
+        ],
+        "siblingIds": [
+          "yogi",
+          "freddie",
+          "tommy",
+          "joe_sr",
+          "mary_ruff",
+          "bridget",
+          "anne_ruff",
+          "anita",
+          "winifred"
+        ],
+        "childrenIds": [],
+        "generation": "Generation X",
+        "from_pat": -1
       },
       "mary_ruff": {
         "id": "mary_ruff",
@@ -320,9 +619,24 @@
         "dob": "1957",
         "dod": "alive",
         "spouseId": null,
-        "parentIds": ["grandfather_ruff", "grandmother_ruff"],
-        "siblingIds": ["yogi", "freddie", "tommy", "john", "joe_sr", "bridget", "anne_ruff", "anita", "winifred"],
-        "childrenIds": []
+        "parentIds": [
+          "grandfather_ruff",
+          "grandmother_ruff"
+        ],
+        "siblingIds": [
+          "yogi",
+          "freddie",
+          "tommy",
+          "john",
+          "joe_sr",
+          "bridget",
+          "anne_ruff",
+          "anita",
+          "winifred"
+        ],
+        "childrenIds": [],
+        "generation": "Baby Boomer",
+        "from_pat": -2
       },
       "bridget": {
         "id": "bridget",
@@ -330,9 +644,24 @@
         "dob": "1959",
         "dod": "alive",
         "spouseId": null,
-        "parentIds": ["grandfather_ruff", "grandmother_ruff"],
-        "siblingIds": ["yogi", "freddie", "tommy", "john", "joe_sr", "mary_ruff", "anne_ruff", "anita", "winifred"],
-        "childrenIds": []
+        "parentIds": [
+          "grandfather_ruff",
+          "grandmother_ruff"
+        ],
+        "siblingIds": [
+          "yogi",
+          "freddie",
+          "tommy",
+          "john",
+          "joe_sr",
+          "mary_ruff",
+          "anne_ruff",
+          "anita",
+          "winifred"
+        ],
+        "childrenIds": [],
+        "generation": "Baby Boomer",
+        "from_pat": -2
       },
       "anne_ruff": {
         "id": "anne_ruff",
@@ -340,9 +669,24 @@
         "dob": "1961",
         "dod": "alive",
         "spouseId": null,
-        "parentIds": ["grandfather_ruff", "grandmother_ruff"],
-        "siblingIds": ["yogi", "freddie", "tommy", "john", "joe_sr", "mary_ruff", "bridget", "anita", "winifred"],
-        "childrenIds": []
+        "parentIds": [
+          "grandfather_ruff",
+          "grandmother_ruff"
+        ],
+        "siblingIds": [
+          "yogi",
+          "freddie",
+          "tommy",
+          "john",
+          "joe_sr",
+          "mary_ruff",
+          "bridget",
+          "anita",
+          "winifred"
+        ],
+        "childrenIds": [],
+        "generation": "Baby Boomer",
+        "from_pat": -2
       },
       "anita": {
         "id": "anita",
@@ -350,9 +694,24 @@
         "dob": "1964",
         "dod": "alive",
         "spouseId": null,
-        "parentIds": ["grandfather_ruff", "grandmother_ruff"],
-        "siblingIds": ["yogi", "freddie", "tommy", "john", "joe_sr", "mary_ruff", "bridget", "anne_ruff", "winifred"],
-        "childrenIds": []
+        "parentIds": [
+          "grandfather_ruff",
+          "grandmother_ruff"
+        ],
+        "siblingIds": [
+          "yogi",
+          "freddie",
+          "tommy",
+          "john",
+          "joe_sr",
+          "mary_ruff",
+          "bridget",
+          "anne_ruff",
+          "winifred"
+        ],
+        "childrenIds": [],
+        "generation": "Baby Boomer",
+        "from_pat": -2
       },
       "winifred": {
         "id": "winifred",
@@ -360,9 +719,24 @@
         "dob": "1966",
         "dod": "alive",
         "spouseId": null,
-        "parentIds": ["grandfather_ruff", "grandmother_ruff"],
-        "siblingIds": ["yogi", "freddie", "tommy", "john", "joe_sr", "mary_ruff", "bridget", "anne_ruff", "anita"],
-        "childrenIds": []
+        "parentIds": [
+          "grandfather_ruff",
+          "grandmother_ruff"
+        ],
+        "siblingIds": [
+          "yogi",
+          "freddie",
+          "tommy",
+          "john",
+          "joe_sr",
+          "mary_ruff",
+          "bridget",
+          "anne_ruff",
+          "anita"
+        ],
+        "childrenIds": [],
+        "generation": "Generation X",
+        "from_pat": -1
       },
       "stan_miller": {
         "id": "stan_miller",
@@ -371,9 +745,18 @@
         "dod": "alive",
         "occupation": "Architect",
         "spouseId": null,
-        "parentIds": ["stan_sr", "annette"],
-        "siblingIds": ["debbie", "beth_bradley", "lynn_miller"],
-        "childrenIds": []
+        "parentIds": [
+          "stan_sr",
+          "annette"
+        ],
+        "siblingIds": [
+          "debbie",
+          "beth_bradley",
+          "lynn_miller"
+        ],
+        "childrenIds": [],
+        "generation": "Baby Boomer",
+        "from_pat": -2
       },
       "beth_bradley": {
         "id": "beth_bradley",
@@ -383,9 +766,18 @@
         "maidenName": "Beth Miller",
         "notes": "Known as the best aunt in the world, very youthful, healthy and fun to be around",
         "spouseId": "bryan_bradley",
-        "parentIds": ["stan_sr", "annette"],
-        "siblingIds": ["debbie", "stan_miller", "lynn_miller"],
-        "childrenIds": []
+        "parentIds": [
+          "stan_sr",
+          "annette"
+        ],
+        "siblingIds": [
+          "debbie",
+          "stan_miller",
+          "lynn_miller"
+        ],
+        "childrenIds": [],
+        "generation": "Baby Boomer",
+        "from_pat": -2
       },
       "bryan_bradley": {
         "id": "bryan_bradley",
@@ -395,7 +787,9 @@
         "spouseId": "beth_bradley",
         "parentIds": [],
         "siblingIds": [],
-        "childrenIds": []
+        "childrenIds": [],
+        "generation": "Baby Boomer",
+        "from_pat": -2
       },
       "lynn_miller": {
         "id": "lynn_miller",
@@ -403,9 +797,18 @@
         "dob": "1960",
         "dod": "alive",
         "spouseId": null,
-        "parentIds": ["stan_sr", "annette"],
-        "siblingIds": ["debbie", "stan_miller", "beth_bradley"],
-        "childrenIds": []
+        "parentIds": [
+          "stan_sr",
+          "annette"
+        ],
+        "siblingIds": [
+          "debbie",
+          "stan_miller",
+          "beth_bradley"
+        ],
+        "childrenIds": [],
+        "generation": "Baby Boomer",
+        "from_pat": -2
       },
       "jenny_father": {
         "id": "jenny_father",
@@ -415,7 +818,11 @@
         "spouseId": "jenny_mother",
         "parentIds": [],
         "siblingIds": [],
-        "childrenIds": ["jenny"]
+        "childrenIds": [
+          "jenny"
+        ],
+        "generation": "Baby Boomer",
+        "from_pat": -2
       },
       "jenny_mother": {
         "id": "jenny_mother",
@@ -425,7 +832,11 @@
         "spouseId": "jenny_father",
         "parentIds": [],
         "siblingIds": [],
-        "childrenIds": ["jenny"]
+        "childrenIds": [
+          "jenny"
+        ],
+        "generation": "Baby Boomer",
+        "from_pat": -2
       }
     }
   },
@@ -443,7 +854,9 @@
       "spouseId": "ID of spouse, or null if no spouse",
       "parentIds": "Array of parent IDs (usually 2, can be 0-2)",
       "siblingIds": "Array of sibling IDs",
-      "childrenIds": "Array of children IDs"
+      "childrenIds": "Array of children IDs",
+      "generation": "Generation label (e.g., 'Millennial', 'Baby Boomer', 'Generation Z')",
+      "from_pat": "Integer showing generations from Patrick Ruff (Millennial = 0, Gen X = -1, Gen Z = +1, etc.)"
     },
     "expandable_tree": {
       "description": "The tree starts with the person specified in 'startPerson'. Clicking a node expands to show their spouse, siblings, and parents. Clicking parents shows their siblings and parents, etc.",

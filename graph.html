@@ -319,7 +319,7 @@
                 return {
                     id: person.id,
                     label: person.name.split(' ')[0], // First name only for cleaner display
-                    title: `${person.name}\n${age}${isAlive ? ' years old' : ''}`,
+                    title: `${person.name}\n${person.generation || 'Unknown'}\n${age}${isAlive ? ' years old' : ''}`,
                     shape: 'dot',
                     size: 25,
                     color: {
@@ -498,6 +498,18 @@
                     <div class="info-value">${age}${isAlive ? ' years old' : ''}</div>
                 </div>
             `;
+
+            if (person.generation) {
+                const fromPatText = person.from_pat === 0 ? 'Same generation as Patrick' :
+                                    person.from_pat > 0 ? `${person.from_pat} generation${person.from_pat > 1 ? 's' : ''} after Patrick` :
+                                    `${Math.abs(person.from_pat)} generation${Math.abs(person.from_pat) > 1 ? 's' : ''} before Patrick`;
+                html += `
+                    <div class="info-item">
+                        <div class="info-label">Generation</div>
+                        <div class="info-value">${person.generation} (${fromPatText})</div>
+                    </div>
+                `;
+            }
 
             if (person.occupation) {
                 html += `
