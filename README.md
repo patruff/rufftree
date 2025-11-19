@@ -21,17 +21,54 @@ The interactive family tree is automatically deployed to GitHub Pages and update
 
 ## Features
 
-- **Interactive Family Tree**: Beautiful web-based visualization of the Ruff family genealogy
-- **Person Generator**: Modern web application with gradient purple UI for creating family member profiles
-  - 47 positive attributes (funny, smart, kind, fit, etc.) with multi-select checkboxes
-  - Big Five (OCEAN) personality sliders with smart auto-mapping from attributes
-  - Autocomplete fields for occupation (100+ jobs) and location (100+ US cities)
-  - Structured dropdowns for physical traits, education, life timeline, and more
-  - One-click JSON download or clipboard copy for easy integration
+### 🎨 Visualization & Exploration
+
+- **Interactive Family Tree** ([index.html](https://patruff.github.io/rufftree/)): Beautiful expandable tree visualization
+  - Click to expand/collapse family members and relationships
+  - Visual indicators: Green for living, purple for deceased
+  - Hover tooltips showing ethnicity breakdown
+  - Real-time statistics: total members, living, deceased, and generations
+
+- **Interactive Family Graph** ([graph.html](https://patruff.github.io/rufftree/graph.html)): Neo4j-style network visualization
+  - Drag-and-drop nodes to arrange the family graph
+  - Color-coded relationship edges (green: parent-child, pink: spouse, orange: sibling)
+  - Click any person to view detailed info panel
+  - Zoom, pan, and focus on specific family connections
+  - Physics-based auto-layout for optimal positioning
+
+### 👤 Family Data & Tracking
+
+- **Generation Tracking**: Automatic generation labels and relative positioning
+  - Labels: Greatest Generation, Silent Generation, Baby Boomer, Gen X, Millennial, Gen Z, Gen Alpha
+  - `from_pat` field: Integer showing generations from Patrick Ruff (0 = Millennial baseline, -1 = Gen X, +1 = Gen Z, etc.)
+  - Displayed in graph tooltips and info panels with human-readable distance text
+
+- **Ethnicity Tracking**: Country-based ancestry breakdown
+  - Percentage-based ethnicity (e.g., German: 34%, Irish: 32%, English: 18%)
+  - Automatic calculation from parents (50% from each parent)
+  - Supports 8+ countries: Chinese, English, French, German, Irish, Polish, Scottish, Welsh
+  - Displayed in graph info panel and tree card tooltips
+
+### 🛠️ Person Management
+
+- **Person Generator** ([person_generator.html](https://patruff.github.io/rufftree/person_generator.html)): Modern web application for creating family profiles
+  - **Ethnicity Input**: Dynamic form with add/remove country-percentage rows, real-time validation
+  - **47 Positive Attributes**: Multi-select checkboxes (funny, smart, kind, fit, etc.)
+  - **Big Five (OCEAN) Personality**: Sliders with smart auto-mapping from attributes
+  - **Autocomplete Fields**: Occupation (100+ jobs) and location (100+ US cities)
+  - **Structured Dropdowns**: Physical traits, education, life timeline, and more
+  - **One-Click Export**: JSON download or clipboard copy for easy integration
+
 - **Automated Integration**: GitHub Action workflow to integrate generated people into the family tree
-- **Family Query System**: Family members can ask questions, answered via AI RAG with source citations
-- **Query Archive**: All questions and answers stored and displayed on the website
 - **Editable JSON Data**: Manually edit `family_tree.json` to update family members and relationships
+
+### 💬 Query & Search System
+
+- **Family Query System**: AI-powered Q&A with source citations
+  - Family members submit questions via web form
+  - RAG system provides answers with document citations
+  - All Q&A stored and displayed on website
+
 - **Document Upload**: Support for PDFs, Google Docs, DOCX, TXT, and Markdown files
 - **Google Drive Sync**: Automatic synchronization from the "rufftree" Google Drive folder
 - **RAG Queries**: Natural language search with AI-generated answers and citations
@@ -126,7 +163,22 @@ Add to your Claude Desktop configuration:
 
 ### View the Family Tree
 
-Open `index.html` in your web browser to view the interactive family tree visualization.
+**Expandable Tree View** (`index.html`):
+- Click on any person card to expand and reveal their spouse, siblings, parents, and children
+- Click again to collapse the view
+- Hover over cards to see ethnicity breakdown in tooltips
+- View real-time statistics at the top of the page
+
+**Interactive Graph View** (`graph.html`):
+- Drag nodes to rearrange the family network
+- Click any person to see their detailed information in the side panel
+- Double-click to focus on a person and their immediate connections
+- Use the control buttons to reset view, fit all nodes, or toggle physics
+- Hover over nodes to see generation and age information
+- Edge colors indicate relationship types:
+  - **Green arrows**: Parent → Child relationships
+  - **Pink lines**: Spouse connections
+  - **Orange dashed lines**: Sibling relationships
 
 ### Adding Family Members
 
@@ -165,7 +217,21 @@ The form is organized into several sections with a two-column grid layout:
 5. **Location**
    - **Location (City, State)**: Autocomplete field with 100+ major US cities in "City, ST" format (e.g., "New York, NY", "San Francisco, CA") - type to search or browse
 
-6. **✨ Positive Attributes** (New Interactive Section)
+6. **🌍 Ethnicity** (Optional)
+   - **Ancestry Breakdown**: Dynamic input for country-percentage pairs
+   - Click **"+"** to add more countries to the breakdown
+   - Click **"−"** to remove a country entry
+   - Percentages must total exactly 100%
+   - Real-time validation with visual feedback:
+     - Green checkmark ✓ when total equals 100%
+     - Red warning when total doesn't equal 100%
+   - Examples:
+     - Irish: 50%, German: 50%
+     - Chinese: 100%
+     - German: 34%, Irish: 32%, English: 18%, Scottish: 8%, Polish: 8%
+   - **Note**: If parents are in the system, ethnicity will be automatically calculated (50% from each parent) when you add the person to the family tree
+
+7. **✨ Positive Attributes**
    - Multi-select checkbox grid displaying 47 positive attributes
    - Attributes are displayed in a responsive grid with clean, rounded checkboxes
    - Click any attribute to select/deselect (multiple selections allowed)
@@ -179,7 +245,7 @@ The form is organized into several sections with a two-column grid layout:
      - **Social**: Caring, Supportive, Empathetic, Thoughtful, Polite, Respectful, Modest, Energetic
    - **Smart OCEAN Mapping**: Each attribute automatically maps to Big Five personality traits (see below)
 
-7. **🧠 Personality (Big Five / OCEAN)**
+8. **🧠 Personality (Big Five / OCEAN)**
    - Five interactive sliders (0-100 scale) with real-time value display
    - Each slider has purple gradient styling matching the app theme
    - **Openness (O)**: Imaginative, curious, open to new experiences
@@ -192,7 +258,7 @@ The form is organized into several sections with a two-column grid layout:
      - If sliders remain at default (50) but attributes are selected, personality is auto-calculated from attribute mappings
      - This allows quick entry via attributes or precise control via sliders
 
-8. **Notes**
+9. **Notes**
    - Large text area for additional information, stories, or details
 
 **Attribute-to-OCEAN Mapping Examples:**
@@ -229,6 +295,9 @@ When multiple attributes are selected, the system averages the mapped values for
    - `name`: Full name of the person
    - `dob`: Birth year in YYYY format
    - `dod`: Death year in YYYY format, or `"alive"` if living
+   - `generation`: Generation label (e.g., "Millennial", "Baby Boomer", "Gen Z") - automatically calculated by `add_generations.py`
+   - `from_pat`: Integer showing generations from Patrick Ruff (0 = Millennial, -1 = Gen X, +1 = Gen Z, etc.) - automatically calculated
+   - `ethnicity`: Optional object mapping countries to percentages that sum to 100 (e.g., `{"German": 50, "Irish": 50}`) - automatically calculated from parents by `add_ethnicity.py`
    - `spouseId`, `parentIds`, `siblingIds`, `childrenIds`: Relationship IDs
 3. Save the file and refresh `index.html`
 
@@ -239,6 +308,12 @@ Example entry:
   "name": "John Ruff",
   "dob": "1920",
   "dod": "1995",
+  "generation": "Greatest Generation",
+  "from_pat": -4,
+  "ethnicity": {
+    "German": 50,
+    "Irish": 50
+  },
   "spouseId": "mary_smith",
   "parentIds": [],
   "siblingIds": [],
@@ -246,12 +321,73 @@ Example entry:
 }
 ```
 
+**Utility Scripts:**
+
+To regenerate generation labels and ethnicity data after editing birth years or parent relationships:
+
+```bash
+# Recalculate generation labels for all family members
+python3 add_generations.py
+
+# Recalculate ethnicity from parents (edit root ethnicities in script first)
+python3 add_ethnicity.py
+```
+
 The tree displays:
 - **Name** of each person
 - **Lifespan** (birth year - death year or "Present")
 - **Age** (current age or years lived)
+- **Generation** label (e.g., "Millennial", "Gen Z")
+- **Ethnicity** (on hover tooltip)
 - **Visual indicators**: Green for living, purple for deceased
 - **Statistics**: Total members, living, deceased, and generations
+
+### Family Data Model
+
+The `family_tree.json` file contains comprehensive data about each family member:
+
+**Core Fields:**
+- `id`: Unique identifier (string)
+- `name`: Full name of the person
+- `dob`: Birth year in YYYY format (e.g., "1985")
+- `dod`: Death year in YYYY format, or `"alive"` if living
+
+**Relationship Fields:**
+- `spouseId`: ID of spouse, or `null` if no spouse
+- `parentIds`: Array of parent IDs (usually 2, can be 0-2)
+- `siblingIds`: Array of sibling IDs
+- `childrenIds`: Array of children IDs
+
+**Generation Fields (Auto-calculated):**
+- `generation`: Generation label based on birth year
+  - Greatest Generation (≤1927)
+  - Silent Generation (1928-1945)
+  - Baby Boomer (1946-1964)
+  - Generation X (1965-1980)
+  - Millennial (1981-1996)
+  - Generation Z (1997-2012)
+  - Generation Alpha (2013+)
+- `from_pat`: Integer showing generational distance from Patrick Ruff
+  - Negative = before Patrick's generation (e.g., -2 for Baby Boomers)
+  - 0 = Same generation as Patrick (Millennials)
+  - Positive = after Patrick's generation (e.g., +1 for Gen Z)
+
+**Ethnicity Field (Auto-calculated from parents):**
+- `ethnicity`: Object mapping countries to percentages (must sum to 100%)
+  - Example: `{"German": 34, "Irish": 32, "English": 18, "Scottish": 8, "Polish": 8}`
+  - Children inherit 50% from each parent
+  - Manually set for root ancestors (people without parents in system)
+
+**Optional Fields:**
+- `occupation`: Job title or profession
+- `phone`: Contact phone number
+- `maidenName`: Maiden name for married individuals
+- `notes`: Additional information or family stories
+- `location`: City and state (e.g., "New York, NY")
+- `education`: Education level
+- `hairColor`, `height`: Physical characteristics
+- `attributes`: Array of positive attributes (from Person Generator)
+- `personality`: Big Five OCEAN traits object
 
 #### Setting Up GitHub Pages
 
