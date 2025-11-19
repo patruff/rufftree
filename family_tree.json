@@ -1098,7 +1098,8 @@
       "cemetery_name": "Optional: String for deceased individuals indicating cemetery name (e.g., 'Oak Hill Cemetery')",
       "cemetery_city": "Optional: String for deceased individuals indicating cemetery city (e.g., 'Philadelphia')",
       "cemetery_state": "Optional: String for deceased individuals indicating cemetery state (e.g., 'Pennsylvania' or 'PA')",
-      "heritable_risk": "Optional: Object mapping health conditions to risk levels (low/moderate/high/very-high). Auto-calculated from parents' health conditions and causes of death."
+      "heritable_risk": "Optional: Object mapping health conditions to risk levels (low/moderate/high/very-high). Auto-calculated from parents' health conditions and causes of death.",
+      "heritable_traits": "Optional: Object mapping trait names to genotype/phenotype info. Auto-calculated from parents for Mendelian traits (eye color, hair texture, dimples, etc.)"
     },
     "expandable_tree": {
       "description": "The tree starts with the person specified in 'startPerson'. Clicking a node expands to show their spouse, siblings, and parents. Clicking parents shows their siblings and parents, etc.",

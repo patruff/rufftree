@@ -693,6 +693,23 @@
                 tooltip += `Cemetery: ${cemeteryInfo}`;
             }
 
+            // Add genetic traits
+            if (person.heritable_traits && Object.keys(person.heritable_traits).length > 0) {
+                const traitsStr = Object.entries(person.heritable_traits)
+                    .map(([traitName, traitData]) => {
+                        const traitLabel = traitName.split('_')
+                            .map(word => word.charAt(0).toUpperCase() + word.slice(1))
+                            .join(' ');
+                        const genotype = traitData.genotype || '';
+                        const phenotype = traitData.phenotype || '';
+                        return `${traitLabel}: ${genotype} (${phenotype})`;
+                    })
+                    .join(', ');
+
+                if (tooltip) tooltip += '\n';
+                tooltip += `Traits: ${traitsStr}`;
+            }
+
             const nodeDiv = document.createElement('div');
             nodeDiv.className = 'person-node';
             nodeDiv.style.left = pos.x + 'px';

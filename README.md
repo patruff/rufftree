@@ -332,7 +332,7 @@ When multiple attributes are selected, the system averages the mapped values for
 - **Location**: `home_city`, `home_state` (for all), `cemetery_name`, `cemetery_city`, `cemetery_state` (for deceased)
 - **Health**: `health_condition` (array), `causeOfDeath` (for deceased)
 - **Contact**: `occupation`, `phone`, `maidenName`, `notes`
-- **Auto-calculated** (run scripts): `generation`, `from_pat`, `ethnicity`, `heritable_risk`
+- **Auto-calculated** (run scripts): `generation`, `from_pat`, `ethnicity`, `heritable_risk`, `heritable_traits`
 
 See the **Family Data Model** section below for the complete list of all 30+ available fields with descriptions.
 
@@ -391,6 +391,7 @@ The `family_tree.json` file contains comprehensive data about each family member
 | `causeOfDeath` | String | Optional | Cause of death for deceased individuals<br>• Values: "heart-attack", "pancreatic-cancer", "stroke", etc.<br>• 50+ options across 7 categories (Cancer, Cardiovascular, Respiratory, Neurological, Other Medical, Accidents & Injuries, General) |
 | `health_condition` | Array | Optional | Chronic/ongoing health conditions<br>• Values: ["diabetes", "heart-disease", "asthma"]<br>• Applies to both living and deceased<br>• 40+ conditions available |
 | `heritable_risk` | Object | Auto | Genetic predisposition risk levels<br>• Auto-calculated from parents' `causeOfDeath` and `health_condition`<br>• Format: `{"heart-disease": "moderate", "diabetes": "high"}`<br>• Risk levels: "low", "moderate", "high", "very-high" |
+| `heritable_traits` | Object | Auto | Genetic traits following Mendelian inheritance<br>• Auto-calculated from parents' genotypes<br>• Format: `{"eye_color": {"genotype": "Bb", "phenotype": "Brown"}}`<br>• Tracks: eye color (BB/Bb/bb), hair texture (CC/Cc/cc), dimples (DD/Dd/dd) |
 
 #### Contact & Personal Information
 | Field | Type | Required | Description |
@@ -437,6 +438,16 @@ The `family_tree.json` file contains comprehensive data about each family member
     "heart-disease": "moderate",
     "diabetes": "low"
   },
+  "heritable_traits": {
+    "eye_color": {
+      "genotype": "bb",
+      "phenotype": "Blue"
+    },
+    "hair_texture": {
+      "genotype": "cc",
+      "phenotype": "Straight"
+    }
+  },
   "occupation": "Developer/Scientist",
   "phone": "555-0123",
   "spouseId": "jenny",
@@ -459,6 +470,9 @@ python3 add_ethnicity.py
 
 # Recalculate heritable risk from parents' health conditions and causes of death
 python3 add_heritable_risk.py
+
+# Recalculate genetic traits from parents' genotypes (edit root genotypes in script first)
+python3 add_heritable_traits.py
 ```
 
 #### Setting Up GitHub Pages
