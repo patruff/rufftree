@@ -419,12 +419,70 @@
                     <label for="causeOfDeath">Cause of Death</label>
                     <select id="causeOfDeath">
                         <option value="">Not specified</option>
-                        <option value="cancer">Cancer</option>
-                        <option value="heart-disease">Heart Disease</option>
-                        <option value="stroke">Stroke</option>
-                        <option value="accident">Accident</option>
-                        <option value="natural-causes">Natural Causes</option>
-                        <option value="other">Other</option>
+
+                        <optgroup label="Cancer">
+                            <option value="lung-cancer">Lung Cancer</option>
+                            <option value="breast-cancer">Breast Cancer</option>
+                            <option value="colon-cancer">Colon Cancer</option>
+                            <option value="pancreatic-cancer">Pancreatic Cancer</option>
+                            <option value="prostate-cancer">Prostate Cancer</option>
+                            <option value="liver-cancer">Liver Cancer</option>
+                            <option value="stomach-cancer">Stomach Cancer</option>
+                            <option value="esophageal-cancer">Esophageal Cancer</option>
+                            <option value="leukemia">Leukemia</option>
+                            <option value="lymphoma">Lymphoma</option>
+                            <option value="brain-cancer">Brain Cancer</option>
+                            <option value="ovarian-cancer">Ovarian Cancer</option>
+                            <option value="skin-cancer">Skin Cancer (Melanoma)</option>
+                            <option value="cancer-unspecified">Cancer (type unspecified)</option>
+                        </optgroup>
+
+                        <optgroup label="Cardiovascular">
+                            <option value="heart-attack">Heart Attack (Myocardial Infarction)</option>
+                            <option value="heart-failure">Heart Failure</option>
+                            <option value="coronary-heart-disease">Coronary Heart Disease</option>
+                            <option value="stroke">Stroke</option>
+                            <option value="aneurysm">Aneurysm</option>
+                            <option value="cardiac-arrest">Cardiac Arrest</option>
+                        </optgroup>
+
+                        <optgroup label="Respiratory">
+                            <option value="copd">COPD (Chronic Obstructive Pulmonary Disease)</option>
+                            <option value="pneumonia">Pneumonia</option>
+                            <option value="emphysema">Emphysema</option>
+                            <option value="respiratory-failure">Respiratory Failure</option>
+                        </optgroup>
+
+                        <optgroup label="Neurological">
+                            <option value="alzheimers">Alzheimer's Disease</option>
+                            <option value="dementia">Dementia</option>
+                            <option value="parkinsons">Parkinson's Disease</option>
+                            <option value="als">ALS (Lou Gehrig's Disease)</option>
+                        </optgroup>
+
+                        <optgroup label="Other Medical">
+                            <option value="diabetes">Diabetes Complications</option>
+                            <option value="kidney-disease">Kidney Disease</option>
+                            <option value="liver-disease">Liver Disease (non-cancer)</option>
+                            <option value="sepsis">Sepsis</option>
+                            <option value="infection">Infection</option>
+                            <option value="covid-19">COVID-19</option>
+                        </optgroup>
+
+                        <optgroup label="Accidents & Injuries">
+                            <option value="car-accident">Car Accident</option>
+                            <option value="fall">Fall</option>
+                            <option value="drowning">Drowning</option>
+                            <option value="fire">Fire</option>
+                            <option value="accident-other">Accident (other)</option>
+                        </optgroup>
+
+                        <optgroup label="General">
+                            <option value="natural-causes">Natural Causes (old age)</option>
+                            <option value="complications-surgery">Complications from Surgery</option>
+                            <option value="unknown">Unknown</option>
+                            <option value="other">Other</option>
+                        </optgroup>
                     </select>
                 </div>
 

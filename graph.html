@@ -499,6 +499,20 @@
                 </div>
             `;
 
+            if (!isAlive && person.causeOfDeath) {
+                // Format cause of death for display (convert kebab-case to readable text)
+                const causeFormatted = person.causeOfDeath
+                    .split('-')
+                    .map(word => word.charAt(0).toUpperCase() + word.slice(1))
+                    .join(' ');
+                html += `
+                    <div class="info-item">
+                        <div class="info-label">Cause of Death</div>
+                        <div class="info-value">${causeFormatted}</div>
+                    </div>
+                `;
+            }
+
             if (person.generation) {
                 const fromPatText = person.from_pat === 0 ? 'Same generation as Patrick' :
                                     person.from_pat > 0 ? `${person.from_pat} generation${person.from_pat > 1 ? 's' : ''} after Patrick` :
