@@ -556,6 +556,39 @@
                 `;
             }
 
+            if (person.heritable_risk && Object.keys(person.heritable_risk).length > 0) {
+                const riskColors = {
+                    'low': '#4CAF50',
+                    'moderate': '#FF9800',
+                    'high': '#FF5722',
+                    'very-high': '#B71C1C'
+                };
+
+                const risksHtml = Object.entries(person.heritable_risk)
+                    .sort((a, b) => {
+                        const order = { 'very-high': 0, 'high': 1, 'moderate': 2, 'low': 3 };
+                        return order[a[1]] - order[b[1]];
+                    })
+                    .map(([condition, level]) => {
+                        const conditionFormatted = condition
+                            .split('-')
+                            .map(word => word.charAt(0).toUpperCase() + word.slice(1))
+                            .join(' ');
+                        const levelFormatted = level.split('-')
+                            .map(word => word.charAt(0).toUpperCase() + word.slice(1))
+                            .join(' ');
+                        return `<span style="color: ${riskColors[level]}; font-weight: 500;">▸ ${conditionFormatted}: ${levelFormatted}</span>`;
+                    })
+                    .join('<br>');
+
+                html += `
+                    <div class="info-item">
+                        <div class="info-label">Heritable Risk Factors</div>
+                        <div class="info-value">${risksHtml}</div>
+                    </div>
+                `;
+            }
+
             // Relationships
             if (person.spouseId) {
                 const spouse = familyData.people[person.spouseId];

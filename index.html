@@ -618,13 +618,39 @@
                                 person.parentIds.length > 0 ||
                                 person.childrenIds.length > 0;
 
-            // Format ethnicity for tooltip
-            let ethnicityTooltip = '';
+            // Format tooltip with ethnicity and heritable risk
+            let tooltip = '';
+
+            // Add ethnicity
             if (person.ethnicity && Object.keys(person.ethnicity).length > 0) {
-                ethnicityTooltip = Object.entries(person.ethnicity)
+                const ethnicityStr = Object.entries(person.ethnicity)
                     .sort((a, b) => b[1] - a[1])
                     .map(([country, pct]) => `${country}: ${pct}%`)
                     .join(', ');
+                tooltip += `Ethnicity: ${ethnicityStr}`;
+            }
+
+            // Add heritable risk
+            if (person.heritable_risk && Object.keys(person.heritable_risk).length > 0) {
+                const riskStr = Object.entries(person.heritable_risk)
+                    .sort((a, b) => {
+                        const order = { 'very-high': 0, 'high': 1, 'moderate': 2, 'low': 3 };
+                        return order[a[1]] - order[b[1]];
+                    })
+                    .map(([condition, level]) => {
+                        const conditionFormatted = condition
+                            .split('-')
+                            .map(word => word.charAt(0).toUpperCase() + word.slice(1))
+                            .join(' ');
+                        const levelFormatted = level.split('-')
+                            .map(word => word.charAt(0).toUpperCase() + word.slice(1))
+                            .join(' ');
+                        return `${conditionFormatted}: ${levelFormatted}`;
+                    })
+                    .join(', ');
+
+                if (tooltip) tooltip += '\n';
+                tooltip += `Health Risks: ${riskStr}`;
             }
 
             const nodeDiv = document.createElement('div');
@@ -636,7 +662,7 @@
             nodeDiv.innerHTML = `
                 <div class="person-card ${isAlive ? 'alive' : ''} ${isExpanded ? 'expanded' : ''}"
                      onclick="toggleNode('${personId}')"
-                     ${ethnicityTooltip ? `title="Ethnicity: ${ethnicityTooltip}"` : ''}>
+                     ${tooltip ? `title="${tooltip}"` : ''}>
                     ${hasRelatives ? `<div class="expand-indicator">${isExpanded ? '−' : '+'}</div>` : ''}
                     <div class="name">${person.name}</div>
                     <div class="dates">${lifespan}</div>
