@@ -1091,6 +1091,8 @@
       "generation": "Generation label (e.g., 'Millennial', 'Baby Boomer', 'Generation Z')",
       "from_pat": "Integer showing generations from Patrick Ruff (Millennial = 0, Gen X = -1, Gen Z = +1, etc.)",
       "ethnicity": "Optional: Object mapping countries to percentages (must sum to 100). Calculated from parents if not manually set.",
+      "home_city": "Optional: String for city where person lives/lived (e.g., 'Philadelphia')",
+      "home_state": "Optional: String for state where person lives/lived (e.g., 'Pennsylvania' or 'PA')",
       "causeOfDeath": "Optional: String for deceased individuals indicating what they died from (e.g., 'heart-attack', 'pancreatic-cancer')",
       "health_condition": "Optional: Array of strings for ongoing/chronic health conditions (e.g., ['diabetes', 'heart-disease']). Applies to both living and deceased.",
       "cemetery_name": "Optional: String for deceased individuals indicating cemetery name (e.g., 'Oak Hill Cemetery')",

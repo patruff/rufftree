@@ -564,6 +564,16 @@
                 `;
             }
 
+            if (person.home_city || person.home_state) {
+                const homeLocation = [person.home_city, person.home_state].filter(Boolean).join(', ');
+                html += `
+                    <div class="info-item">
+                        <div class="info-label">Home Location</div>
+                        <div class="info-value">${homeLocation}</div>
+                    </div>
+                `;
+            }
+
             if (person.ethnicity && Object.keys(person.ethnicity).length > 0) {
                 const ethnicityStr = Object.entries(person.ethnicity)
                     .sort((a, b) => b[1] - a[1]) // Sort by percentage descending

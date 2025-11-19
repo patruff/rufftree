@@ -630,6 +630,13 @@
                 tooltip += `Ethnicity: ${ethnicityStr}`;
             }
 
+            // Add home location
+            if (person.home_city || person.home_state) {
+                const homeLocation = [person.home_city, person.home_state].filter(Boolean).join(', ');
+                if (tooltip) tooltip += '\n';
+                tooltip += `Home: ${homeLocation}`;
+            }
+
             // Add health conditions
             if (person.health_condition && person.health_condition.length > 0) {
                 const conditionsStr = person.health_condition
