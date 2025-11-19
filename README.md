@@ -49,6 +49,18 @@ The interactive family tree is automatically deployed to GitHub Pages and update
   - Supports 8+ countries: Chinese, English, French, German, Irish, Polish, Scottish, Welsh
   - Displayed in graph info panel and tree card tooltips
 
+- **Health & Medical Tracking**: Comprehensive health data for all family members
+  - **Health Conditions**: Track chronic/ongoing conditions (diabetes, heart disease, asthma, etc.) for living and deceased
+  - **Cause of Death**: 50+ specific causes across 7 categories (Cancer, Cardiovascular, Respiratory, Neurological, etc.)
+  - **Heritable Risk**: Auto-calculated genetic predisposition based on parents' conditions and causes of death
+  - Risk levels: low, moderate, high, very-high with color-coded display
+  - 40+ tracked conditions including cancers, heart disease, Alzheimer's, diabetes, and more
+
+- **Location Tracking**: Track where family members live and are laid to rest
+  - **Home Location**: `home_city` and `home_state` for all individuals (living and deceased)
+  - **Cemetery Location**: `cemetery_name`, `cemetery_city`, and `cemetery_state` for deceased individuals
+  - Displayed in graph info panels and tree tooltips
+
 ### 🛠️ Person Management
 
 - **Person Generator** ([person_generator.html](https://patruff.github.io/rufftree/person_generator.html)): Modern web application for creating family profiles
@@ -208,16 +220,30 @@ The form is organized into several sections with a two-column grid layout:
    - **Status**: Dropdown (Alive/Deceased)
    - **Decade Deceased**: Only shown if status is "Deceased"
    - **Year Deceased (exact)**: Number input for precise death year
-   - **Cause of Death**: Only shown if status is "Deceased" (Cancer, Heart Disease, Stroke, Accident, Natural Causes, Other)
+   - **Cause of Death**: Only shown if status is "Deceased"
+     - 50+ options across 7 categories: Cancer, Cardiovascular, Respiratory, Neurological, Other Medical, Accidents & Injuries, General
+     - Specific options like pancreatic cancer, heart attack, stroke, Alzheimer's, etc.
+   - **Cemetery Information**: Only shown if status is "Deceased"
+     - Cemetery Name, City, and State fields
 
-4. **Education & Career**
+4. **🏥 Health Conditions** (Optional)
+   - **Chronic/Ongoing Health Conditions**: Multi-select dropdown for health conditions
+   - Applies to both living and deceased individuals
+   - 40+ conditions across 6 categories:
+     - Cancer, Cardiovascular, Respiratory, Neurological, Metabolic & Endocrine, Other
+   - Click "+" to add multiple conditions
+   - Examples: diabetes, heart disease, asthma, high blood pressure, arthritis, depression
+
+5. **Education & Career**
    - **Education Level**: Dropdown (Elementary, High School, Some College, College Degree, Master's, PhD)
    - **Occupation**: Autocomplete field with 100+ common occupations (Teacher, Engineer, Doctor, etc.) - type to search or select from dropdown
 
-5. **Location**
-   - **Location (City, State)**: Autocomplete field with 100+ major US cities in "City, ST" format (e.g., "New York, NY", "San Francisco, CA") - type to search or browse
+6. **Location**
+   - **Home City**: City where person lives/lived
+   - **Home State**: State where person lives/lived (accepts full names or abbreviations)
+   - Applies to both living and deceased individuals
 
-6. **🌍 Ethnicity** (Optional)
+7. **🌍 Ethnicity** (Optional)
    - **Ancestry Breakdown**: Dynamic input for country-percentage pairs
    - Click **"+"** to add more countries to the breakdown
    - Click **"−"** to remove a country entry
@@ -231,7 +257,7 @@ The form is organized into several sections with a two-column grid layout:
      - German: 34%, Irish: 32%, English: 18%, Scottish: 8%, Polish: 8%
    - **Note**: If parents are in the system, ethnicity will be automatically calculated (50% from each parent) when you add the person to the family tree
 
-7. **✨ Positive Attributes**
+8. **✨ Positive Attributes**
    - Multi-select checkbox grid displaying 47 positive attributes
    - Attributes are displayed in a responsive grid with clean, rounded checkboxes
    - Click any attribute to select/deselect (multiple selections allowed)
@@ -245,7 +271,7 @@ The form is organized into several sections with a two-column grid layout:
      - **Social**: Caring, Supportive, Empathetic, Thoughtful, Polite, Respectful, Modest, Energetic
    - **Smart OCEAN Mapping**: Each attribute automatically maps to Big Five personality traits (see below)
 
-8. **🧠 Personality (Big Five / OCEAN)**
+9. **🧠 Personality (Big Five / OCEAN)**
    - Five interactive sliders (0-100 scale) with real-time value display
    - Each slider has purple gradient styling matching the app theme
    - **Openness (O)**: Imaginative, curious, open to new experiences
@@ -258,7 +284,7 @@ The form is organized into several sections with a two-column grid layout:
      - If sliders remain at default (50) but attributes are selected, personality is auto-calculated from attribute mappings
      - This allows quick entry via attributes or precise control via sliders
 
-9. **Notes**
+10. **Notes**
    - Large text area for additional information, stories, or details
 
 **Attribute-to-OCEAN Mapping Examples:**
@@ -291,47 +317,24 @@ When multiple attributes are selected, the system averages the mapped values for
 #### Manual Editing
 
 1. Open `family_tree.json` in any text editor
-2. Edit family member information:
-   - `name`: Full name of the person
-   - `dob`: Birth year in YYYY format
-   - `dod`: Death year in YYYY format, or `"alive"` if living
-   - `generation`: Generation label (e.g., "Millennial", "Baby Boomer", "Gen Z") - automatically calculated by `add_generations.py`
-   - `from_pat`: Integer showing generations from Patrick Ruff (0 = Millennial, -1 = Gen X, +1 = Gen Z, etc.) - automatically calculated
-   - `ethnicity`: Optional object mapping countries to percentages that sum to 100 (e.g., `{"German": 50, "Irish": 50}`) - automatically calculated from parents by `add_ethnicity.py`
-   - `spouseId`, `parentIds`, `siblingIds`, `childrenIds`: Relationship IDs
-3. Save the file and refresh `index.html`
+2. Edit family member information (see **Family Data Model** section below for all available fields)
+3. Save the file
+4. Run utility scripts to recalculate auto-generated fields (optional):
+   ```bash
+   python3 add_generations.py        # Recalculate generation labels
+   python3 add_ethnicity.py          # Recalculate ethnicity from parents
+   python3 add_heritable_risk.py     # Recalculate health risk factors
+   ```
+5. Refresh the website to see changes
 
-Example entry:
-```json
-{
-  "id": "john_ruff",
-  "name": "John Ruff",
-  "dob": "1920",
-  "dod": "1995",
-  "generation": "Greatest Generation",
-  "from_pat": -4,
-  "ethnicity": {
-    "German": 50,
-    "Irish": 50
-  },
-  "spouseId": "mary_smith",
-  "parentIds": [],
-  "siblingIds": [],
-  "childrenIds": ["jane_ruff"]
-}
-```
+**Key Fields to Edit:**
+- **Required**: `id`, `name`, `dob`, `dod`, relationship IDs
+- **Location**: `home_city`, `home_state` (for all), `cemetery_name`, `cemetery_city`, `cemetery_state` (for deceased)
+- **Health**: `health_condition` (array), `causeOfDeath` (for deceased)
+- **Contact**: `occupation`, `phone`, `maidenName`, `notes`
+- **Auto-calculated** (run scripts): `generation`, `from_pat`, `ethnicity`, `heritable_risk`
 
-**Utility Scripts:**
-
-To regenerate generation labels and ethnicity data after editing birth years or parent relationships:
-
-```bash
-# Recalculate generation labels for all family members
-python3 add_generations.py
-
-# Recalculate ethnicity from parents (edit root ethnicities in script first)
-python3 add_ethnicity.py
-```
+See the **Family Data Model** section below for the complete list of all 30+ available fields with descriptions.
 
 The tree displays:
 - **Name** of each person
@@ -344,50 +347,119 @@ The tree displays:
 
 ### Family Data Model
 
-The `family_tree.json` file contains comprehensive data about each family member:
+The `family_tree.json` file contains comprehensive data about each family member. Below are all available fields:
 
-**Core Fields:**
-- `id`: Unique identifier (string)
-- `name`: Full name of the person
-- `dob`: Birth year in YYYY format (e.g., "1985")
-- `dod`: Death year in YYYY format, or `"alive"` if living
+#### Core Identification Fields
+| Field | Type | Required | Description |
+|-------|------|----------|-------------|
+| `id` | String | ✅ Yes | Unique identifier (e.g., "patrick", "joe_jr") |
+| `name` | String | ✅ Yes | Full name of the person |
+| `dob` | String | ✅ Yes | Birth year in YYYY format (e.g., "1985") |
+| `dod` | String | ✅ Yes | Death year in YYYY format, or `"alive"` if living |
 
-**Relationship Fields:**
-- `spouseId`: ID of spouse, or `null` if no spouse
-- `parentIds`: Array of parent IDs (usually 2, can be 0-2)
-- `siblingIds`: Array of sibling IDs
-- `childrenIds`: Array of children IDs
+#### Relationship Fields
+| Field | Type | Required | Description |
+|-------|------|----------|-------------|
+| `spouseId` | String or null | ✅ Yes | ID of spouse, or `null` if no spouse |
+| `parentIds` | Array | ✅ Yes | Array of parent IDs (usually 2, can be 0-2) |
+| `siblingIds` | Array | ✅ Yes | Array of sibling IDs |
+| `childrenIds` | Array | ✅ Yes | Array of children IDs |
 
-**Generation Fields (Auto-calculated):**
-- `generation`: Generation label based on birth year
-  - Greatest Generation (≤1927)
-  - Silent Generation (1928-1945)
-  - Baby Boomer (1946-1964)
-  - Generation X (1965-1980)
-  - Millennial (1981-1996)
-  - Generation Z (1997-2012)
-  - Generation Alpha (2013+)
-- `from_pat`: Integer showing generational distance from Patrick Ruff
-  - Negative = before Patrick's generation (e.g., -2 for Baby Boomers)
-  - 0 = Same generation as Patrick (Millennials)
-  - Positive = after Patrick's generation (e.g., +1 for Gen Z)
+#### Generation Fields (Auto-calculated)
+| Field | Type | Required | Description |
+|-------|------|----------|-------------|
+| `generation` | String | Auto | Generation label based on birth year<br>• Greatest Generation (≤1927)<br>• Silent Generation (1928-1945)<br>• Baby Boomer (1946-1964)<br>• Generation X (1965-1980)<br>• Millennial (1981-1996)<br>• Generation Z (1997-2012)<br>• Generation Alpha (2013+) |
+| `from_pat` | Integer | Auto | Generational distance from Patrick Ruff<br>• Negative = before Patrick's generation (e.g., -2 for Boomers)<br>• 0 = Same generation as Patrick (Millennials)<br>• Positive = after Patrick's generation (e.g., +1 for Gen Z) |
 
-**Ethnicity Field (Auto-calculated from parents):**
-- `ethnicity`: Object mapping countries to percentages (must sum to 100%)
-  - Example: `{"German": 34, "Irish": 32, "English": 18, "Scottish": 8, "Polish": 8}`
-  - Children inherit 50% from each parent
-  - Manually set for root ancestors (people without parents in system)
+#### Location Fields
+| Field | Type | Required | Description |
+|-------|------|----------|-------------|
+| `home_city` | String | Optional | City where person lives/lived (e.g., "Philadelphia") |
+| `home_state` | String | Optional | State where person lives/lived (e.g., "Pennsylvania" or "PA") |
+| `cemetery_name` | String | Optional | Cemetery name for deceased (e.g., "Oak Hill Cemetery") |
+| `cemetery_city` | String | Optional | Cemetery city for deceased (e.g., "Philadelphia") |
+| `cemetery_state` | String | Optional | Cemetery state for deceased (e.g., "Pennsylvania" or "PA") |
 
-**Optional Fields:**
-- `occupation`: Job title or profession
-- `phone`: Contact phone number
-- `maidenName`: Maiden name for married individuals
-- `notes`: Additional information or family stories
-- `location`: City and state (e.g., "New York, NY")
-- `education`: Education level
-- `hairColor`, `height`: Physical characteristics
-- `attributes`: Array of positive attributes (from Person Generator)
-- `personality`: Big Five OCEAN traits object
+#### Ethnicity Field (Auto-calculated from parents)
+| Field | Type | Required | Description |
+|-------|------|----------|-------------|
+| `ethnicity` | Object | Optional | Country-to-percentage mapping (must sum to 100%)<br>• Example: `{"German": 34, "Irish": 32, "English": 18}`<br>• Children inherit 50% from each parent<br>• Manually set for root ancestors |
+
+#### Health & Medical Fields
+| Field | Type | Required | Description |
+|-------|------|----------|-------------|
+| `causeOfDeath` | String | Optional | Cause of death for deceased individuals<br>• Values: "heart-attack", "pancreatic-cancer", "stroke", etc.<br>• 50+ options across 7 categories (Cancer, Cardiovascular, Respiratory, Neurological, Other Medical, Accidents & Injuries, General) |
+| `health_condition` | Array | Optional | Chronic/ongoing health conditions<br>• Values: ["diabetes", "heart-disease", "asthma"]<br>• Applies to both living and deceased<br>• 40+ conditions available |
+| `heritable_risk` | Object | Auto | Genetic predisposition risk levels<br>• Auto-calculated from parents' `causeOfDeath` and `health_condition`<br>• Format: `{"heart-disease": "moderate", "diabetes": "high"}`<br>• Risk levels: "low", "moderate", "high", "very-high" |
+
+#### Contact & Personal Information
+| Field | Type | Required | Description |
+|-------|------|----------|-------------|
+| `occupation` | String | Optional | Job title or profession |
+| `phone` | String | Optional | Contact phone number |
+| `maidenName` | String | Optional | Maiden name for married individuals |
+| `notes` | String | Optional | Additional information or family stories |
+| `education` | String | Optional | Education level (e.g., "College Degree", "Master's") |
+
+#### Physical Characteristics
+| Field | Type | Required | Description |
+|-------|------|----------|-------------|
+| `hairColor` | String | Optional | Hair color (e.g., "Blonde", "Brunette", "Black") |
+| `height` | String | Optional | Height category (e.g., "Tall", "Medium", "Short") |
+
+#### Personality & Attributes (from Person Generator)
+| Field | Type | Required | Description |
+|-------|------|----------|-------------|
+| `attributes` | Array | Optional | Array of positive attributes (e.g., ["funny", "kind", "smart"])<br>• 47 available attributes |
+| `personality` | Object | Optional | Big Five OCEAN personality traits<br>• Format: `{"openness": 75, "conscientiousness": 60, ...}`<br>• Values: 0-100 for each trait |
+
+#### Example Complete Entry
+
+```json
+{
+  "id": "patrick",
+  "name": "Patrick Ruff",
+  "dob": "1985",
+  "dod": "alive",
+  "generation": "Millennial",
+  "from_pat": 0,
+  "home_city": "Philadelphia",
+  "home_state": "Pennsylvania",
+  "ethnicity": {
+    "German": 34,
+    "Irish": 32,
+    "English": 18,
+    "Scottish": 8,
+    "Polish": 8
+  },
+  "health_condition": ["asthma"],
+  "heritable_risk": {
+    "heart-disease": "moderate",
+    "diabetes": "low"
+  },
+  "occupation": "Developer/Scientist",
+  "phone": "555-0123",
+  "spouseId": "jenny",
+  "parentIds": ["joe_sr", "debbie"],
+  "siblingIds": ["joe_jr", "sarah", "phil"],
+  "childrenIds": ["patrick_child1", "patrick_child2"]
+}
+```
+
+#### Utility Scripts for Auto-Calculated Fields
+
+After manually editing the JSON, run these scripts to update auto-calculated fields:
+
+```bash
+# Recalculate generation labels and from_pat for all family members
+python3 add_generations.py
+
+# Recalculate ethnicity from parents (edit root ethnicities in script first)
+python3 add_ethnicity.py
+
+# Recalculate heritable risk from parents' health conditions and causes of death
+python3 add_heritable_risk.py
+```
 
 #### Setting Up GitHub Pages
 
