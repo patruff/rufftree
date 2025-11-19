@@ -667,6 +667,25 @@
                 tooltip += `Health Risks: ${riskStr}`;
             }
 
+            // Add cemetery information (for deceased only)
+            if (!isAlive && (person.cemetery_name || person.cemetery_city || person.cemetery_state)) {
+                let cemeteryInfo = '';
+                if (person.cemetery_name) {
+                    cemeteryInfo = person.cemetery_name;
+                }
+                if (person.cemetery_city || person.cemetery_state) {
+                    const location = [person.cemetery_city, person.cemetery_state].filter(Boolean).join(', ');
+                    if (cemeteryInfo) {
+                        cemeteryInfo += ` (${location})`;
+                    } else {
+                        cemeteryInfo = location;
+                    }
+                }
+
+                if (tooltip) tooltip += '\n';
+                tooltip += `Cemetery: ${cemeteryInfo}`;
+            }
+
             const nodeDiv = document.createElement('div');
             nodeDiv.className = 'person-node';
             nodeDiv.style.left = pos.x + 'px';

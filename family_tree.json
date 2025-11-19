@@ -1093,6 +1093,9 @@
       "ethnicity": "Optional: Object mapping countries to percentages (must sum to 100). Calculated from parents if not manually set.",
       "causeOfDeath": "Optional: String for deceased individuals indicating what they died from (e.g., 'heart-attack', 'pancreatic-cancer')",
       "health_condition": "Optional: Array of strings for ongoing/chronic health conditions (e.g., ['diabetes', 'heart-disease']). Applies to both living and deceased.",
+      "cemetery_name": "Optional: String for deceased individuals indicating cemetery name (e.g., 'Oak Hill Cemetery')",
+      "cemetery_city": "Optional: String for deceased individuals indicating cemetery city (e.g., 'Philadelphia')",
+      "cemetery_state": "Optional: String for deceased individuals indicating cemetery state (e.g., 'Pennsylvania' or 'PA')",
       "heritable_risk": "Optional: Object mapping health conditions to risk levels (low/moderate/high/very-high). Auto-calculated from parents' health conditions and causes of death."
     },
     "expandable_tree": {

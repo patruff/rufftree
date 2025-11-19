@@ -513,6 +513,27 @@
                 `;
             }
 
+            if (!isAlive && (person.cemetery_name || person.cemetery_city || person.cemetery_state)) {
+                let cemeteryInfo = '';
+                if (person.cemetery_name) {
+                    cemeteryInfo = person.cemetery_name;
+                }
+                if (person.cemetery_city || person.cemetery_state) {
+                    const location = [person.cemetery_city, person.cemetery_state].filter(Boolean).join(', ');
+                    if (cemeteryInfo) {
+                        cemeteryInfo += ` (${location})`;
+                    } else {
+                        cemeteryInfo = location;
+                    }
+                }
+                html += `
+                    <div class="info-item">
+                        <div class="info-label">Cemetery</div>
+                        <div class="info-value">${cemeteryInfo}</div>
+                    </div>
+                `;
+            }
+
             if (person.generation) {
                 const fromPatText = person.from_pat === 0 ? 'Same generation as Patrick' :
                                     person.from_pat > 0 ? `${person.from_pat} generation${person.from_pat > 1 ? 's' : ''} after Patrick` :
