@@ -342,7 +342,7 @@ When multiple attributes are selected, the system averages the mapped values for
 - **Location**: `home_city`, `home_state` (for all), `cemetery_name`, `cemetery_city`, `cemetery_state` (for deceased)
 - **Health**: `health_condition` (array), `causeOfDeath` (for deceased)
 - **Contact**: `occupation`, `phone`, `maidenName`, `notes`
-- **Auto-calculated** (run scripts): `generation`, `from_pat`, `ethnicity`, `heritable_risk`, `heritable_traits`, `gender`, `y_chromosome_line`, `y_chromosome_final`, `mtdna_line`, `mtdna_final`, `rag_chunks`, `lacks_data`
+- **Auto-calculated** (run scripts): `generation`, `from_pat`, `ethnicity`, `heritable_risk`, `heritable_traits`, `gender`, `y_chromosome_line`, `y_chromosome_final`, `mtdna_line`, `mtdna_final`, `rag_chunks`, `lacks_data`, `completion_percentage`
 
 See the **Family Data Model** section below for the complete list of all 30+ available fields with descriptions.
 
@@ -409,6 +409,7 @@ The `family_tree.json` file contains comprehensive data about each family member
 | `mtdna_final` | Boolean | Auto | True if this female is the last in her specific mtDNA line<br>• Auto-calculated based on female descendants<br>• Indicates this specific ancestral mitochondrial DNA lineage will end |
 | `rag_chunks` | Number | Auto | Number of RAG document chunks that mention this person<br>• Auto-calculated by querying the RAG system<br>• Higher values indicate more documentation available |
 | `lacks_data` | Boolean | Auto | True if person has insufficient documentation in RAG system<br>• Auto-calculated: true when `rag_chunks` < 2<br>• Helps identify people needing more documentation |
+| `completion_percentage` | Number | Auto | Profile completion percentage (0-100)<br>• Auto-calculated based on filled optional fields<br>• Categories: Excellent (≥80%), Good (60-79%), Fair (40-59%), Minimal (20-39%), Incomplete (<20%)<br>• Helps identify incomplete profiles |
 
 #### Contact & Personal Information
 | Field | Type | Required | Description |
@@ -494,7 +495,26 @@ python3 add_heritable_traits.py
 # Track specific ancestral lineages - traces Y chromosome and mtDNA lines back to root ancestors
 # Assigns line names (e.g., "Ruff Y", "Miller mtDNA") and identifies final carriers
 python3 add_final_lineage.py
+
+# Calculate profile completion percentage for each person
+# Measures how many optional fields are filled vs total available fields
+python3 calculate_completion.py
 ```
+
+**What completion percentage tracks:**
+- Location fields (home & cemetery)
+- Contact fields (occupation, phone, maiden name, education)
+- Health fields (conditions, cause of death)
+- Physical fields (hair color, height)
+- Personal fields (notes, attributes, personality)
+- Relationships (spouse, parents, siblings, children)
+
+**Categories:**
+- Excellent (≥80%) - Well-rounded profile
+- Good (60-79%) - Most key information filled
+- Fair (40-59%) - Basic information present
+- Minimal (20-39%) - Sparse information
+- Incomplete (<20%) - Very limited information
 
 #### Family Tree Query & Extraction Scripts
 

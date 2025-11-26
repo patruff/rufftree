@@ -31,7 +31,8 @@
           "English": 18,
           "Scottish": 8,
           "Polish": 8
-        }
+        },
+        "completion_percentage": 31.2
       },
       "jenny": {
         "id": "jenny",
@@ -54,7 +55,8 @@
         "from_pat": 0,
         "ethnicity": {
           "Chinese": 100
-        }
+        },
+        "completion_percentage": 31.2
       },
       "patrick_child1": {
         "id": "patrick_child1",
@@ -79,7 +81,8 @@
           "Scottish": 4,
           "Polish": 4,
           "Chinese": 50
-        }
+        },
+        "completion_percentage": 12.5
       },
       "patrick_child2": {
         "id": "patrick_child2",
@@ -104,7 +107,8 @@
           "Scottish": 4,
           "Polish": 4,
           "Chinese": 50
-        }
+        },
+        "completion_percentage": 12.5
       },
       "joe_jr": {
         "id": "joe_jr",
@@ -136,7 +140,8 @@
           "English": 18,
           "Scottish": 8,
           "Polish": 8
-        }
+        },
+        "completion_percentage": 37.5
       },
       "katie": {
         "id": "katie",
@@ -158,7 +163,8 @@
           "Irish": 40,
           "German": 30,
           "English": 30
-        }
+        },
+        "completion_percentage": 18.8
       },
       "kaylin": {
         "id": "kaylin",
@@ -183,7 +189,8 @@
           "English": 24,
           "Scottish": 4,
           "Polish": 4
-        }
+        },
+        "completion_percentage": 12.5
       },
       "cameron": {
         "id": "cameron",
@@ -208,7 +215,8 @@
           "English": 24,
           "Scottish": 4,
           "Polish": 4
-        }
+        },
+        "completion_percentage": 12.5
       },
       "benjamin": {
         "id": "benjamin",
@@ -233,7 +241,8 @@
           "English": 24,
           "Scottish": 4,
           "Polish": 4
-        }
+        },
+        "completion_percentage": 12.5
       },
       "sarah": {
         "id": "sarah",
@@ -266,7 +275,8 @@
           "English": 18,
           "Scottish": 8,
           "Polish": 8
-        }
+        },
+        "completion_percentage": 50.0
       },
       "kevin_boilon": {
         "id": "kevin_boilon",
@@ -287,7 +297,8 @@
         "ethnicity": {
           "French": 60,
           "Irish": 40
-        }
+        },
+        "completion_percentage": 25.0
       },
       "eloise": {
         "id": "eloise",
@@ -312,7 +323,8 @@
           "Scottish": 4,
           "Polish": 4,
           "French": 30
-        }
+        },
+        "completion_percentage": 12.5
       },
       "darcy": {
         "id": "darcy",
@@ -337,7 +349,8 @@
           "Scottish": 4,
           "Polish": 4,
           "French": 30
-        }
+        },
+        "completion_percentage": 12.5
       },
       "phil": {
         "id": "phil",
@@ -370,7 +383,8 @@
           "English": 18,
           "Scottish": 8,
           "Polish": 8
-        }
+        },
+        "completion_percentage": 37.5
       },
       "ashley": {
         "id": "ashley",
@@ -393,7 +407,8 @@
           "English": 40,
           "Scottish": 30,
           "Irish": 30
-        }
+        },
+        "completion_percentage": 18.8
       },
       "logan": {
         "id": "logan",
@@ -419,7 +434,8 @@
           "English": 29,
           "Scottish": 19,
           "Polish": 4
-        }
+        },
+        "completion_percentage": 12.5
       },
       "aiden": {
         "id": "aiden",
@@ -445,7 +461,8 @@
           "English": 29,
           "Scottish": 19,
           "Polish": 4
-        }
+        },
+        "completion_percentage": 12.5
       },
       "tripp": {
         "id": "tripp",
@@ -471,7 +488,8 @@
           "English": 29,
           "Scottish": 19,
           "Polish": 4
-        }
+        },
+        "completion_percentage": 12.5
       },
       "scout": {
         "id": "scout",
@@ -497,7 +515,8 @@
           "English": 29,
           "Scottish": 19,
           "Polish": 4
-        }
+        },
+        "completion_percentage": 12.5
       },
       "joe_sr": {
         "id": "joe_sr",
@@ -533,7 +552,8 @@
           "German": 25,
           "Irish": 55,
           "English": 20
-        }
+        },
+        "completion_percentage": 31.2
       },
       "debbie": {
         "id": "debbie",
@@ -567,7 +587,8 @@
           "Scottish": 15,
           "Polish": 15,
           "Irish": 10
-        }
+        },
+        "completion_percentage": 43.8
       },
       "annette": {
         "id": "annette",
@@ -590,7 +611,8 @@
           "German": 50,
           "Polish": 30,
           "Irish": 20
-        }
+        },
+        "completion_percentage": 18.8
       },
       "stan_sr": {
         "id": "stan_sr",
@@ -613,7 +635,8 @@
           "German": 40,
           "English": 30,
           "Scottish": 30
-        }
+        },
+        "completion_percentage": 15.0
       },
       "grandfather_ruff": {
         "id": "grandfather_ruff",
@@ -640,7 +663,8 @@
         "ethnicity": {
           "German": 50,
           "Irish": 50
-        }
+        },
+        "completion_percentage": 10.0
       },
       "grandmother_ruff": {
         "id": "grandmother_ruff",
@@ -667,7 +691,8 @@
         "ethnicity": {
           "Irish": 60,
           "English": 40
-        }
+        },
+        "completion_percentage": 10.0
       },
       "yogi": {
         "id": "yogi",
@@ -697,7 +722,8 @@
           "German": 25,
           "Irish": 55,
           "English": 20
-        }
+        },
+        "completion_percentage": 12.5
       },
       "freddie": {
         "id": "freddie",
@@ -727,7 +753,8 @@
           "German": 25,
           "Irish": 55,
           "English": 20
-        }
+        },
+        "completion_percentage": 12.5
       },
       "tommy": {
         "id": "tommy",
@@ -757,7 +784,8 @@
           "German": 25,
           "Irish": 55,
           "English": 20
-        }
+        },
+        "completion_percentage": 12.5
       },
       "john": {
         "id": "john",
@@ -787,7 +815,8 @@
           "German": 25,
           "Irish": 55,
           "English": 20
-        }
+        },
+        "completion_percentage": 12.5
       },
       "mary_ruff": {
         "id": "mary_ruff",
@@ -817,7 +846,8 @@
           "German": 25,
           "Irish": 55,
           "English": 20
-        }
+        },
+        "completion_percentage": 12.5
       },
       "bridget": {
         "id": "bridget",
@@ -847,7 +877,8 @@
           "German": 25,
           "Irish": 55,
           "English": 20
-        }
+        },
+        "completion_percentage": 12.5
       },
       "anne_ruff": {
         "id": "anne_ruff",
@@ -877,7 +908,8 @@
           "German": 25,
           "Irish": 55,
           "English": 20
-        }
+        },
+        "completion_percentage": 12.5
       },
       "anita": {
         "id": "anita",
@@ -907,7 +939,8 @@
           "German": 25,
           "Irish": 55,
           "English": 20
-        }
+        },
+        "completion_percentage": 12.5
       },
       "winifred": {
         "id": "winifred",
@@ -937,7 +970,8 @@
           "German": 25,
           "Irish": 55,
           "English": 20
-        }
+        },
+        "completion_percentage": 12.5
       },
       "stan_miller": {
         "id": "stan_miller",
@@ -964,7 +998,8 @@
           "Scottish": 15,
           "Polish": 15,
           "Irish": 10
-        }
+        },
+        "completion_percentage": 18.8
       },
       "beth_bradley": {
         "id": "beth_bradley",
@@ -992,7 +1027,8 @@
           "Scottish": 15,
           "Polish": 15,
           "Irish": 10
-        }
+        },
+        "completion_percentage": 31.2
       },
       "bryan_bradley": {
         "id": "bryan_bradley",
@@ -1009,7 +1045,8 @@
           "English": 50,
           "Welsh": 30,
           "Irish": 20
-        }
+        },
+        "completion_percentage": 6.2
       },
       "lynn_miller": {
         "id": "lynn_miller",
@@ -1035,7 +1072,8 @@
           "Scottish": 15,
           "Polish": 15,
           "Irish": 10
-        }
+        },
+        "completion_percentage": 12.5
       },
       "jenny_father": {
         "id": "jenny_father",
@@ -1052,7 +1090,8 @@
         "from_pat": -2,
         "ethnicity": {
           "Chinese": 100
-        }
+        },
+        "completion_percentage": 12.5
       },
       "jenny_mother": {
         "id": "jenny_mother",
@@ -1069,7 +1108,8 @@
         "from_pat": -2,
         "ethnicity": {
           "Chinese": 100
-        }
+        },
+        "completion_percentage": 12.5
       }
     }
   },

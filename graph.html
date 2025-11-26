@@ -716,6 +716,48 @@
                 `;
             }
 
+            // Profile Completion
+            if (typeof person.completion_percentage === 'number') {
+                const completion = person.completion_percentage;
+                let completionColor = '';
+                let completionLabel = '';
+
+                if (completion >= 80) {
+                    completionColor = '#4CAF50';
+                    completionLabel = 'Excellent';
+                } else if (completion >= 60) {
+                    completionColor = '#8BC34A';
+                    completionLabel = 'Good';
+                } else if (completion >= 40) {
+                    completionColor = '#FFC107';
+                    completionLabel = 'Fair';
+                } else if (completion >= 20) {
+                    completionColor = '#FF9800';
+                    completionLabel = 'Minimal';
+                } else {
+                    completionColor = '#E94B3C';
+                    completionLabel = 'Incomplete';
+                }
+
+                // Create progress bar
+                const completionHtml = `
+                    <div style="display: flex; align-items: center; gap: 10px;">
+                        <div style="flex: 1; background: rgba(255,255,255,0.1); height: 20px; border-radius: 10px; overflow: hidden;">
+                            <div style="background: ${completionColor}; height: 100%; width: ${completion}%; transition: width 0.3s;"></div>
+                        </div>
+                        <div style="color: ${completionColor}; font-weight: 600; min-width: 60px;">${completion.toFixed(1)}%</div>
+                    </div>
+                    <div style="margin-top: 4px; font-size: 12px; color: #a0a0a0;">${completionLabel} profile</div>
+                `;
+
+                html += `
+                    <div class="info-item">
+                        <div class="info-label">Profile Completion</div>
+                        <div class="info-value">${completionHtml}</div>
+                    </div>
+                `;
+            }
+
             // Relationships
             if (person.spouseId) {
                 const spouse = familyData.people[person.spouseId];

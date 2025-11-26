@@ -811,6 +811,42 @@
                 }
             });
 
+            // Track profile completion
+            let profileCompletion = {
+                excellent: 0,  // >= 80%
+                good: 0,       // >= 60%
+                fair: 0,       // >= 40%
+                minimal: 0,    // >= 20%
+                incomplete: 0, // < 20%
+                notCalculated: 0,
+                totalCompletion: 0
+            };
+
+            Object.values(familyData.people).forEach(person => {
+                if (typeof person.completion_percentage === 'number') {
+                    const pct = person.completion_percentage;
+                    profileCompletion.totalCompletion += pct;
+
+                    if (pct >= 80) {
+                        profileCompletion.excellent++;
+                    } else if (pct >= 60) {
+                        profileCompletion.good++;
+                    } else if (pct >= 40) {
+                        profileCompletion.fair++;
+                    } else if (pct >= 20) {
+                        profileCompletion.minimal++;
+                    } else {
+                        profileCompletion.incomplete++;
+                    }
+                } else {
+                    profileCompletion.notCalculated++;
+                }
+            });
+
+            const avgCompletion = profileCompletion.notCalculated < total
+                ? (profileCompletion.totalCompletion / (total - profileCompletion.notCalculated)).toFixed(1)
+                : 0;
+
             // Build generation breakdown HTML
             let genBreakdown = '';
             generationOrder.forEach(gen => {
@@ -937,6 +973,56 @@
                             ${dataCoverage.noData + dataCoverage.insufficient > 0 ? `
                                 <div style="margin-top: 10px; padding: 8px 12px; background: rgba(255,255,255,0.03); border-radius: 4px; font-size: 12px; color: #b0b0b0;">
                                     ℹ️  ${dataCoverage.noData + dataCoverage.insufficient} people need more documentation in the RAG system
+                                </div>
+                            ` : ''}
+                        </div>
+                    ` : ''}
+                    ${profileCompletion.notCalculated < total ? `
+                        <div style="margin-top: 20px; padding-top: 15px; border-top: 1px solid rgba(255,255,255,0.1);">
+                            <div style="font-size: 14px; font-weight: 600; color: #a0a0a0; margin-bottom: 8px;">📝 Profile Completion</div>
+                            <div style="display: flex; align-items: center; gap: 10px; margin-bottom: 12px;">
+                                <div style="font-size: 32px; font-weight: 700; color: ${avgCompletion >= 80 ? '#4CAF50' : avgCompletion >= 60 ? '#8BC34A' : avgCompletion >= 40 ? '#FFC107' : '#FF9800'};">
+                                    ${avgCompletion}%
+                                </div>
+                                <div style="font-size: 13px; color: #b0b0b0;">
+                                    Average profile completion across ${total - profileCompletion.notCalculated} people
+                                </div>
+                            </div>
+                            <div style="display: grid; grid-template-columns: repeat(auto-fit, minmax(120px, 1fr)); gap: 8px; margin-top: 8px;">
+                                ${profileCompletion.excellent > 0 ? `
+                                    <div style="padding: 6px 10px; background: rgba(76, 175, 80, 0.1); border-radius: 6px; border: 1px solid rgba(76, 175, 80, 0.3);">
+                                        <div style="font-size: 18px; font-weight: 600; color: #4CAF50;">${profileCompletion.excellent}</div>
+                                        <div style="font-size: 10px; color: #a0a0a0;">Excellent (≥80%)</div>
+                                    </div>
+                                ` : ''}
+                                ${profileCompletion.good > 0 ? `
+                                    <div style="padding: 6px 10px; background: rgba(139, 195, 74, 0.1); border-radius: 6px; border: 1px solid rgba(139, 195, 74, 0.3);">
+                                        <div style="font-size: 18px; font-weight: 600; color: #8BC34A;">${profileCompletion.good}</div>
+                                        <div style="font-size: 10px; color: #a0a0a0;">Good (60-79%)</div>
+                                    </div>
+                                ` : ''}
+                                ${profileCompletion.fair > 0 ? `
+                                    <div style="padding: 6px 10px; background: rgba(255, 193, 7, 0.1); border-radius: 6px; border: 1px solid rgba(255, 193, 7, 0.3);">
+                                        <div style="font-size: 18px; font-weight: 600; color: #FFC107;">${profileCompletion.fair}</div>
+                                        <div style="font-size: 10px; color: #a0a0a0;">Fair (40-59%)</div>
+                                    </div>
+                                ` : ''}
+                                ${profileCompletion.minimal > 0 ? `
+                                    <div style="padding: 6px 10px; background: rgba(255, 152, 0, 0.1); border-radius: 6px; border: 1px solid rgba(255, 152, 0, 0.3);">
+                                        <div style="font-size: 18px; font-weight: 600; color: #FF9800;">${profileCompletion.minimal}</div>
+                                        <div style="font-size: 10px; color: #a0a0a0;">Minimal (20-39%)</div>
+                                    </div>
+                                ` : ''}
+                                ${profileCompletion.incomplete > 0 ? `
+                                    <div style="padding: 6px 10px; background: rgba(233, 75, 60, 0.1); border-radius: 6px; border: 1px solid rgba(233, 75, 60, 0.3);">
+                                        <div style="font-size: 18px; font-weight: 600; color: #E94B3C;">${profileCompletion.incomplete}</div>
+                                        <div style="font-size: 10px; color: #a0a0a0;">Incomplete (<20%)</div>
+                                    </div>
+                                ` : ''}
+                            </div>
+                            ${profileCompletion.fair + profileCompletion.minimal + profileCompletion.incomplete > 0 ? `
+                                <div style="margin-top: 10px; padding: 8px 12px; background: rgba(255,255,255,0.03); border-radius: 4px; font-size: 12px; color: #b0b0b0;">
+                                    ℹ️  ${profileCompletion.fair + profileCompletion.minimal + profileCompletion.incomplete} people have incomplete profiles
                                 </div>
                             ` : ''}
                         </div>
