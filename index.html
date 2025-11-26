@@ -293,7 +293,9 @@
 
         <nav>
             <a href="index.html" style="background: #667eea; color: white;">🌳 Family Tree</a>
+            <a href="graph.html">📊 Family Graph</a>
             <a href="queries.html">💬 Ask Questions</a>
+            <a href="person_generator.html">👤 Add Person</a>
         </nav>
 
         <div class="instructions">
@@ -609,11 +611,104 @@
             const age = isAlive
                 ? `Age ${new Date().getFullYear() - parseInt(person.dob)}`
                 : `Lived ${parseInt(person.dod) - parseInt(person.dob)} years`;
+            const generation = person.generation ? person.generation : '';
 
             const hasRelatives = person.spouseId ||
                                 person.siblingIds.length > 0 ||
                                 person.parentIds.length > 0 ||
                                 person.childrenIds.length > 0;
+
+            // Format tooltip with ethnicity and heritable risk
+            let tooltip = '';
+
+            // Add ethnicity
+            if (person.ethnicity && Object.keys(person.ethnicity).length > 0) {
+                const ethnicityStr = Object.entries(person.ethnicity)
+                    .sort((a, b) => b[1] - a[1])
+                    .map(([country, pct]) => `${country}: ${pct}%`)
+                    .join(', ');
+                tooltip += `Ethnicity: ${ethnicityStr}`;
+            }
+
+            // Add home location
+            if (person.home_city || person.home_state) {
+                const homeLocation = [person.home_city, person.home_state].filter(Boolean).join(', ');
+                if (tooltip) tooltip += '\n';
+                tooltip += `Home: ${homeLocation}`;
+            }
+
+            // Add health conditions
+            if (person.health_condition && person.health_condition.length > 0) {
+                const conditionsStr = person.health_condition
+                    .map(condition => {
+                        return condition.split('-')
+                            .map(word => word.charAt(0).toUpperCase() + word.slice(1))
+                            .join(' ');
+                    })
+                    .join(', ');
+
+                if (tooltip) tooltip += '\n';
+                tooltip += `Health Conditions: ${conditionsStr}`;
+            }
+
+            // Add heritable risk
+            if (person.heritable_risk && Object.keys(person.heritable_risk).length > 0) {
+                const riskStr = Object.entries(person.heritable_risk)
+                    .sort((a, b) => {
+                        const order = { 'very-high': 0, 'high': 1, 'moderate': 2, 'low': 3 };
+                        return order[a[1]] - order[b[1]];
+                    })
+                    .map(([condition, level]) => {
+                        const conditionFormatted = condition
+                            .split('-')
+                            .map(word => word.charAt(0).toUpperCase() + word.slice(1))
+                            .join(' ');
+                        const levelFormatted = level.split('-')
+                            .map(word => word.charAt(0).toUpperCase() + word.slice(1))
+                            .join(' ');
+                        return `${conditionFormatted}: ${levelFormatted}`;
+                    })
+                    .join(', ');
+
+                if (tooltip) tooltip += '\n';
+                tooltip += `Health Risks: ${riskStr}`;
+            }
+
+            // Add cemetery information (for deceased only)
+            if (!isAlive && (person.cemetery_name || person.cemetery_city || person.cemetery_state)) {
+                let cemeteryInfo = '';
+                if (person.cemetery_name) {
+                    cemeteryInfo = person.cemetery_name;
+                }
+                if (person.cemetery_city || person.cemetery_state) {
+                    const location = [person.cemetery_city, person.cemetery_state].filter(Boolean).join(', ');
+                    if (cemeteryInfo) {
+                        cemeteryInfo += ` (${location})`;
+                    } else {
+                        cemeteryInfo = location;
+                    }
+                }
+
+                if (tooltip) tooltip += '\n';
+                tooltip += `Cemetery: ${cemeteryInfo}`;
+            }
+
+            // Add genetic traits
+            if (person.heritable_traits && Object.keys(person.heritable_traits).length > 0) {
+                const traitsStr = Object.entries(person.heritable_traits)
+                    .map(([traitName, traitData]) => {
+                        const traitLabel = traitName.split('_')
+                            .map(word => word.charAt(0).toUpperCase() + word.slice(1))
+                            .join(' ');
+                        const genotype = traitData.genotype || '';
+                        const phenotype = traitData.phenotype || '';
+                        return `${traitLabel}: ${genotype} (${phenotype})`;
+                    })
+                    .join(', ');
+
+                if (tooltip) tooltip += '\n';
+                tooltip += `Traits: ${traitsStr}`;
+            }
 
             const nodeDiv = document.createElement('div');
             nodeDiv.className = 'person-node';
@@ -623,11 +718,13 @@
 
             nodeDiv.innerHTML = `
                 <div class="person-card ${isAlive ? 'alive' : ''} ${isExpanded ? 'expanded' : ''}"
-                     onclick="toggleNode('${personId}')">
+                     onclick="toggleNode('${personId}')"
+                     ${tooltip ? `title="${tooltip}"` : ''}>
                     ${hasRelatives ? `<div class="expand-indicator">${isExpanded ? '−' : '+'}</div>` : ''}
                     <div class="name">${person.name}</div>
                     <div class="dates">${lifespan}</div>
                     <div class="status">${age}</div>
+                    ${generation ? `<div class="status" style="font-size: 11px; opacity: 0.8;">${generation}</div>` : ''}
                 </div>
             `;
 
@@ -640,23 +737,296 @@
             const deceased = total - living;
             const visible = visibleNodes.size;
 
+            // Calculate generation breakdown
+            const generationCounts = {};
+            const generationOrder = [
+                'Generation Alpha',
+                'Generation Z',
+                'Millennial',
+                'Generation X',
+                'Baby Boomer',
+                'Silent Generation',
+                'Greatest Generation'
+            ];
+
+            Object.values(familyData.people).forEach(person => {
+                const gen = person.generation || 'Unknown';
+                generationCounts[gen] = (generationCounts[gen] || 0) + 1;
+            });
+
+            // Track Y chromosome and mtDNA lineages
+            const yLineages = {};
+            const mtdnaLineages = {};
+
+            Object.values(familyData.people).forEach(person => {
+                // Track Y chromosome lines
+                if (person.y_chromosome_line) {
+                    if (!yLineages[person.y_chromosome_line]) {
+                        yLineages[person.y_chromosome_line] = {total: 0, finals: 0, finalPeople: []};
+                    }
+                    yLineages[person.y_chromosome_line].total++;
+                    if (person.y_chromosome_final) {
+                        yLineages[person.y_chromosome_line].finals++;
+                        yLineages[person.y_chromosome_line].finalPeople.push(person.name);
+                    }
+                }
+
+                // Track mtDNA lines
+                if (person.mtdna_line) {
+                    if (!mtdnaLineages[person.mtdna_line]) {
+                        mtdnaLineages[person.mtdna_line] = {total: 0, finals: 0, finalPeople: []};
+                    }
+                    mtdnaLineages[person.mtdna_line].total++;
+                    if (person.mtdna_final) {
+                        mtdnaLineages[person.mtdna_line].finals++;
+                        mtdnaLineages[person.mtdna_line].finalPeople.push(person.name);
+                    }
+                }
+            });
+
+            const totalYChromosomes = Object.keys(yLineages).length;
+            const totalMtDNA = Object.keys(mtdnaLineages).length;
+            const totalYFinals = Object.values(yLineages).reduce((sum, line) => sum + line.finals, 0);
+            const totalMtDNAFinals = Object.values(mtdnaLineages).reduce((sum, line) => sum + line.finals, 0);
+
+            // Track data coverage
+            let dataCoverage = {
+                wellDocumented: 0,
+                insufficient: 0,
+                noData: 0,
+                notAnalyzed: 0
+            };
+
+            Object.values(familyData.people).forEach(person => {
+                if (typeof person.rag_chunks === 'number') {
+                    if (person.rag_chunks === 0) {
+                        dataCoverage.noData++;
+                    } else if (person.lacks_data === true) {
+                        dataCoverage.insufficient++;
+                    } else {
+                        dataCoverage.wellDocumented++;
+                    }
+                } else {
+                    dataCoverage.notAnalyzed++;
+                }
+            });
+
+            // Track profile completion
+            let profileCompletion = {
+                excellent: 0,  // >= 80%
+                good: 0,       // >= 60%
+                fair: 0,       // >= 40%
+                minimal: 0,    // >= 20%
+                incomplete: 0, // < 20%
+                notCalculated: 0,
+                totalCompletion: 0
+            };
+
+            Object.values(familyData.people).forEach(person => {
+                if (typeof person.completion_percentage === 'number') {
+                    const pct = person.completion_percentage;
+                    profileCompletion.totalCompletion += pct;
+
+                    if (pct >= 80) {
+                        profileCompletion.excellent++;
+                    } else if (pct >= 60) {
+                        profileCompletion.good++;
+                    } else if (pct >= 40) {
+                        profileCompletion.fair++;
+                    } else if (pct >= 20) {
+                        profileCompletion.minimal++;
+                    } else {
+                        profileCompletion.incomplete++;
+                    }
+                } else {
+                    profileCompletion.notCalculated++;
+                }
+            });
+
+            const avgCompletion = profileCompletion.notCalculated < total
+                ? (profileCompletion.totalCompletion / (total - profileCompletion.notCalculated)).toFixed(1)
+                : 0;
+
+            // Build generation breakdown HTML
+            let genBreakdown = '';
+            generationOrder.forEach(gen => {
+                if (generationCounts[gen]) {
+                    const count = generationCounts[gen];
+                    const barWidth = (count / total * 100);
+                    genBreakdown += `
+                        <div style="margin: 8px 0; padding: 6px 12px; background: rgba(255,255,255,0.05); border-radius: 6px;">
+                            <div style="display: flex; justify-content: space-between; margin-bottom: 4px;">
+                                <span style="font-weight: 500;">${gen}</span>
+                                <span style="color: #a0a0a0;">${count} ${count === 1 ? 'person' : 'people'}</span>
+                            </div>
+                            <div style="background: rgba(255,255,255,0.1); height: 8px; border-radius: 4px; overflow: hidden;">
+                                <div style="background: linear-gradient(90deg, #667eea 0%, #764ba2 100%); height: 100%; width: ${barWidth}%; transition: width 0.3s;"></div>
+                            </div>
+                        </div>
+                    `;
+                }
+            });
+
+            // Build detailed lineage breakdown HTML
+            let lineageBreakdown = '';
+
+            if (totalYChromosomes > 0 || totalMtDNA > 0) {
+                lineageBreakdown += '<div style="margin-top: 20px; padding-top: 15px; border-top: 1px solid rgba(255,255,255,0.1);">';
+
+                // Y Chromosome lineages
+                if (totalYChromosomes > 0) {
+                    lineageBreakdown += '<div style="margin-bottom: 15px;">';
+                    lineageBreakdown += '<div style="font-size: 14px; font-weight: 600; color: #4A90E2; margin-bottom: 8px;">🔵 Y Chromosome Lineages</div>';
+
+                    Object.entries(yLineages).sort().forEach(([lineName, data]) => {
+                        const status = data.finals > 0 ? `<strong>${data.finals} of ${data.total}</strong> ending` : `All ${data.total} continuing`;
+                        const statusColor = data.finals > 0 ? '#E94B3C' : '#4CAF50';
+                        lineageBreakdown += `
+                            <div style="margin: 6px 0; padding: 6px 10px; background: rgba(255,255,255,0.03); border-radius: 4px; font-size: 13px;">
+                                <span style="font-weight: 500;">${lineName}:</span>
+                                <span style="color: ${statusColor};">${status}</span>
+                            </div>
+                        `;
+                    });
+                    lineageBreakdown += '</div>';
+                }
+
+                // mtDNA lineages
+                if (totalMtDNA > 0) {
+                    lineageBreakdown += '<div>';
+                    lineageBreakdown += '<div style="font-size: 14px; font-weight: 600; color: #E94B3C; margin-bottom: 8px;">🔴 Mitochondrial DNA Lineages</div>';
+
+                    Object.entries(mtdnaLineages).sort().forEach(([lineName, data]) => {
+                        const status = data.finals > 0 ? `<strong>${data.finals} of ${data.total}</strong> ending` : `All ${data.total} continuing`;
+                        const statusColor = data.finals > 0 ? '#E94B3C' : '#4CAF50';
+                        lineageBreakdown += `
+                            <div style="margin: 6px 0; padding: 6px 10px; background: rgba(255,255,255,0.03); border-radius: 4px; font-size: 13px;">
+                                <span style="font-weight: 500;">${lineName}:</span>
+                                <span style="color: ${statusColor};">${status}</span>
+                            </div>
+                        `;
+                    });
+                    lineageBreakdown += '</div>';
+                }
+
+                lineageBreakdown += '</div>';
+            }
+
             const statsDiv = document.getElementById('stats');
             statsDiv.innerHTML = `
-                <div class="stat-box">
-                    <div class="number">${visible}</div>
-                    <div class="label">Visible</div>
+                <div style="display: grid; grid-template-columns: repeat(auto-fit, minmax(140px, 1fr)); gap: 15px; margin-bottom: 30px;">
+                    <div class="stat-box">
+                        <div class="number">${visible}</div>
+                        <div class="label">Visible</div>
+                    </div>
+                    <div class="stat-box">
+                        <div class="number">${total}</div>
+                        <div class="label">Total Members</div>
+                    </div>
+                    <div class="stat-box">
+                        <div class="number">${living}</div>
+                        <div class="label">Living</div>
+                    </div>
+                    <div class="stat-box">
+                        <div class="number">${deceased}</div>
+                        <div class="label">Deceased</div>
+                    </div>
+                    <div class="stat-box" style="border: 2px solid #4A90E2;">
+                        <div class="number" style="color: #4A90E2;">${totalYFinals}</div>
+                        <div class="label">Final Males<br><span style="font-size: 10px; opacity: 0.7;">(Y chromosome)</span></div>
+                    </div>
+                    <div class="stat-box" style="border: 2px solid #E94B3C;">
+                        <div class="number" style="color: #E94B3C;">${totalMtDNAFinals}</div>
+                        <div class="label">Final Females<br><span style="font-size: 10px; opacity: 0.7;">(mtDNA)</span></div>
+                    </div>
                 </div>
-                <div class="stat-box">
-                    <div class="number">${total}</div>
-                    <div class="label">Total Members</div>
-                </div>
-                <div class="stat-box">
-                    <div class="number">${living}</div>
-                    <div class="label">Living</div>
-                </div>
-                <div class="stat-box">
-                    <div class="number">${deceased}</div>
-                    <div class="label">Deceased</div>
+
+                <div style="background: rgba(0,0,0,0.2); padding: 20px; border-radius: 12px; margin-top: 20px;">
+                    <h3 style="margin: 0 0 15px 0; font-size: 20px; font-weight: 600;">📊 Ruff Family Summary</h3>
+                    <div style="color: #e0e0e0; font-size: 14px;">
+                        ${genBreakdown}
+                    </div>
+                    ${lineageBreakdown}
+                    ${dataCoverage.notAnalyzed < total ? `
+                        <div style="margin-top: 20px; padding-top: 15px; border-top: 1px solid rgba(255,255,255,0.1);">
+                            <div style="font-size: 14px; font-weight: 600; color: #a0a0a0; margin-bottom: 8px;">📚 Documentation Coverage</div>
+                            <div style="display: grid; grid-template-columns: repeat(auto-fit, minmax(150px, 1fr)); gap: 10px; margin-top: 8px;">
+                                ${dataCoverage.wellDocumented > 0 ? `
+                                    <div style="padding: 8px 12px; background: rgba(76, 175, 80, 0.1); border-radius: 6px; border: 1px solid rgba(76, 175, 80, 0.3);">
+                                        <div style="font-size: 20px; font-weight: 600; color: #4CAF50;">${dataCoverage.wellDocumented}</div>
+                                        <div style="font-size: 11px; color: #a0a0a0;">Well Documented</div>
+                                    </div>
+                                ` : ''}
+                                ${dataCoverage.insufficient > 0 ? `
+                                    <div style="padding: 8px 12px; background: rgba(255, 165, 0, 0.1); border-radius: 6px; border: 1px solid rgba(255, 165, 0, 0.3);">
+                                        <div style="font-size: 20px; font-weight: 600; color: #FFA500;">${dataCoverage.insufficient}</div>
+                                        <div style="font-size: 11px; color: #a0a0a0;">Insufficient Data</div>
+                                    </div>
+                                ` : ''}
+                                ${dataCoverage.noData > 0 ? `
+                                    <div style="padding: 8px 12px; background: rgba(233, 75, 60, 0.1); border-radius: 6px; border: 1px solid rgba(233, 75, 60, 0.3);">
+                                        <div style="font-size: 20px; font-weight: 600; color: #E94B3C;">${dataCoverage.noData}</div>
+                                        <div style="font-size: 11px; color: #a0a0a0;">No Documentation</div>
+                                    </div>
+                                ` : ''}
+                            </div>
+                            ${dataCoverage.noData + dataCoverage.insufficient > 0 ? `
+                                <div style="margin-top: 10px; padding: 8px 12px; background: rgba(255,255,255,0.03); border-radius: 4px; font-size: 12px; color: #b0b0b0;">
+                                    ℹ️  ${dataCoverage.noData + dataCoverage.insufficient} people need more documentation in the RAG system
+                                </div>
+                            ` : ''}
+                        </div>
+                    ` : ''}
+                    ${profileCompletion.notCalculated < total ? `
+                        <div style="margin-top: 20px; padding-top: 15px; border-top: 1px solid rgba(255,255,255,0.1);">
+                            <div style="font-size: 14px; font-weight: 600; color: #a0a0a0; margin-bottom: 8px;">📝 Profile Completion</div>
+                            <div style="display: flex; align-items: center; gap: 10px; margin-bottom: 12px;">
+                                <div style="font-size: 32px; font-weight: 700; color: ${avgCompletion >= 80 ? '#4CAF50' : avgCompletion >= 60 ? '#8BC34A' : avgCompletion >= 40 ? '#FFC107' : '#FF9800'};">
+                                    ${avgCompletion}%
+                                </div>
+                                <div style="font-size: 13px; color: #b0b0b0;">
+                                    Average profile completion across ${total - profileCompletion.notCalculated} people
+                                </div>
+                            </div>
+                            <div style="display: grid; grid-template-columns: repeat(auto-fit, minmax(120px, 1fr)); gap: 8px; margin-top: 8px;">
+                                ${profileCompletion.excellent > 0 ? `
+                                    <div style="padding: 6px 10px; background: rgba(76, 175, 80, 0.1); border-radius: 6px; border: 1px solid rgba(76, 175, 80, 0.3);">
+                                        <div style="font-size: 18px; font-weight: 600; color: #4CAF50;">${profileCompletion.excellent}</div>
+                                        <div style="font-size: 10px; color: #a0a0a0;">Excellent (≥80%)</div>
+                                    </div>
+                                ` : ''}
+                                ${profileCompletion.good > 0 ? `
+                                    <div style="padding: 6px 10px; background: rgba(139, 195, 74, 0.1); border-radius: 6px; border: 1px solid rgba(139, 195, 74, 0.3);">
+                                        <div style="font-size: 18px; font-weight: 600; color: #8BC34A;">${profileCompletion.good}</div>
+                                        <div style="font-size: 10px; color: #a0a0a0;">Good (60-79%)</div>
+                                    </div>
+                                ` : ''}
+                                ${profileCompletion.fair > 0 ? `
+                                    <div style="padding: 6px 10px; background: rgba(255, 193, 7, 0.1); border-radius: 6px; border: 1px solid rgba(255, 193, 7, 0.3);">
+                                        <div style="font-size: 18px; font-weight: 600; color: #FFC107;">${profileCompletion.fair}</div>
+                                        <div style="font-size: 10px; color: #a0a0a0;">Fair (40-59%)</div>
+                                    </div>
+                                ` : ''}
+                                ${profileCompletion.minimal > 0 ? `
+                                    <div style="padding: 6px 10px; background: rgba(255, 152, 0, 0.1); border-radius: 6px; border: 1px solid rgba(255, 152, 0, 0.3);">
+                                        <div style="font-size: 18px; font-weight: 600; color: #FF9800;">${profileCompletion.minimal}</div>
+                                        <div style="font-size: 10px; color: #a0a0a0;">Minimal (20-39%)</div>
+                                    </div>
+                                ` : ''}
+                                ${profileCompletion.incomplete > 0 ? `
+                                    <div style="padding: 6px 10px; background: rgba(233, 75, 60, 0.1); border-radius: 6px; border: 1px solid rgba(233, 75, 60, 0.3);">
+                                        <div style="font-size: 18px; font-weight: 600; color: #E94B3C;">${profileCompletion.incomplete}</div>
+                                        <div style="font-size: 10px; color: #a0a0a0;">Incomplete (<20%)</div>
+                                    </div>
+                                ` : ''}
+                            </div>
+                            ${profileCompletion.fair + profileCompletion.minimal + profileCompletion.incomplete > 0 ? `
+                                <div style="margin-top: 10px; padding: 8px 12px; background: rgba(255,255,255,0.03); border-radius: 4px; font-size: 12px; color: #b0b0b0;">
+                                    ℹ️  ${profileCompletion.fair + profileCompletion.minimal + profileCompletion.incomplete} people have incomplete profiles
+                                </div>
+                            ` : ''}
+                        </div>
+                    ` : ''}
                 </div>
             `;
         }

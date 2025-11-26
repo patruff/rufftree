@@ -219,6 +219,28 @@
             margin-top: 2px;
         }
 
+        .ethnicity-row {
+            display: flex;
+            gap: 10px;
+            align-items: center;
+            margin-bottom: 10px;
+        }
+
+        .ethnicity-country {
+            flex: 2;
+        }
+
+        .ethnicity-percent {
+            flex: 1;
+        }
+
+        .health-condition-row {
+            display: flex;
+            gap: 10px;
+            align-items: center;
+            margin-bottom: 10px;
+        }
+
         .attributes-grid {
             display: grid;
             grid-template-columns: repeat(auto-fill, minmax(150px, 1fr));
@@ -285,6 +307,13 @@
     <div class="container">
         <h1>🌳 Family Member Generator</h1>
         <p class="subtitle">Generate family member data for the Ruff family tree</p>
+
+        <nav style="display: flex; gap: 15px; justify-content: center; margin-bottom: 30px; flex-wrap: wrap;">
+            <a href="index.html" style="padding: 10px 20px; background: #f8f9fa; color: #667eea; text-decoration: none; border-radius: 8px; transition: all 0.3s; font-weight: 500;">🌳 Family Tree</a>
+            <a href="graph.html" style="padding: 10px 20px; background: #f8f9fa; color: #667eea; text-decoration: none; border-radius: 8px; transition: all 0.3s; font-weight: 500;">📊 Family Graph</a>
+            <a href="queries.html" style="padding: 10px 20px; background: #f8f9fa; color: #667eea; text-decoration: none; border-radius: 8px; transition: all 0.3s; font-weight: 500;">💬 Ask Questions</a>
+            <a href="person_generator.html" style="padding: 10px 20px; background: #667eea; color: white; text-decoration: none; border-radius: 8px; transition: all 0.3s; font-weight: 500;">👤 Add Person</a>
+        </nav>
 
         <form id="personForm">
             <div class="form-grid">
@@ -397,13 +426,149 @@
                     <label for="causeOfDeath">Cause of Death</label>
                     <select id="causeOfDeath">
                         <option value="">Not specified</option>
-                        <option value="cancer">Cancer</option>
-                        <option value="heart-disease">Heart Disease</option>
-                        <option value="stroke">Stroke</option>
-                        <option value="accident">Accident</option>
-                        <option value="natural-causes">Natural Causes</option>
-                        <option value="other">Other</option>
+
+                        <optgroup label="Cancer">
+                            <option value="lung-cancer">Lung Cancer</option>
+                            <option value="breast-cancer">Breast Cancer</option>
+                            <option value="colon-cancer">Colon Cancer</option>
+                            <option value="pancreatic-cancer">Pancreatic Cancer</option>
+                            <option value="prostate-cancer">Prostate Cancer</option>
+                            <option value="liver-cancer">Liver Cancer</option>
+                            <option value="stomach-cancer">Stomach Cancer</option>
+                            <option value="esophageal-cancer">Esophageal Cancer</option>
+                            <option value="leukemia">Leukemia</option>
+                            <option value="lymphoma">Lymphoma</option>
+                            <option value="brain-cancer">Brain Cancer</option>
+                            <option value="ovarian-cancer">Ovarian Cancer</option>
+                            <option value="skin-cancer">Skin Cancer (Melanoma)</option>
+                            <option value="cancer-unspecified">Cancer (type unspecified)</option>
+                        </optgroup>
+
+                        <optgroup label="Cardiovascular">
+                            <option value="heart-attack">Heart Attack (Myocardial Infarction)</option>
+                            <option value="heart-failure">Heart Failure</option>
+                            <option value="coronary-heart-disease">Coronary Heart Disease</option>
+                            <option value="stroke">Stroke</option>
+                            <option value="aneurysm">Aneurysm</option>
+                            <option value="cardiac-arrest">Cardiac Arrest</option>
+                        </optgroup>
+
+                        <optgroup label="Respiratory">
+                            <option value="copd">COPD (Chronic Obstructive Pulmonary Disease)</option>
+                            <option value="pneumonia">Pneumonia</option>
+                            <option value="emphysema">Emphysema</option>
+                            <option value="respiratory-failure">Respiratory Failure</option>
+                        </optgroup>
+
+                        <optgroup label="Neurological">
+                            <option value="alzheimers">Alzheimer's Disease</option>
+                            <option value="dementia">Dementia</option>
+                            <option value="parkinsons">Parkinson's Disease</option>
+                            <option value="als">ALS (Lou Gehrig's Disease)</option>
+                        </optgroup>
+
+                        <optgroup label="Other Medical">
+                            <option value="diabetes">Diabetes Complications</option>
+                            <option value="kidney-disease">Kidney Disease</option>
+                            <option value="liver-disease">Liver Disease (non-cancer)</option>
+                            <option value="sepsis">Sepsis</option>
+                            <option value="infection">Infection</option>
+                            <option value="covid-19">COVID-19</option>
+                        </optgroup>
+
+                        <optgroup label="Accidents & Injuries">
+                            <option value="car-accident">Car Accident</option>
+                            <option value="fall">Fall</option>
+                            <option value="drowning">Drowning</option>
+                            <option value="fire">Fire</option>
+                            <option value="accident-other">Accident (other)</option>
+                        </optgroup>
+
+                        <optgroup label="General">
+                            <option value="natural-causes">Natural Causes (old age)</option>
+                            <option value="complications-surgery">Complications from Surgery</option>
+                            <option value="unknown">Unknown</option>
+                            <option value="other">Other</option>
+                        </optgroup>
                     </select>
+                </div>
+
+                <div class="form-group" id="cemeteryNameGroup" style="display: none;">
+                    <label for="cemeteryName">Cemetery Name</label>
+                    <input type="text" id="cemeteryName" placeholder="e.g., Oak Hill Cemetery">
+                </div>
+
+                <div class="form-group" id="cemeteryCityGroup" style="display: none;">
+                    <label for="cemeteryCity">Cemetery City</label>
+                    <input type="text" id="cemeteryCity" placeholder="e.g., Philadelphia">
+                </div>
+
+                <div class="form-group" id="cemeteryStateGroup" style="display: none;">
+                    <label for="cemeteryState">Cemetery State</label>
+                    <input type="text" id="cemeteryState" placeholder="e.g., Pennsylvania or PA">
+                </div>
+
+                <h3 class="section-header">🏥 Health Conditions (Optional)</h3>
+                <div class="form-group full-width">
+                    <label>Chronic/Ongoing Health Conditions (applies to living and deceased)</label>
+                    <div id="healthConditionEntries">
+                        <div class="health-condition-row">
+                            <select class="health-condition-select" style="flex: 1;">
+                                <option value="">-- Select a condition --</option>
+                                <optgroup label="Cancer">
+                                    <option value="lung-cancer">Lung Cancer</option>
+                                    <option value="breast-cancer">Breast Cancer</option>
+                                    <option value="colon-cancer">Colon Cancer</option>
+                                    <option value="pancreatic-cancer">Pancreatic Cancer</option>
+                                    <option value="prostate-cancer">Prostate Cancer</option>
+                                    <option value="liver-cancer">Liver Cancer</option>
+                                    <option value="stomach-cancer">Stomach Cancer</option>
+                                    <option value="esophageal-cancer">Esophageal Cancer</option>
+                                    <option value="leukemia">Leukemia</option>
+                                    <option value="lymphoma">Lymphoma</option>
+                                    <option value="brain-cancer">Brain Cancer</option>
+                                    <option value="ovarian-cancer">Ovarian Cancer</option>
+                                    <option value="skin-cancer">Skin Cancer (Melanoma)</option>
+                                </optgroup>
+                                <optgroup label="Cardiovascular">
+                                    <option value="heart-disease">Heart Disease</option>
+                                    <option value="coronary-heart-disease">Coronary Heart Disease</option>
+                                    <option value="heart-failure">Heart Failure</option>
+                                    <option value="high-blood-pressure">High Blood Pressure (Hypertension)</option>
+                                    <option value="atrial-fibrillation">Atrial Fibrillation</option>
+                                </optgroup>
+                                <optgroup label="Respiratory">
+                                    <option value="copd">COPD</option>
+                                    <option value="asthma">Asthma</option>
+                                    <option value="emphysema">Emphysema</option>
+                                </optgroup>
+                                <optgroup label="Neurological">
+                                    <option value="alzheimers">Alzheimer's Disease</option>
+                                    <option value="dementia">Dementia</option>
+                                    <option value="parkinsons">Parkinson's Disease</option>
+                                    <option value="als">ALS</option>
+                                    <option value="epilepsy">Epilepsy</option>
+                                    <option value="multiple-sclerosis">Multiple Sclerosis</option>
+                                </optgroup>
+                                <optgroup label="Metabolic & Endocrine">
+                                    <option value="diabetes">Diabetes</option>
+                                    <option value="thyroid-disease">Thyroid Disease</option>
+                                    <option value="obesity">Obesity</option>
+                                </optgroup>
+                                <optgroup label="Other">
+                                    <option value="kidney-disease">Kidney Disease</option>
+                                    <option value="liver-disease">Liver Disease</option>
+                                    <option value="arthritis">Arthritis</option>
+                                    <option value="osteoporosis">Osteoporosis</option>
+                                    <option value="depression">Depression</option>
+                                    <option value="anxiety">Anxiety</option>
+                                    <option value="autoimmune-disease">Autoimmune Disease</option>
+                                </optgroup>
+                            </select>
+                            <button type="button" onclick="addHealthConditionRow()" style="padding: 8px 12px; margin-left: 5px;">+</button>
+                        </div>
+                    </div>
+                    <div style="margin-top: 5px; font-size: 12px; color: #666;">Add multiple conditions if applicable</div>
                 </div>
 
                 <div class="form-group full-width">
@@ -521,108 +686,27 @@
                     </datalist>
                 </div>
 
+                <div class="form-group">
+                    <label for="homeCity">Home City</label>
+                    <input type="text" id="homeCity" placeholder="e.g., Philadelphia">
+                </div>
+
+                <div class="form-group">
+                    <label for="homeState">Home State</label>
+                    <input type="text" id="homeState" placeholder="e.g., Pennsylvania or PA">
+                </div>
+
+                <h3 class="section-header">🌍 Ethnicity (Optional)</h3>
                 <div class="form-group full-width">
-                    <label for="location">Location (City, State)</label>
-                    <input type="text" id="location" list="locations" placeholder="e.g., New York, NY">
-                    <datalist id="locations">
-                        <option value="New York, NY">
-                        <option value="Los Angeles, CA">
-                        <option value="Chicago, IL">
-                        <option value="Houston, TX">
-                        <option value="Phoenix, AZ">
-                        <option value="Philadelphia, PA">
-                        <option value="San Antonio, TX">
-                        <option value="San Diego, CA">
-                        <option value="Dallas, TX">
-                        <option value="San Jose, CA">
-                        <option value="Austin, TX">
-                        <option value="Jacksonville, FL">
-                        <option value="Fort Worth, TX">
-                        <option value="Columbus, OH">
-                        <option value="Indianapolis, IN">
-                        <option value="Charlotte, NC">
-                        <option value="San Francisco, CA">
-                        <option value="Seattle, WA">
-                        <option value="Denver, CO">
-                        <option value="Washington, DC">
-                        <option value="Boston, MA">
-                        <option value="Nashville, TN">
-                        <option value="El Paso, TX">
-                        <option value="Detroit, MI">
-                        <option value="Portland, OR">
-                        <option value="Las Vegas, NV">
-                        <option value="Memphis, TN">
-                        <option value="Louisville, KY">
-                        <option value="Baltimore, MD">
-                        <option value="Milwaukee, WI">
-                        <option value="Albuquerque, NM">
-                        <option value="Tucson, AZ">
-                        <option value="Fresno, CA">
-                        <option value="Sacramento, CA">
-                        <option value="Kansas City, MO">
-                        <option value="Mesa, AZ">
-                        <option value="Atlanta, GA">
-                        <option value="Omaha, NE">
-                        <option value="Colorado Springs, CO">
-                        <option value="Raleigh, NC">
-                        <option value="Miami, FL">
-                        <option value="Long Beach, CA">
-                        <option value="Virginia Beach, VA">
-                        <option value="Oakland, CA">
-                        <option value="Minneapolis, MN">
-                        <option value="Tulsa, OK">
-                        <option value="Tampa, FL">
-                        <option value="Arlington, TX">
-                        <option value="New Orleans, LA">
-                        <option value="Wichita, KS">
-                        <option value="Cleveland, OH">
-                        <option value="Bakersfield, CA">
-                        <option value="Aurora, CO">
-                        <option value="Anaheim, CA">
-                        <option value="Honolulu, HI">
-                        <option value="Santa Ana, CA">
-                        <option value="Riverside, CA">
-                        <option value="Corpus Christi, TX">
-                        <option value="Lexington, KY">
-                        <option value="St. Louis, MO">
-                        <option value="Pittsburgh, PA">
-                        <option value="Anchorage, AK">
-                        <option value="Stockton, CA">
-                        <option value="Cincinnati, OH">
-                        <option value="St. Paul, MN">
-                        <option value="Toledo, OH">
-                        <option value="Greensboro, NC">
-                        <option value="Newark, NJ">
-                        <option value="Plano, TX">
-                        <option value="Henderson, NV">
-                        <option value="Lincoln, NE">
-                        <option value="Buffalo, NY">
-                        <option value="Jersey City, NJ">
-                        <option value="Chula Vista, CA">
-                        <option value="Orlando, FL">
-                        <option value="Norfolk, VA">
-                        <option value="Chandler, AZ">
-                        <option value="Laredo, TX">
-                        <option value="Madison, WI">
-                        <option value="Durham, NC">
-                        <option value="Lubbock, TX">
-                        <option value="Winston-Salem, NC">
-                        <option value="Garland, TX">
-                        <option value="Glendale, AZ">
-                        <option value="Hialeah, FL">
-                        <option value="Reno, NV">
-                        <option value="Baton Rouge, LA">
-                        <option value="Irvine, CA">
-                        <option value="Chesapeake, VA">
-                        <option value="Irving, TX">
-                        <option value="Scottsdale, AZ">
-                        <option value="North Las Vegas, NV">
-                        <option value="Fremont, CA">
-                        <option value="Gilbert, AZ">
-                        <option value="San Bernardino, CA">
-                        <option value="Boise, ID">
-                        <option value="Birmingham, AL">
-                    </datalist>
+                    <label>Ancestry Breakdown (must total 100%)</label>
+                    <div id="ethnicityEntries">
+                        <div class="ethnicity-row">
+                            <input type="text" class="ethnicity-country" placeholder="Country (e.g., Irish)" style="flex: 2;">
+                            <input type="number" class="ethnicity-percent" placeholder="%" min="0" max="100" style="flex: 1;">
+                            <button type="button" onclick="addEthnicityRow()" style="padding: 8px 12px; margin-left: 5px;">+</button>
+                        </div>
+                    </div>
+                    <div id="ethnicityTotal" style="margin-top: 10px; font-size: 14px; color: #666;"></div>
                 </div>
 
                 <h3 class="section-header">✨ Positive Attributes</h3>
@@ -838,6 +922,123 @@
         // Initialize attributes on page load
         document.addEventListener('DOMContentLoaded', populateAttributes);
 
+        // Ethnicity functions
+        function addEthnicityRow() {
+            const container = document.getElementById('ethnicityEntries');
+            const row = document.createElement('div');
+            row.className = 'ethnicity-row';
+            row.innerHTML = `
+                <input type="text" class="ethnicity-country" placeholder="Country (e.g., Irish)" style="flex: 2;">
+                <input type="number" class="ethnicity-percent" placeholder="%" min="0" max="100" style="flex: 1;" oninput="updateEthnicityTotal()">
+                <button type="button" onclick="removeEthnicityRow(this)" style="padding: 8px 12px; margin-left: 5px;">−</button>
+            `;
+            container.appendChild(row);
+            updateEthnicityTotal();
+        }
+
+        function removeEthnicityRow(button) {
+            button.parentElement.remove();
+            updateEthnicityTotal();
+        }
+
+        function addHealthConditionRow() {
+            const container = document.getElementById('healthConditionEntries');
+            const row = document.createElement('div');
+            row.className = 'health-condition-row';
+            row.innerHTML = `
+                <select class="health-condition-select" style="flex: 1;">
+                    <option value="">-- Select a condition --</option>
+                    <optgroup label="Cancer">
+                        <option value="lung-cancer">Lung Cancer</option>
+                        <option value="breast-cancer">Breast Cancer</option>
+                        <option value="colon-cancer">Colon Cancer</option>
+                        <option value="pancreatic-cancer">Pancreatic Cancer</option>
+                        <option value="prostate-cancer">Prostate Cancer</option>
+                        <option value="liver-cancer">Liver Cancer</option>
+                        <option value="stomach-cancer">Stomach Cancer</option>
+                        <option value="esophageal-cancer">Esophageal Cancer</option>
+                        <option value="leukemia">Leukemia</option>
+                        <option value="lymphoma">Lymphoma</option>
+                        <option value="brain-cancer">Brain Cancer</option>
+                        <option value="ovarian-cancer">Ovarian Cancer</option>
+                        <option value="skin-cancer">Skin Cancer (Melanoma)</option>
+                    </optgroup>
+                    <optgroup label="Cardiovascular">
+                        <option value="heart-disease">Heart Disease</option>
+                        <option value="coronary-heart-disease">Coronary Heart Disease</option>
+                        <option value="heart-failure">Heart Failure</option>
+                        <option value="high-blood-pressure">High Blood Pressure (Hypertension)</option>
+                        <option value="atrial-fibrillation">Atrial Fibrillation</option>
+                    </optgroup>
+                    <optgroup label="Respiratory">
+                        <option value="copd">COPD</option>
+                        <option value="asthma">Asthma</option>
+                        <option value="emphysema">Emphysema</option>
+                    </optgroup>
+                    <optgroup label="Neurological">
+                        <option value="alzheimers">Alzheimer's Disease</option>
+                        <option value="dementia">Dementia</option>
+                        <option value="parkinsons">Parkinson's Disease</option>
+                        <option value="als">ALS</option>
+                        <option value="epilepsy">Epilepsy</option>
+                        <option value="multiple-sclerosis">Multiple Sclerosis</option>
+                    </optgroup>
+                    <optgroup label="Metabolic & Endocrine">
+                        <option value="diabetes">Diabetes</option>
+                        <option value="thyroid-disease">Thyroid Disease</option>
+                        <option value="obesity">Obesity</option>
+                    </optgroup>
+                    <optgroup label="Other">
+                        <option value="kidney-disease">Kidney Disease</option>
+                        <option value="liver-disease">Liver Disease</option>
+                        <option value="arthritis">Arthritis</option>
+                        <option value="osteoporosis">Osteoporosis</option>
+                        <option value="depression">Depression</option>
+                        <option value="anxiety">Anxiety</option>
+                        <option value="autoimmune-disease">Autoimmune Disease</option>
+                    </optgroup>
+                </select>
+                <button type="button" onclick="removeHealthConditionRow(this)" style="padding: 8px 12px; margin-left: 5px;">−</button>
+            `;
+            container.appendChild(row);
+        }
+
+        function removeHealthConditionRow(button) {
+            // Don't remove if it's the last row
+            const container = document.getElementById('healthConditionEntries');
+            if (container.children.length > 1) {
+                button.parentElement.remove();
+            }
+        }
+
+        function updateEthnicityTotal() {
+            const percentInputs = document.querySelectorAll('.ethnicity-percent');
+            let total = 0;
+            percentInputs.forEach(input => {
+                const value = parseInt(input.value) || 0;
+                total += value;
+            });
+
+            const totalDiv = document.getElementById('ethnicityTotal');
+            if (total === 0) {
+                totalDiv.textContent = '';
+            } else if (total === 100) {
+                totalDiv.textContent = `Total: ${total}% ✓`;
+                totalDiv.style.color = '#4CAF50';
+            } else {
+                totalDiv.textContent = `Total: ${total}% (must equal 100%)`;
+                totalDiv.style.color = '#e74c3c';
+            }
+        }
+
+        // Add event listener to first ethnicity input
+        document.addEventListener('DOMContentLoaded', () => {
+            const firstPercentInput = document.querySelector('.ethnicity-percent');
+            if (firstPercentInput) {
+                firstPercentInput.addEventListener('input', updateEthnicityTotal);
+            }
+        });
+
         // Update slider value display
         function updateSliderValue(sliderId) {
             const slider = document.getElementById(sliderId);
@@ -851,6 +1052,9 @@
             document.getElementById('decadeDeceasedGroup').style.display = isDeceased ? 'block' : 'none';
             document.getElementById('yearDeceasedGroup').style.display = isDeceased ? 'block' : 'none';
             document.getElementById('causeOfDeathGroup').style.display = isDeceased ? 'block' : 'none';
+            document.getElementById('cemeteryNameGroup').style.display = isDeceased ? 'block' : 'none';
+            document.getElementById('cemeteryCityGroup').style.display = isDeceased ? 'block' : 'none';
+            document.getElementById('cemeteryStateGroup').style.display = isDeceased ? 'block' : 'none';
         });
 
         document.getElementById('personForm').addEventListener('submit', function(e) {
@@ -894,6 +1098,21 @@
                 if (causeOfDeath) {
                     person.causeOfDeath = causeOfDeath;
                 }
+
+                const cemeteryName = document.getElementById('cemeteryName').value.trim();
+                if (cemeteryName) {
+                    person.cemetery_name = cemeteryName;
+                }
+
+                const cemeteryCity = document.getElementById('cemeteryCity').value.trim();
+                if (cemeteryCity) {
+                    person.cemetery_city = cemeteryCity;
+                }
+
+                const cemeteryState = document.getElementById('cemeteryState').value.trim();
+                if (cemeteryState) {
+                    person.cemetery_state = cemeteryState;
+                }
             } else {
                 person.dod = 'alive';
             }
@@ -910,8 +1129,49 @@
             const occupation = document.getElementById('occupation').value.trim();
             if (occupation) person.occupation = occupation;
 
-            const location = document.getElementById('location').value.trim();
-            if (location) person.location = location;
+            const homeCity = document.getElementById('homeCity').value.trim();
+            if (homeCity) person.home_city = homeCity;
+
+            const homeState = document.getElementById('homeState').value.trim();
+            if (homeState) person.home_state = homeState;
+
+            // Collect ethnicity data
+            const ethnicityRows = document.querySelectorAll('.ethnicity-row');
+            const ethnicity = {};
+            let ethnicityTotal = 0;
+
+            ethnicityRows.forEach(row => {
+                const country = row.querySelector('.ethnicity-country').value.trim();
+                const percent = parseInt(row.querySelector('.ethnicity-percent').value) || 0;
+
+                if (country && percent > 0) {
+                    ethnicity[country] = percent;
+                    ethnicityTotal += percent;
+                }
+            });
+
+            // Only add ethnicity if it totals 100%
+            if (ethnicityTotal === 100 && Object.keys(ethnicity).length > 0) {
+                person.ethnicity = ethnicity;
+            } else if (ethnicityTotal > 0 && ethnicityTotal !== 100) {
+                alert(`Ethnicity percentages must total 100% (currently ${ethnicityTotal}%)`);
+                return;
+            }
+
+            // Collect health conditions
+            const healthConditionSelects = document.querySelectorAll('.health-condition-select');
+            const healthConditions = [];
+
+            healthConditionSelects.forEach(select => {
+                const condition = select.value;
+                if (condition && !healthConditions.includes(condition)) {
+                    healthConditions.push(condition);
+                }
+            });
+
+            if (healthConditions.length > 0) {
+                person.health_condition = healthConditions;
+            }
 
             // Collect selected attributes
             const selectedAttributes = [];

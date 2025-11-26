@@ -1,0 +1,168 @@
+name: Edit Person Information
+
+on:
+  workflow_dispatch:
+    inputs:
+      person_name:
+        description: 'Person name (required)'
+        required: true
+        type: string
+      view_only:
+        description: 'View only (no changes)'
+        required: false
+        type: boolean
+        default: false
+      occupation:
+        description: 'Occupation'
+        required: false
+        type: string
+      phone:
+        description: 'Phone number'
+        required: false
+        type: string
+      home_city:
+        description: 'Home city'
+        required: false
+        type: string
+      home_state:
+        description: 'Home state'
+        required: false
+        type: string
+      dod:
+        description: 'Date of death (year or "alive")'
+        required: false
+        type: string
+      cemetery_name:
+        description: 'Cemetery name (for deceased)'
+        required: false
+        type: string
+      cemetery_city:
+        description: 'Cemetery city (for deceased)'
+        required: false
+        type: string
+      cemetery_state:
+        description: 'Cemetery state (for deceased)'
+        required: false
+        type: string
+      health_condition:
+        description: 'Health conditions (comma-separated)'
+        required: false
+        type: string
+      notes:
+        description: 'Notes/stories about the person'
+        required: false
+        type: string
+      maidenName:
+        description: 'Maiden name'
+        required: false
+        type: string
+      education:
+        description: 'Education level'
+        required: false
+        type: string
+
+jobs:
+  edit:
+    runs-on: ubuntu-latest
+
+    steps:
+      - name: Checkout repository
+        uses: actions/checkout@v4
+
+      - name: Set up Python
+        uses: actions/setup-python@v4
+        with:
+          python-version: '3.11'
+
+      - name: Display person information (before)
+        run: |
+          echo "📋 Current information for: ${{ inputs.person_name }}"
+          python3 edit_person.py "${{ inputs.person_name }}" --view-only || echo "Person not found or error occurred"
+
+      - name: Apply updates
+        if: ${{ !inputs.view_only }}
+        run: |
+          # Build command with all provided inputs
+          CMD="python3 edit_person.py '${{ inputs.person_name }}'"
+
+          # Add each field if provided
+          if [ -n "${{ inputs.occupation }}" ]; then
+            CMD="$CMD --occupation '${{ inputs.occupation }}'"
+          fi
+
+          if [ -n "${{ inputs.phone }}" ]; then
+            CMD="$CMD --phone '${{ inputs.phone }}'"
+          fi
+
+          if [ -n "${{ inputs.home_city }}" ]; then
+            CMD="$CMD --home_city '${{ inputs.home_city }}'"
+          fi
+
+          if [ -n "${{ inputs.home_state }}" ]; then
+            CMD="$CMD --home_state '${{ inputs.home_state }}'"
+          fi
+
+          if [ -n "${{ inputs.dod }}" ]; then
+            CMD="$CMD --dod '${{ inputs.dod }}'"
+          fi
+
+          if [ -n "${{ inputs.cemetery_name }}" ]; then
+            CMD="$CMD --cemetery_name '${{ inputs.cemetery_name }}'"
+          fi
+
+          if [ -n "${{ inputs.cemetery_city }}" ]; then
+            CMD="$CMD --cemetery_city '${{ inputs.cemetery_city }}'"
+          fi
+
+          if [ -n "${{ inputs.cemetery_state }}" ]; then
+            CMD="$CMD --cemetery_state '${{ inputs.cemetery_state }}'"
+          fi
+
+          if [ -n "${{ inputs.health_condition }}" ]; then
+            CMD="$CMD --health_condition '${{ inputs.health_condition }}'"
+          fi
+
+          if [ -n "${{ inputs.notes }}" ]; then
+            CMD="$CMD --notes '${{ inputs.notes }}'"
+          fi
+
+          if [ -n "${{ inputs.maidenName }}" ]; then
+            CMD="$CMD --maidenName '${{ inputs.maidenName }}'"
+          fi
+
+          if [ -n "${{ inputs.education }}" ]; then
+            CMD="$CMD --education '${{ inputs.education }}'"
+          fi
+
+          echo "Executing: $CMD"
+          eval $CMD
+
+      - name: Commit changes
+        if: ${{ !inputs.view_only }}
+        run: |
+          git config --local user.email "github-actions[bot]@users.noreply.github.com"
+          git config --local user.name "github-actions[bot]"
+
+          if git diff --quiet family_tree.json; then
+            echo "ℹ️  No changes to commit"
+          else
+            git add family_tree.json
+            git commit -m "Update person: ${{ inputs.person_name }}
+
+          Updated fields via GitHub Actions workflow.
+          Triggered by: ${{ github.actor }}"
+            git push
+            echo "✅ Changes committed and pushed"
+          fi
+
+      - name: Summary
+        run: |
+          if [ "${{ inputs.view_only }}" = "true" ]; then
+            echo "👁️  View-only mode - no changes made"
+          else
+            echo "✅ Person edit workflow completed"
+            echo "Person: ${{ inputs.person_name }}"
+            if [ -f family_tree.json ]; then
+              echo "Updated family_tree.json"
+            fi
+          fi

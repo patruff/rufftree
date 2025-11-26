@@ -6,6 +6,7 @@ on:
     branches: ["main"]
     paths:
       - 'index.html'
+      - 'graph.html'
       - 'family_tree.json'
       - 'queries.html'
       - 'stored_queries.json'

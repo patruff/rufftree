@@ -21,17 +21,76 @@ The interactive family tree is automatically deployed to GitHub Pages and update
 
 ## Features
 
-- **Interactive Family Tree**: Beautiful web-based visualization of the Ruff family genealogy
-- **Person Generator**: Modern web application with gradient purple UI for creating family member profiles
-  - 47 positive attributes (funny, smart, kind, fit, etc.) with multi-select checkboxes
-  - Big Five (OCEAN) personality sliders with smart auto-mapping from attributes
-  - Autocomplete fields for occupation (100+ jobs) and location (100+ US cities)
-  - Structured dropdowns for physical traits, education, life timeline, and more
-  - One-click JSON download or clipboard copy for easy integration
+### 🎨 Visualization & Exploration
+
+- **Interactive Family Tree** ([index.html](https://patruff.github.io/rufftree/)): Beautiful expandable tree visualization
+  - Click to expand/collapse family members and relationships
+  - Visual indicators: Green for living, purple for deceased
+  - Hover tooltips showing ethnicity breakdown
+  - **Ruff Family Summary**: Comprehensive generation breakdown with visual bar charts
+    - Shows distribution across all generations (Greatest Generation through Generation Alpha)
+    - Highlights final male/female lineages (Y chromosome and mtDNA tracking)
+    - Real-time statistics: total members, living, deceased, visible, and genetic lineages
+
+- **Interactive Family Graph** ([graph.html](https://patruff.github.io/rufftree/graph.html)): Neo4j-style network visualization
+  - Drag-and-drop nodes to arrange the family graph
+  - Color-coded relationship edges (green: parent-child, pink: spouse, orange: sibling)
+  - Click any person to view detailed info panel
+  - Zoom, pan, and focus on specific family connections
+  - Physics-based auto-layout for optimal positioning
+
+### 👤 Family Data & Tracking
+
+- **Generation Tracking**: Automatic generation labels and relative positioning
+  - Labels: Greatest Generation, Silent Generation, Baby Boomer, Gen X, Millennial, Gen Z, Gen Alpha
+  - `from_pat` field: Integer showing generations from Patrick Ruff (0 = Millennial baseline, -1 = Gen X, +1 = Gen Z, etc.)
+  - Displayed in graph tooltips and info panels with human-readable distance text
+
+- **Ethnicity Tracking**: Country-based ancestry breakdown
+  - Percentage-based ethnicity (e.g., German: 34%, Irish: 32%, English: 18%)
+  - Automatic calculation from parents (50% from each parent)
+  - Supports 8+ countries: Chinese, English, French, German, Irish, Polish, Scottish, Welsh
+  - Displayed in graph info panel and tree card tooltips
+
+- **Health & Medical Tracking**: Comprehensive health data for all family members
+  - **Health Conditions**: Track chronic/ongoing conditions (diabetes, heart disease, asthma, etc.) for living and deceased
+  - **Cause of Death**: 50+ specific causes across 7 categories (Cancer, Cardiovascular, Respiratory, Neurological, etc.)
+  - **Heritable Risk**: Auto-calculated genetic predisposition based on parents' conditions and causes of death
+  - Risk levels: low, moderate, high, very-high with color-coded display
+  - 40+ tracked conditions including cancers, heart disease, Alzheimer's, diabetes, and more
+
+- **Location Tracking**: Track where family members live and are laid to rest
+  - **Home Location**: `home_city` and `home_state` for all individuals (living and deceased)
+  - **Cemetery Location**: `cemetery_name`, `cemetery_city`, and `cemetery_state` for deceased individuals
+  - Displayed in graph info panels and tree tooltips
+
+- **Genetic Lineage Tracking**: Track Y chromosome and mitochondrial DNA lineages
+  - **Y Chromosome (Paternal Line)**: Identifies final males whose Y chromosome lineage ends (no male descendants)
+  - **Mitochondrial DNA (Maternal Line)**: Identifies final females whose mtDNA lineage ends (no female descendants)
+  - Auto-calculated based on descendant analysis
+  - Highlighted in Ruff Family Summary with generation breakdowns
+  - Shows which genetic lines are continuing vs. ending
+
+### 🛠️ Person Management
+
+- **Person Generator** ([person_generator.html](https://patruff.github.io/rufftree/person_generator.html)): Modern web application for creating family profiles
+  - **Ethnicity Input**: Dynamic form with add/remove country-percentage rows, real-time validation
+  - **47 Positive Attributes**: Multi-select checkboxes (funny, smart, kind, fit, etc.)
+  - **Big Five (OCEAN) Personality**: Sliders with smart auto-mapping from attributes
+  - **Autocomplete Fields**: Occupation (100+ jobs) and location (100+ US cities)
+  - **Structured Dropdowns**: Physical traits, education, life timeline, and more
+  - **One-Click Export**: JSON download or clipboard copy for easy integration
+
 - **Automated Integration**: GitHub Action workflow to integrate generated people into the family tree
-- **Family Query System**: Family members can ask questions, answered via AI RAG with source citations
-- **Query Archive**: All questions and answers stored and displayed on the website
 - **Editable JSON Data**: Manually edit `family_tree.json` to update family members and relationships
+
+### 💬 Query & Search System
+
+- **Family Query System**: AI-powered Q&A with source citations
+  - Family members submit questions via web form
+  - RAG system provides answers with document citations
+  - All Q&A stored and displayed on website
+
 - **Document Upload**: Support for PDFs, Google Docs, DOCX, TXT, and Markdown files
 - **Google Drive Sync**: Automatic synchronization from the "rufftree" Google Drive folder
 - **RAG Queries**: Natural language search with AI-generated answers and citations
@@ -126,7 +185,22 @@ Add to your Claude Desktop configuration:
 
 ### View the Family Tree
 
-Open `index.html` in your web browser to view the interactive family tree visualization.
+**Expandable Tree View** (`index.html`):
+- Click on any person card to expand and reveal their spouse, siblings, parents, and children
+- Click again to collapse the view
+- Hover over cards to see ethnicity breakdown in tooltips
+- View real-time statistics at the top of the page
+
+**Interactive Graph View** (`graph.html`):
+- Drag nodes to rearrange the family network
+- Click any person to see their detailed information in the side panel
+- Double-click to focus on a person and their immediate connections
+- Use the control buttons to reset view, fit all nodes, or toggle physics
+- Hover over nodes to see generation and age information
+- Edge colors indicate relationship types:
+  - **Green arrows**: Parent → Child relationships
+  - **Pink lines**: Spouse connections
+  - **Orange dashed lines**: Sibling relationships
 
 ### Adding Family Members
 
@@ -156,16 +230,44 @@ The form is organized into several sections with a two-column grid layout:
    - **Status**: Dropdown (Alive/Deceased)
    - **Decade Deceased**: Only shown if status is "Deceased"
    - **Year Deceased (exact)**: Number input for precise death year
-   - **Cause of Death**: Only shown if status is "Deceased" (Cancer, Heart Disease, Stroke, Accident, Natural Causes, Other)
+   - **Cause of Death**: Only shown if status is "Deceased"
+     - 50+ options across 7 categories: Cancer, Cardiovascular, Respiratory, Neurological, Other Medical, Accidents & Injuries, General
+     - Specific options like pancreatic cancer, heart attack, stroke, Alzheimer's, etc.
+   - **Cemetery Information**: Only shown if status is "Deceased"
+     - Cemetery Name, City, and State fields
 
-4. **Education & Career**
+4. **🏥 Health Conditions** (Optional)
+   - **Chronic/Ongoing Health Conditions**: Multi-select dropdown for health conditions
+   - Applies to both living and deceased individuals
+   - 40+ conditions across 6 categories:
+     - Cancer, Cardiovascular, Respiratory, Neurological, Metabolic & Endocrine, Other
+   - Click "+" to add multiple conditions
+   - Examples: diabetes, heart disease, asthma, high blood pressure, arthritis, depression
+
+5. **Education & Career**
    - **Education Level**: Dropdown (Elementary, High School, Some College, College Degree, Master's, PhD)
    - **Occupation**: Autocomplete field with 100+ common occupations (Teacher, Engineer, Doctor, etc.) - type to search or select from dropdown
 
-5. **Location**
-   - **Location (City, State)**: Autocomplete field with 100+ major US cities in "City, ST" format (e.g., "New York, NY", "San Francisco, CA") - type to search or browse
+6. **Location**
+   - **Home City**: City where person lives/lived
+   - **Home State**: State where person lives/lived (accepts full names or abbreviations)
+   - Applies to both living and deceased individuals
 
-6. **✨ Positive Attributes** (New Interactive Section)
+7. **🌍 Ethnicity** (Optional)
+   - **Ancestry Breakdown**: Dynamic input for country-percentage pairs
+   - Click **"+"** to add more countries to the breakdown
+   - Click **"−"** to remove a country entry
+   - Percentages must total exactly 100%
+   - Real-time validation with visual feedback:
+     - Green checkmark ✓ when total equals 100%
+     - Red warning when total doesn't equal 100%
+   - Examples:
+     - Irish: 50%, German: 50%
+     - Chinese: 100%
+     - German: 34%, Irish: 32%, English: 18%, Scottish: 8%, Polish: 8%
+   - **Note**: If parents are in the system, ethnicity will be automatically calculated (50% from each parent) when you add the person to the family tree
+
+8. **✨ Positive Attributes**
    - Multi-select checkbox grid displaying 47 positive attributes
    - Attributes are displayed in a responsive grid with clean, rounded checkboxes
    - Click any attribute to select/deselect (multiple selections allowed)
@@ -179,7 +281,7 @@ The form is organized into several sections with a two-column grid layout:
      - **Social**: Caring, Supportive, Empathetic, Thoughtful, Polite, Respectful, Modest, Energetic
    - **Smart OCEAN Mapping**: Each attribute automatically maps to Big Five personality traits (see below)
 
-7. **🧠 Personality (Big Five / OCEAN)**
+9. **🧠 Personality (Big Five / OCEAN)**
    - Five interactive sliders (0-100 scale) with real-time value display
    - Each slider has purple gradient styling matching the app theme
    - **Openness (O)**: Imaginative, curious, open to new experiences
@@ -192,7 +294,7 @@ The form is organized into several sections with a two-column grid layout:
      - If sliders remain at default (50) but attributes are selected, personality is auto-calculated from attribute mappings
      - This allows quick entry via attributes or precise control via sliders
 
-8. **Notes**
+10. **Notes**
    - Large text area for additional information, stories, or details
 
 **Attribute-to-OCEAN Mapping Examples:**
@@ -225,33 +327,386 @@ When multiple attributes are selected, the system averages the mapped values for
 #### Manual Editing
 
 1. Open `family_tree.json` in any text editor
-2. Edit family member information:
-   - `name`: Full name of the person
-   - `dob`: Birth year in YYYY format
-   - `dod`: Death year in YYYY format, or `"alive"` if living
-   - `spouseId`, `parentIds`, `siblingIds`, `childrenIds`: Relationship IDs
-3. Save the file and refresh `index.html`
+2. Edit family member information (see **Family Data Model** section below for all available fields)
+3. Save the file
+4. Run utility scripts to recalculate auto-generated fields (optional):
+   ```bash
+   python3 add_generations.py        # Recalculate generation labels
+   python3 add_ethnicity.py          # Recalculate ethnicity from parents
+   python3 add_heritable_risk.py     # Recalculate health risk factors
+   ```
+5. Refresh the website to see changes
 
-Example entry:
-```json
-{
-  "id": "john_ruff",
-  "name": "John Ruff",
-  "dob": "1920",
-  "dod": "1995",
-  "spouseId": "mary_smith",
-  "parentIds": [],
-  "siblingIds": [],
-  "childrenIds": ["jane_ruff"]
-}
-```
+**Key Fields to Edit:**
+- **Required**: `id`, `name`, `dob`, `dod`, relationship IDs
+- **Location**: `home_city`, `home_state` (for all), `cemetery_name`, `cemetery_city`, `cemetery_state` (for deceased)
+- **Health**: `health_condition` (array), `causeOfDeath` (for deceased)
+- **Contact**: `occupation`, `phone`, `maidenName`, `notes`
+- **Auto-calculated** (run scripts): `generation`, `from_pat`, `ethnicity`, `heritable_risk`, `heritable_traits`, `gender`, `y_chromosome_line`, `y_chromosome_final`, `mtdna_line`, `mtdna_final`, `rag_chunks`, `lacks_data`, `completion_percentage`
+
+See the **Family Data Model** section below for the complete list of all 30+ available fields with descriptions.
 
 The tree displays:
 - **Name** of each person
 - **Lifespan** (birth year - death year or "Present")
 - **Age** (current age or years lived)
+- **Generation** label (e.g., "Millennial", "Gen Z")
+- **Ethnicity** (on hover tooltip)
 - **Visual indicators**: Green for living, purple for deceased
 - **Statistics**: Total members, living, deceased, and generations
+
+### Family Data Model
+
+The `family_tree.json` file contains comprehensive data about each family member. Below are all available fields:
+
+#### Core Identification Fields
+| Field | Type | Required | Description |
+|-------|------|----------|-------------|
+| `id` | String | ✅ Yes | Unique identifier (e.g., "patrick", "joe_jr") |
+| `name` | String | ✅ Yes | Full name of the person |
+| `dob` | String | ✅ Yes | Birth year in YYYY format (e.g., "1985") |
+| `dod` | String | ✅ Yes | Death year in YYYY format, or `"alive"` if living |
+
+#### Relationship Fields
+| Field | Type | Required | Description |
+|-------|------|----------|-------------|
+| `spouseId` | String or null | ✅ Yes | ID of spouse, or `null` if no spouse |
+| `parentIds` | Array | ✅ Yes | Array of parent IDs (usually 2, can be 0-2) |
+| `siblingIds` | Array | ✅ Yes | Array of sibling IDs |
+| `childrenIds` | Array | ✅ Yes | Array of children IDs |
+
+#### Generation Fields (Auto-calculated)
+| Field | Type | Required | Description |
+|-------|------|----------|-------------|
+| `generation` | String | Auto | Generation label based on birth year<br>• Greatest Generation (≤1927)<br>• Silent Generation (1928-1945)<br>• Baby Boomer (1946-1964)<br>• Generation X (1965-1980)<br>• Millennial (1981-1996)<br>• Generation Z (1997-2012)<br>• Generation Alpha (2013+) |
+| `from_pat` | Integer | Auto | Generational distance from Patrick Ruff<br>• Negative = before Patrick's generation (e.g., -2 for Boomers)<br>• 0 = Same generation as Patrick (Millennials)<br>• Positive = after Patrick's generation (e.g., +1 for Gen Z) |
+
+#### Location Fields
+| Field | Type | Required | Description |
+|-------|------|----------|-------------|
+| `home_city` | String | Optional | City where person lives/lived (e.g., "Philadelphia") |
+| `home_state` | String | Optional | State where person lives/lived (e.g., "Pennsylvania" or "PA") |
+| `cemetery_name` | String | Optional | Cemetery name for deceased (e.g., "Oak Hill Cemetery") |
+| `cemetery_city` | String | Optional | Cemetery city for deceased (e.g., "Philadelphia") |
+| `cemetery_state` | String | Optional | Cemetery state for deceased (e.g., "Pennsylvania" or "PA") |
+
+#### Ethnicity Field (Auto-calculated from parents)
+| Field | Type | Required | Description |
+|-------|------|----------|-------------|
+| `ethnicity` | Object | Optional | Country-to-percentage mapping (must sum to 100%)<br>• Example: `{"German": 34, "Irish": 32, "English": 18}`<br>• Children inherit 50% from each parent<br>• Manually set for root ancestors |
+
+#### Health & Medical Fields
+| Field | Type | Required | Description |
+|-------|------|----------|-------------|
+| `causeOfDeath` | String | Optional | Cause of death for deceased individuals<br>• Values: "heart-attack", "pancreatic-cancer", "stroke", etc.<br>• 50+ options across 7 categories (Cancer, Cardiovascular, Respiratory, Neurological, Other Medical, Accidents & Injuries, General) |
+| `health_condition` | Array | Optional | Chronic/ongoing health conditions<br>• Values: ["diabetes", "heart-disease", "asthma"]<br>• Applies to both living and deceased<br>• 40+ conditions available |
+| `heritable_risk` | Object | Auto | Genetic predisposition risk levels<br>• Auto-calculated from parents' `causeOfDeath` and `health_condition`<br>• Format: `{"heart-disease": "moderate", "diabetes": "high"}`<br>• Risk levels: "low", "moderate", "high", "very-high" |
+| `heritable_traits` | Object | Auto | Genetic traits following Mendelian inheritance<br>• Auto-calculated from parents' genotypes<br>• Format: `{"eye_color": {"genotype": "Bb", "phenotype": "Brown"}}`<br>• Tracks: eye color (BB/Bb/bb), hair texture (CC/Cc/cc), dimples (DD/Dd/dd) |
+| `gender` | String | Auto | Gender of the person ("male" or "female")<br>• Auto-inferred from name if not specified<br>• Required for lineage calculations |
+| `y_chromosome_line` | String | Auto | Y chromosome lineage name traced from root paternal ancestor<br>• Format: "[LastName] Y" (e.g., "Ruff Y", "Miller Y")<br>• Only assigned to males<br>• Allows tracking of unique paternal lines |
+| `y_chromosome_final` | Boolean | Auto | True if this male is the last in his specific Y chromosome line<br>• Auto-calculated based on male descendants<br>• Indicates this specific ancestral Y chromosome lineage will end |
+| `mtdna_line` | String | Auto | Mitochondrial DNA lineage name traced from root maternal ancestor<br>• Format: "[LastName] mtDNA" (e.g., "Miller mtDNA", "Ruff mtDNA")<br>• Only assigned to females<br>• Allows tracking of unique maternal lines |
+| `mtdna_final` | Boolean | Auto | True if this female is the last in her specific mtDNA line<br>• Auto-calculated based on female descendants<br>• Indicates this specific ancestral mitochondrial DNA lineage will end |
+| `rag_chunks` | Number | Auto | Number of RAG document chunks that mention this person<br>• Auto-calculated by querying the RAG system<br>• Higher values indicate more documentation available |
+| `lacks_data` | Boolean | Auto | True if person has insufficient documentation in RAG system<br>• Auto-calculated: true when `rag_chunks` < 2<br>• Helps identify people needing more documentation |
+| `completion_percentage` | Number | Auto | Profile completion percentage (0-100)<br>• Auto-calculated based on filled optional fields<br>• Categories: Excellent (≥80%), Good (60-79%), Fair (40-59%), Minimal (20-39%), Incomplete (<20%)<br>• Helps identify incomplete profiles |
+
+#### Contact & Personal Information
+| Field | Type | Required | Description |
+|-------|------|----------|-------------|
+| `occupation` | String | Optional | Job title or profession |
+| `phone` | String | Optional | Contact phone number |
+| `maidenName` | String | Optional | Maiden name for married individuals |
+| `notes` | String | Optional | Additional information or family stories |
+| `education` | String | Optional | Education level (e.g., "College Degree", "Master's") |
+
+#### Physical Characteristics
+| Field | Type | Required | Description |
+|-------|------|----------|-------------|
+| `hairColor` | String | Optional | Hair color (e.g., "Blonde", "Brunette", "Black") |
+| `height` | String | Optional | Height category (e.g., "Tall", "Medium", "Short") |
+
+#### Personality & Attributes (from Person Generator)
+| Field | Type | Required | Description |
+|-------|------|----------|-------------|
+| `attributes` | Array | Optional | Array of positive attributes (e.g., ["funny", "kind", "smart"])<br>• 47 available attributes |
+| `personality` | Object | Optional | Big Five OCEAN personality traits<br>• Format: `{"openness": 75, "conscientiousness": 60, ...}`<br>• Values: 0-100 for each trait |
+
+#### Example Complete Entry
+
+```json
+{
+  "id": "patrick",
+  "name": "Patrick Ruff",
+  "dob": "1985",
+  "dod": "alive",
+  "generation": "Millennial",
+  "from_pat": 0,
+  "home_city": "Philadelphia",
+  "home_state": "Pennsylvania",
+  "ethnicity": {
+    "German": 34,
+    "Irish": 32,
+    "English": 18,
+    "Scottish": 8,
+    "Polish": 8
+  },
+  "health_condition": ["asthma"],
+  "heritable_risk": {
+    "heart-disease": "moderate",
+    "diabetes": "low"
+  },
+  "heritable_traits": {
+    "eye_color": {
+      "genotype": "bb",
+      "phenotype": "Blue"
+    },
+    "hair_texture": {
+      "genotype": "cc",
+      "phenotype": "Straight"
+    }
+  },
+  "occupation": "Developer/Scientist",
+  "phone": "555-0123",
+  "spouseId": "jenny",
+  "parentIds": ["joe_sr", "debbie"],
+  "siblingIds": ["joe_jr", "sarah", "phil"],
+  "childrenIds": ["patrick_child1", "patrick_child2"]
+}
+```
+
+#### Utility Scripts for Auto-Calculated Fields
+
+After manually editing the JSON, run these scripts to update auto-calculated fields:
+
+```bash
+# Recalculate generation labels and from_pat for all family members
+python3 add_generations.py
+
+# Recalculate ethnicity from parents (edit root ethnicities in script first)
+python3 add_ethnicity.py
+
+# Recalculate heritable risk from parents' health conditions and causes of death
+python3 add_heritable_risk.py
+
+# Recalculate genetic traits from parents' genotypes (edit root genotypes in script first)
+python3 add_heritable_traits.py
+
+# Track specific ancestral lineages - traces Y chromosome and mtDNA lines back to root ancestors
+# Assigns line names (e.g., "Ruff Y", "Miller mtDNA") and identifies final carriers
+python3 add_final_lineage.py
+
+# Calculate profile completion percentage for each person
+# Measures how many optional fields are filled vs total available fields
+python3 calculate_completion.py
+```
+
+**What completion percentage tracks:**
+- Location fields (home & cemetery)
+- Contact fields (occupation, phone, maiden name, education)
+- Health fields (conditions, cause of death)
+- Physical fields (hair color, height)
+- Personal fields (notes, attributes, personality)
+- Relationships (spouse, parents, siblings, children)
+
+**Categories:**
+- Excellent (≥80%) - Well-rounded profile
+- Good (60-79%) - Most key information filled
+- Fair (40-59%) - Basic information present
+- Minimal (20-39%) - Sparse information
+- Incomplete (<20%) - Very limited information
+
+#### Family Tree Query & Extraction Scripts
+
+These scripts help you extract and view specific parts of the family tree:
+
+```bash
+# Get a person's immediate family tree (parents, siblings, spouse, children)
+python3 get_person_tree.py "Patrick Ruff"
+
+# Or run interactively (will prompt for name)
+python3 get_person_tree.py
+
+# Examples:
+python3 get_person_tree.py "Jenny"        # Searches by partial name
+python3 get_person_tree.py "Joe Ruff"     # Full name search
+```
+
+**What it does:**
+- Searches for a person by name (flexible matching)
+- Displays their parents, siblings, spouse, and children
+- Shows ages, generations, and locations
+- Optionally saves a focused JSON file with just that family subset
+- Handles multiple matches by letting you choose
+
+**Example Output:**
+```
+👤 PERSON:
+   Patrick Ruff (1985 - Present (age 39)) - Millennial
+
+👨‍👩 PARENTS (2):
+   • Joe Ruff Sr. (1960 - Present (age 64)) - Baby Boomer
+   • Debbie Ruff (1962 - Present (age 62)) - Baby Boomer
+
+💑 SPOUSE:
+   • Jenny Wang (1986 - Present (age 38)) - Millennial
+
+👥 SIBLINGS (3):
+   • Joe Ruff Jr. (1983 - Present (age 41)) - Millennial
+   • Sarah Boilon (1987 - Present (age 37)) - Millennial
+   • Phil Ruff (1990 - Present (age 34)) - Millennial
+
+👶 CHILDREN (2):
+   • Child 1 (name unknown) (2010 - Present (age 14)) - Generation Z
+   • Child 2 (name unknown) (2012 - Present (age 12)) - Generation Z
+```
+
+#### GitHub Workflow: Edit Person Information
+
+View and edit existing people's information in the family tree using GitHub Actions:
+
+**How to Use:**
+
+1. Go to **Actions** tab in your GitHub repository
+2. Select "Edit Person Information" workflow
+3. Click "Run workflow"
+4. Enter the person's name (required)
+5. Fill in any fields you want to update (all optional)
+6. Click "Run workflow"
+
+**Available fields:**
+- Occupation
+- Phone number
+- Home city/state
+- Date of death (year or "alive")
+- Cemetery information (name, city, state)
+- Health conditions (comma-separated)
+- Notes/stories
+- Maiden name
+- Education level
+
+**View-only mode:**
+- Check "View only" to see all information without making changes
+- Useful for reviewing what data exists for a person
+
+**Examples:**
+
+*View someone's information:*
+- Person: `Patrick Ruff`
+- View only: ✓ (checked)
+
+*Update contact info:*
+- Person: `Jenny Wang`
+- Occupation: `Software Engineer`
+- Phone: `555-1234`
+- Home city: `Seattle`
+- Home state: `Washington`
+
+*Record a passing:*
+- Person: `Joe Ruff Sr.`
+- Date of death: `2023`
+- Cemetery name: `Oak Hill Cemetery`
+- Cemetery city: `Philadelphia`
+- Cemetery state: `Pennsylvania`
+
+**What happens:**
+1. Script displays current information
+2. Applies your updates
+3. Commits changes to `family_tree.json`
+4. Auto-pushes to repository
+
+**Local usage:**
+
+You can also run the script locally:
+```bash
+# View information only
+python3 edit_person.py "Patrick Ruff" --view-only
+
+# Update specific fields
+python3 edit_person.py "Patrick Ruff" --occupation "Engineer" --phone "555-1234"
+
+# Update multiple fields
+python3 edit_person.py "Jenny Wang" \
+  --home_city "Seattle" \
+  --home_state "Washington" \
+  --occupation "Software Engineer"
+
+# Remove a field (set to "null")
+python3 edit_person.py "Patrick Ruff" --phone "null"
+```
+
+#### GitHub Workflow: Generate Person Tree to Drive
+
+Automatically generate a person's immediate family tree and save it to Google Drive using GitHub Actions:
+
+**How to Use:**
+
+1. Go to **Actions** tab in your GitHub repository
+2. Select "Generate Person Family Tree to Drive" workflow
+3. Click "Run workflow"
+4. Enter the person's name (full or partial)
+5. Click "Run workflow"
+
+The workflow will:
+- Search for the person in your family tree
+- Extract their parents, siblings, spouse, and children
+- Generate a timestamped JSON file
+- Upload it to Google Drive folder: `rufftree_person_trees`
+
+**Example inputs:**
+- `Patrick Ruff` - Exact name match
+- `Jenny` - Partial name (finds "Jenny Wang")
+- `Joe Ruff` - Multiple matches will use the first one
+
+**Output location:** All generated trees are saved to a Google Drive folder named `rufftree_person_trees` with filenames like:
+- `patrick_ruff_family_tree_20241126_143022.json`
+
+This is useful for:
+- Sharing family connections with relatives
+- Creating focused subsets of the tree
+- Generating reports for specific people
+- Backing up individual family units
+
+#### GitHub Workflow: Analyze Data Coverage
+
+Automatically analyze how well-documented each person is in the RAG system by counting document chunks that mention them:
+
+**How it works:**
+
+1. **Automatic Monthly Analysis** - Runs on the 1st of each month
+2. **Manual Trigger** - Run anytime from Actions → "Analyze Family Tree Data Coverage"
+3. **What it does:**
+   - Queries the RAG system for each person in the family tree
+   - Counts how many document chunks mention them
+   - Sets `rag_chunks` field with the count
+   - Sets `lacks_data` to `true` if count < 2 (threshold)
+   - Creates detailed coverage report
+   - Commits updated family_tree.json
+   - Creates GitHub issue listing people who need more documentation
+
+**Output:**
+- **Updated family_tree.json** with `rag_chunks` and `lacks_data` fields
+- **Artifact:** `data_coverage_report.json` with detailed statistics
+- **GitHub Issue:** Lists people needing documentation (if any found)
+
+**Viewing Results:**
+
+The coverage data is displayed in the family tree visualizations:
+- **index.html** - Shows coverage summary in "Ruff Family Summary" section
+- **graph.html** - Shows coverage status when clicking on a person
+  - ✅ Green = Well documented (2+ chunks)
+  - ⚠️  Orange = Insufficient data (1 chunk)
+  - ❌ Red = No documentation (0 chunks)
+
+**Local Usage:**
+
+You can also run the analysis locally:
+```bash
+export GOOGLE_GENAI_API_KEY=your_api_key
+python3 analyze_data_coverage.py
+```
+
+This helps identify which family members need more stories, photos, or documents added to the `rufftree` Google Drive folder.
 
 #### Setting Up GitHub Pages
 

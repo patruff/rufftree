@@ -10,9 +10,29 @@
         "dod": "alive",
         "occupation": "Developer/Scientist",
         "spouseId": "jenny",
-        "parentIds": ["joe_sr", "debbie"],
-        "siblingIds": ["joe_jr", "sarah", "phil"],
-        "childrenIds": ["patrick_child1", "patrick_child2"]
+        "parentIds": [
+          "joe_sr",
+          "debbie"
+        ],
+        "siblingIds": [
+          "joe_jr",
+          "sarah",
+          "phil"
+        ],
+        "childrenIds": [
+          "patrick_child1",
+          "patrick_child2"
+        ],
+        "generation": "Millennial",
+        "from_pat": 0,
+        "ethnicity": {
+          "German": 34,
+          "Irish": 32,
+          "English": 18,
+          "Scottish": 8,
+          "Polish": 8
+        },
+        "completion_percentage": 31.2
       },
       "jenny": {
         "id": "jenny",
@@ -22,9 +42,21 @@
         "occupation": "Lawyer",
         "phone": "302-463-1675",
         "spouseId": "patrick",
-        "parentIds": ["jenny_father", "jenny_mother"],
+        "parentIds": [
+          "jenny_father",
+          "jenny_mother"
+        ],
         "siblingIds": [],
-        "childrenIds": ["patrick_child1", "patrick_child2"]
+        "childrenIds": [
+          "patrick_child1",
+          "patrick_child2"
+        ],
+        "generation": "Millennial",
+        "from_pat": 0,
+        "ethnicity": {
+          "Chinese": 100
+        },
+        "completion_percentage": 31.2
       },
       "patrick_child1": {
         "id": "patrick_child1",
@@ -32,9 +64,25 @@
         "dob": "2010",
         "dod": "alive",
         "spouseId": null,
-        "parentIds": ["patrick", "jenny"],
-        "siblingIds": ["patrick_child2"],
-        "childrenIds": []
+        "parentIds": [
+          "patrick",
+          "jenny"
+        ],
+        "siblingIds": [
+          "patrick_child2"
+        ],
+        "childrenIds": [],
+        "generation": "Generation Z",
+        "from_pat": 1,
+        "ethnicity": {
+          "German": 17,
+          "Irish": 16,
+          "English": 9,
+          "Scottish": 4,
+          "Polish": 4,
+          "Chinese": 50
+        },
+        "completion_percentage": 12.5
       },
       "patrick_child2": {
         "id": "patrick_child2",
@@ -42,9 +90,25 @@
         "dob": "2012",
         "dod": "alive",
         "spouseId": null,
-        "parentIds": ["patrick", "jenny"],
-        "siblingIds": ["patrick_child1"],
-        "childrenIds": []
+        "parentIds": [
+          "patrick",
+          "jenny"
+        ],
+        "siblingIds": [
+          "patrick_child1"
+        ],
+        "childrenIds": [],
+        "generation": "Generation Z",
+        "from_pat": 1,
+        "ethnicity": {
+          "German": 17,
+          "Irish": 16,
+          "English": 9,
+          "Scottish": 4,
+          "Polish": 4,
+          "Chinese": 50
+        },
+        "completion_percentage": 12.5
       },
       "joe_jr": {
         "id": "joe_jr",
@@ -54,9 +118,30 @@
         "occupation": "Facilities",
         "phone": "302-845-3736",
         "spouseId": "katie",
-        "parentIds": ["joe_sr", "debbie"],
-        "siblingIds": ["patrick", "sarah", "phil"],
-        "childrenIds": ["kaylin", "cameron", "benjamin"]
+        "parentIds": [
+          "joe_sr",
+          "debbie"
+        ],
+        "siblingIds": [
+          "patrick",
+          "sarah",
+          "phil"
+        ],
+        "childrenIds": [
+          "kaylin",
+          "cameron",
+          "benjamin"
+        ],
+        "generation": "Millennial",
+        "from_pat": 0,
+        "ethnicity": {
+          "German": 34,
+          "Irish": 32,
+          "English": 18,
+          "Scottish": 8,
+          "Polish": 8
+        },
+        "completion_percentage": 37.5
       },
       "katie": {
         "id": "katie",
@@ -67,7 +152,19 @@
         "spouseId": "joe_jr",
         "parentIds": [],
         "siblingIds": [],
-        "childrenIds": ["kaylin", "cameron", "benjamin"]
+        "childrenIds": [
+          "kaylin",
+          "cameron",
+          "benjamin"
+        ],
+        "generation": "Millennial",
+        "from_pat": 0,
+        "ethnicity": {
+          "Irish": 40,
+          "German": 30,
+          "English": 30
+        },
+        "completion_percentage": 18.8
       },
       "kaylin": {
         "id": "kaylin",
@@ -75,9 +172,25 @@
         "dob": "2008",
         "dod": "alive",
         "spouseId": null,
-        "parentIds": ["joe_jr", "katie"],
-        "siblingIds": ["cameron", "benjamin"],
-        "childrenIds": []
+        "parentIds": [
+          "joe_jr",
+          "katie"
+        ],
+        "siblingIds": [
+          "cameron",
+          "benjamin"
+        ],
+        "childrenIds": [],
+        "generation": "Generation Z",
+        "from_pat": 1,
+        "ethnicity": {
+          "German": 32,
+          "Irish": 36,
+          "English": 24,
+          "Scottish": 4,
+          "Polish": 4
+        },
+        "completion_percentage": 12.5
       },
       "cameron": {
         "id": "cameron",
@@ -85,9 +198,25 @@
         "dob": "2010",
         "dod": "alive",
         "spouseId": null,
-        "parentIds": ["joe_jr", "katie"],
-        "siblingIds": ["kaylin", "benjamin"],
-        "childrenIds": []
+        "parentIds": [
+          "joe_jr",
+          "katie"
+        ],
+        "siblingIds": [
+          "kaylin",
+          "benjamin"
+        ],
+        "childrenIds": [],
+        "generation": "Generation Z",
+        "from_pat": 1,
+        "ethnicity": {
+          "German": 32,
+          "Irish": 36,
+          "English": 24,
+          "Scottish": 4,
+          "Polish": 4
+        },
+        "completion_percentage": 12.5
       },
       "benjamin": {
         "id": "benjamin",
@@ -95,9 +224,25 @@
         "dob": "2013",
         "dod": "alive",
         "spouseId": null,
-        "parentIds": ["joe_jr", "katie"],
-        "siblingIds": ["kaylin", "cameron"],
-        "childrenIds": []
+        "parentIds": [
+          "joe_jr",
+          "katie"
+        ],
+        "siblingIds": [
+          "kaylin",
+          "cameron"
+        ],
+        "childrenIds": [],
+        "generation": "Generation Alpha",
+        "from_pat": 2,
+        "ethnicity": {
+          "German": 32,
+          "Irish": 36,
+          "English": 24,
+          "Scottish": 4,
+          "Polish": 4
+        },
+        "completion_percentage": 12.5
       },
       "sarah": {
         "id": "sarah",
@@ -109,9 +254,29 @@
         "maidenName": "Sarah Ruff",
         "notes": "Baby of the family, was a graduate student in lab with Lorraine Symington",
         "spouseId": "kevin_boilon",
-        "parentIds": ["joe_sr", "debbie"],
-        "siblingIds": ["joe_jr", "patrick", "phil"],
-        "childrenIds": ["eloise", "darcy"]
+        "parentIds": [
+          "joe_sr",
+          "debbie"
+        ],
+        "siblingIds": [
+          "joe_jr",
+          "patrick",
+          "phil"
+        ],
+        "childrenIds": [
+          "eloise",
+          "darcy"
+        ],
+        "generation": "Millennial",
+        "from_pat": 0,
+        "ethnicity": {
+          "German": 34,
+          "Irish": 32,
+          "English": 18,
+          "Scottish": 8,
+          "Polish": 8
+        },
+        "completion_percentage": 50.0
       },
       "kevin_boilon": {
         "id": "kevin_boilon",
@@ -123,7 +288,17 @@
         "spouseId": "sarah",
         "parentIds": [],
         "siblingIds": [],
-        "childrenIds": ["eloise", "darcy"]
+        "childrenIds": [
+          "eloise",
+          "darcy"
+        ],
+        "generation": "Millennial",
+        "from_pat": 0,
+        "ethnicity": {
+          "French": 60,
+          "Irish": 40
+        },
+        "completion_percentage": 25.0
       },
       "eloise": {
         "id": "eloise",
@@ -131,9 +306,25 @@
         "dob": "2012",
         "dod": "alive",
         "spouseId": null,
-        "parentIds": ["sarah", "kevin_boilon"],
-        "siblingIds": ["darcy"],
-        "childrenIds": []
+        "parentIds": [
+          "sarah",
+          "kevin_boilon"
+        ],
+        "siblingIds": [
+          "darcy"
+        ],
+        "childrenIds": [],
+        "generation": "Generation Z",
+        "from_pat": 1,
+        "ethnicity": {
+          "German": 17,
+          "Irish": 36,
+          "English": 9,
+          "Scottish": 4,
+          "Polish": 4,
+          "French": 30
+        },
+        "completion_percentage": 12.5
       },
       "darcy": {
         "id": "darcy",
@@ -141,9 +332,25 @@
         "dob": "2015",
         "dod": "alive",
         "spouseId": null,
-        "parentIds": ["sarah", "kevin_boilon"],
-        "siblingIds": ["eloise"],
-        "childrenIds": []
+        "parentIds": [
+          "sarah",
+          "kevin_boilon"
+        ],
+        "siblingIds": [
+          "eloise"
+        ],
+        "childrenIds": [],
+        "generation": "Generation Alpha",
+        "from_pat": 2,
+        "ethnicity": {
+          "German": 17,
+          "Irish": 36,
+          "English": 9,
+          "Scottish": 4,
+          "Polish": 4,
+          "French": 30
+        },
+        "completion_percentage": 12.5
       },
       "phil": {
         "id": "phil",
@@ -153,9 +360,31 @@
         "occupation": "Electrician",
         "phone": "302-397-4048",
         "spouseId": "ashley",
-        "parentIds": ["joe_sr", "debbie"],
-        "siblingIds": ["joe_jr", "patrick", "sarah"],
-        "childrenIds": ["logan", "aiden", "tripp", "scout"]
+        "parentIds": [
+          "joe_sr",
+          "debbie"
+        ],
+        "siblingIds": [
+          "joe_jr",
+          "patrick",
+          "sarah"
+        ],
+        "childrenIds": [
+          "logan",
+          "aiden",
+          "tripp",
+          "scout"
+        ],
+        "generation": "Millennial",
+        "from_pat": 0,
+        "ethnicity": {
+          "German": 34,
+          "Irish": 32,
+          "English": 18,
+          "Scottish": 8,
+          "Polish": 8
+        },
+        "completion_percentage": 37.5
       },
       "ashley": {
         "id": "ashley",
@@ -166,7 +395,20 @@
         "spouseId": "phil",
         "parentIds": [],
         "siblingIds": [],
-        "childrenIds": ["logan", "aiden", "tripp", "scout"]
+        "childrenIds": [
+          "logan",
+          "aiden",
+          "tripp",
+          "scout"
+        ],
+        "generation": "Millennial",
+        "from_pat": 0,
+        "ethnicity": {
+          "English": 40,
+          "Scottish": 30,
+          "Irish": 30
+        },
+        "completion_percentage": 18.8
       },
       "logan": {
         "id": "logan",
@@ -174,9 +416,26 @@
         "dob": "2010",
         "dod": "alive",
         "spouseId": null,
-        "parentIds": ["phil", "ashley"],
-        "siblingIds": ["aiden", "tripp", "scout"],
-        "childrenIds": []
+        "parentIds": [
+          "phil",
+          "ashley"
+        ],
+        "siblingIds": [
+          "aiden",
+          "tripp",
+          "scout"
+        ],
+        "childrenIds": [],
+        "generation": "Generation Z",
+        "from_pat": 1,
+        "ethnicity": {
+          "German": 17,
+          "Irish": 31,
+          "English": 29,
+          "Scottish": 19,
+          "Polish": 4
+        },
+        "completion_percentage": 12.5
       },
       "aiden": {
         "id": "aiden",
@@ -184,9 +443,26 @@
         "dob": "2012",
         "dod": "alive",
         "spouseId": null,
-        "parentIds": ["phil", "ashley"],
-        "siblingIds": ["logan", "tripp", "scout"],
-        "childrenIds": []
+        "parentIds": [
+          "phil",
+          "ashley"
+        ],
+        "siblingIds": [
+          "logan",
+          "tripp",
+          "scout"
+        ],
+        "childrenIds": [],
+        "generation": "Generation Z",
+        "from_pat": 1,
+        "ethnicity": {
+          "German": 17,
+          "Irish": 31,
+          "English": 29,
+          "Scottish": 19,
+          "Polish": 4
+        },
+        "completion_percentage": 12.5
       },
       "tripp": {
         "id": "tripp",
@@ -194,9 +470,26 @@
         "dob": "2015",
         "dod": "alive",
         "spouseId": null,
-        "parentIds": ["phil", "ashley"],
-        "siblingIds": ["logan", "aiden", "scout"],
-        "childrenIds": []
+        "parentIds": [
+          "phil",
+          "ashley"
+        ],
+        "siblingIds": [
+          "logan",
+          "aiden",
+          "scout"
+        ],
+        "childrenIds": [],
+        "generation": "Generation Alpha",
+        "from_pat": 2,
+        "ethnicity": {
+          "German": 17,
+          "Irish": 31,
+          "English": 29,
+          "Scottish": 19,
+          "Polish": 4
+        },
+        "completion_percentage": 12.5
       },
       "scout": {
         "id": "scout",
@@ -204,9 +497,26 @@
         "dob": "2018",
         "dod": "alive",
         "spouseId": null,
-        "parentIds": ["phil", "ashley"],
-        "siblingIds": ["logan", "aiden", "tripp"],
-        "childrenIds": []
+        "parentIds": [
+          "phil",
+          "ashley"
+        ],
+        "siblingIds": [
+          "logan",
+          "aiden",
+          "tripp"
+        ],
+        "childrenIds": [],
+        "generation": "Generation Alpha",
+        "from_pat": 2,
+        "ethnicity": {
+          "German": 17,
+          "Irish": 31,
+          "English": 29,
+          "Scottish": 19,
+          "Polish": 4
+        },
+        "completion_percentage": 12.5
       },
       "joe_sr": {
         "id": "joe_sr",
@@ -215,9 +525,35 @@
         "dod": "alive",
         "occupation": "Laborer",
         "spouseId": "debbie",
-        "parentIds": ["grandfather_ruff", "grandmother_ruff"],
-        "siblingIds": ["yogi", "freddie", "tommy", "john", "mary_ruff", "bridget", "anne_ruff", "anita", "winifred"],
-        "childrenIds": ["joe_jr", "patrick", "sarah", "phil"]
+        "parentIds": [
+          "grandfather_ruff",
+          "grandmother_ruff"
+        ],
+        "siblingIds": [
+          "yogi",
+          "freddie",
+          "tommy",
+          "john",
+          "mary_ruff",
+          "bridget",
+          "anne_ruff",
+          "anita",
+          "winifred"
+        ],
+        "childrenIds": [
+          "joe_jr",
+          "patrick",
+          "sarah",
+          "phil"
+        ],
+        "generation": "Baby Boomer",
+        "from_pat": -2,
+        "ethnicity": {
+          "German": 25,
+          "Irish": 55,
+          "English": 20
+        },
+        "completion_percentage": 31.2
       },
       "debbie": {
         "id": "debbie",
@@ -228,9 +564,31 @@
         "occupation": "Teacher",
         "phone": "302-530-1232",
         "spouseId": "joe_sr",
-        "parentIds": ["stan_sr", "annette"],
-        "siblingIds": ["stan_miller", "beth_bradley", "lynn_miller"],
-        "childrenIds": ["joe_jr", "patrick", "sarah", "phil"]
+        "parentIds": [
+          "stan_sr",
+          "annette"
+        ],
+        "siblingIds": [
+          "stan_miller",
+          "beth_bradley",
+          "lynn_miller"
+        ],
+        "childrenIds": [
+          "joe_jr",
+          "patrick",
+          "sarah",
+          "phil"
+        ],
+        "generation": "Baby Boomer",
+        "from_pat": -2,
+        "ethnicity": {
+          "German": 45,
+          "English": 15,
+          "Scottish": 15,
+          "Polish": 15,
+          "Irish": 10
+        },
+        "completion_percentage": 43.8
       },
       "annette": {
         "id": "annette",
@@ -241,7 +599,20 @@
         "spouseId": "stan_sr",
         "parentIds": [],
         "siblingIds": [],
-        "childrenIds": ["debbie", "stan_miller", "beth_bradley", "lynn_miller"]
+        "childrenIds": [
+          "debbie",
+          "stan_miller",
+          "beth_bradley",
+          "lynn_miller"
+        ],
+        "generation": "Silent Generation",
+        "from_pat": -3,
+        "ethnicity": {
+          "German": 50,
+          "Polish": 30,
+          "Irish": 20
+        },
+        "completion_percentage": 18.8
       },
       "stan_sr": {
         "id": "stan_sr",
@@ -252,7 +623,20 @@
         "spouseId": "annette",
         "parentIds": [],
         "siblingIds": [],
-        "childrenIds": ["debbie", "stan_miller", "beth_bradley", "lynn_miller"]
+        "childrenIds": [
+          "debbie",
+          "stan_miller",
+          "beth_bradley",
+          "lynn_miller"
+        ],
+        "generation": "Silent Generation",
+        "from_pat": -3,
+        "ethnicity": {
+          "German": 40,
+          "English": 30,
+          "Scottish": 30
+        },
+        "completion_percentage": 15.0
       },
       "grandfather_ruff": {
         "id": "grandfather_ruff",
@@ -262,7 +646,25 @@
         "spouseId": "grandmother_ruff",
         "parentIds": [],
         "siblingIds": [],
-        "childrenIds": ["yogi", "freddie", "tommy", "john", "joe_sr", "mary_ruff", "bridget", "anne_ruff", "anita", "winifred"]
+        "childrenIds": [
+          "yogi",
+          "freddie",
+          "tommy",
+          "john",
+          "joe_sr",
+          "mary_ruff",
+          "bridget",
+          "anne_ruff",
+          "anita",
+          "winifred"
+        ],
+        "generation": "Silent Generation",
+        "from_pat": -3,
+        "ethnicity": {
+          "German": 50,
+          "Irish": 50
+        },
+        "completion_percentage": 10.0
       },
       "grandmother_ruff": {
         "id": "grandmother_ruff",
@@ -272,7 +674,25 @@
         "spouseId": "grandfather_ruff",
         "parentIds": [],
         "siblingIds": [],
-        "childrenIds": ["yogi", "freddie", "tommy", "john", "joe_sr", "mary_ruff", "bridget", "anne_ruff", "anita", "winifred"]
+        "childrenIds": [
+          "yogi",
+          "freddie",
+          "tommy",
+          "john",
+          "joe_sr",
+          "mary_ruff",
+          "bridget",
+          "anne_ruff",
+          "anita",
+          "winifred"
+        ],
+        "generation": "Silent Generation",
+        "from_pat": -3,
+        "ethnicity": {
+          "Irish": 60,
+          "English": 40
+        },
+        "completion_percentage": 10.0
       },
       "yogi": {
         "id": "yogi",
@@ -280,9 +700,30 @@
         "dob": "1955",
         "dod": "alive",
         "spouseId": null,
-        "parentIds": ["grandfather_ruff", "grandmother_ruff"],
-        "siblingIds": ["freddie", "tommy", "john", "joe_sr", "mary_ruff", "bridget", "anne_ruff", "anita", "winifred"],
-        "childrenIds": []
+        "parentIds": [
+          "grandfather_ruff",
+          "grandmother_ruff"
+        ],
+        "siblingIds": [
+          "freddie",
+          "tommy",
+          "john",
+          "joe_sr",
+          "mary_ruff",
+          "bridget",
+          "anne_ruff",
+          "anita",
+          "winifred"
+        ],
+        "childrenIds": [],
+        "generation": "Baby Boomer",
+        "from_pat": -2,
+        "ethnicity": {
+          "German": 25,
+          "Irish": 55,
+          "English": 20
+        },
+        "completion_percentage": 12.5
       },
       "freddie": {
         "id": "freddie",
@@ -290,9 +731,30 @@
         "dob": "1958",
         "dod": "alive",
         "spouseId": null,
-        "parentIds": ["grandfather_ruff", "grandmother_ruff"],
-        "siblingIds": ["yogi", "tommy", "john", "joe_sr", "mary_ruff", "bridget", "anne_ruff", "anita", "winifred"],
-        "childrenIds": []
+        "parentIds": [
+          "grandfather_ruff",
+          "grandmother_ruff"
+        ],
+        "siblingIds": [
+          "yogi",
+          "tommy",
+          "john",
+          "joe_sr",
+          "mary_ruff",
+          "bridget",
+          "anne_ruff",
+          "anita",
+          "winifred"
+        ],
+        "childrenIds": [],
+        "generation": "Baby Boomer",
+        "from_pat": -2,
+        "ethnicity": {
+          "German": 25,
+          "Irish": 55,
+          "English": 20
+        },
+        "completion_percentage": 12.5
       },
       "tommy": {
         "id": "tommy",
@@ -300,9 +762,30 @@
         "dob": "1963",
         "dod": "alive",
         "spouseId": null,
-        "parentIds": ["grandfather_ruff", "grandmother_ruff"],
-        "siblingIds": ["yogi", "freddie", "john", "joe_sr", "mary_ruff", "bridget", "anne_ruff", "anita", "winifred"],
-        "childrenIds": []
+        "parentIds": [
+          "grandfather_ruff",
+          "grandmother_ruff"
+        ],
+        "siblingIds": [
+          "yogi",
+          "freddie",
+          "john",
+          "joe_sr",
+          "mary_ruff",
+          "bridget",
+          "anne_ruff",
+          "anita",
+          "winifred"
+        ],
+        "childrenIds": [],
+        "generation": "Baby Boomer",
+        "from_pat": -2,
+        "ethnicity": {
+          "German": 25,
+          "Irish": 55,
+          "English": 20
+        },
+        "completion_percentage": 12.5
       },
       "john": {
         "id": "john",
@@ -310,9 +793,30 @@
         "dob": "1965",
         "dod": "alive",
         "spouseId": null,
-        "parentIds": ["grandfather_ruff", "grandmother_ruff"],
-        "siblingIds": ["yogi", "freddie", "tommy", "joe_sr", "mary_ruff", "bridget", "anne_ruff", "anita", "winifred"],
-        "childrenIds": []
+        "parentIds": [
+          "grandfather_ruff",
+          "grandmother_ruff"
+        ],
+        "siblingIds": [
+          "yogi",
+          "freddie",
+          "tommy",
+          "joe_sr",
+          "mary_ruff",
+          "bridget",
+          "anne_ruff",
+          "anita",
+          "winifred"
+        ],
+        "childrenIds": [],
+        "generation": "Generation X",
+        "from_pat": -1,
+        "ethnicity": {
+          "German": 25,
+          "Irish": 55,
+          "English": 20
+        },
+        "completion_percentage": 12.5
       },
       "mary_ruff": {
         "id": "mary_ruff",
@@ -320,9 +824,30 @@
         "dob": "1957",
         "dod": "alive",
         "spouseId": null,
-        "parentIds": ["grandfather_ruff", "grandmother_ruff"],
-        "siblingIds": ["yogi", "freddie", "tommy", "john", "joe_sr", "bridget", "anne_ruff", "anita", "winifred"],
-        "childrenIds": []
+        "parentIds": [
+          "grandfather_ruff",
+          "grandmother_ruff"
+        ],
+        "siblingIds": [
+          "yogi",
+          "freddie",
+          "tommy",
+          "john",
+          "joe_sr",
+          "bridget",
+          "anne_ruff",
+          "anita",
+          "winifred"
+        ],
+        "childrenIds": [],
+        "generation": "Baby Boomer",
+        "from_pat": -2,
+        "ethnicity": {
+          "German": 25,
+          "Irish": 55,
+          "English": 20
+        },
+        "completion_percentage": 12.5
       },
       "bridget": {
         "id": "bridget",
@@ -330,9 +855,30 @@
         "dob": "1959",
         "dod": "alive",
         "spouseId": null,
-        "parentIds": ["grandfather_ruff", "grandmother_ruff"],
-        "siblingIds": ["yogi", "freddie", "tommy", "john", "joe_sr", "mary_ruff", "anne_ruff", "anita", "winifred"],
-        "childrenIds": []
+        "parentIds": [
+          "grandfather_ruff",
+          "grandmother_ruff"
+        ],
+        "siblingIds": [
+          "yogi",
+          "freddie",
+          "tommy",
+          "john",
+          "joe_sr",
+          "mary_ruff",
+          "anne_ruff",
+          "anita",
+          "winifred"
+        ],
+        "childrenIds": [],
+        "generation": "Baby Boomer",
+        "from_pat": -2,
+        "ethnicity": {
+          "German": 25,
+          "Irish": 55,
+          "English": 20
+        },
+        "completion_percentage": 12.5
       },
       "anne_ruff": {
         "id": "anne_ruff",
@@ -340,9 +886,30 @@
         "dob": "1961",
         "dod": "alive",
         "spouseId": null,
-        "parentIds": ["grandfather_ruff", "grandmother_ruff"],
-        "siblingIds": ["yogi", "freddie", "tommy", "john", "joe_sr", "mary_ruff", "bridget", "anita", "winifred"],
-        "childrenIds": []
+        "parentIds": [
+          "grandfather_ruff",
+          "grandmother_ruff"
+        ],
+        "siblingIds": [
+          "yogi",
+          "freddie",
+          "tommy",
+          "john",
+          "joe_sr",
+          "mary_ruff",
+          "bridget",
+          "anita",
+          "winifred"
+        ],
+        "childrenIds": [],
+        "generation": "Baby Boomer",
+        "from_pat": -2,
+        "ethnicity": {
+          "German": 25,
+          "Irish": 55,
+          "English": 20
+        },
+        "completion_percentage": 12.5
       },
       "anita": {
         "id": "anita",
@@ -350,9 +917,30 @@
         "dob": "1964",
         "dod": "alive",
         "spouseId": null,
-        "parentIds": ["grandfather_ruff", "grandmother_ruff"],
-        "siblingIds": ["yogi", "freddie", "tommy", "john", "joe_sr", "mary_ruff", "bridget", "anne_ruff", "winifred"],
-        "childrenIds": []
+        "parentIds": [
+          "grandfather_ruff",
+          "grandmother_ruff"
+        ],
+        "siblingIds": [
+          "yogi",
+          "freddie",
+          "tommy",
+          "john",
+          "joe_sr",
+          "mary_ruff",
+          "bridget",
+          "anne_ruff",
+          "winifred"
+        ],
+        "childrenIds": [],
+        "generation": "Baby Boomer",
+        "from_pat": -2,
+        "ethnicity": {
+          "German": 25,
+          "Irish": 55,
+          "English": 20
+        },
+        "completion_percentage": 12.5
       },
       "winifred": {
         "id": "winifred",
@@ -360,9 +948,30 @@
         "dob": "1966",
         "dod": "alive",
         "spouseId": null,
-        "parentIds": ["grandfather_ruff", "grandmother_ruff"],
-        "siblingIds": ["yogi", "freddie", "tommy", "john", "joe_sr", "mary_ruff", "bridget", "anne_ruff", "anita"],
-        "childrenIds": []
+        "parentIds": [
+          "grandfather_ruff",
+          "grandmother_ruff"
+        ],
+        "siblingIds": [
+          "yogi",
+          "freddie",
+          "tommy",
+          "john",
+          "joe_sr",
+          "mary_ruff",
+          "bridget",
+          "anne_ruff",
+          "anita"
+        ],
+        "childrenIds": [],
+        "generation": "Generation X",
+        "from_pat": -1,
+        "ethnicity": {
+          "German": 25,
+          "Irish": 55,
+          "English": 20
+        },
+        "completion_percentage": 12.5
       },
       "stan_miller": {
         "id": "stan_miller",
@@ -371,9 +980,26 @@
         "dod": "alive",
         "occupation": "Architect",
         "spouseId": null,
-        "parentIds": ["stan_sr", "annette"],
-        "siblingIds": ["debbie", "beth_bradley", "lynn_miller"],
-        "childrenIds": []
+        "parentIds": [
+          "stan_sr",
+          "annette"
+        ],
+        "siblingIds": [
+          "debbie",
+          "beth_bradley",
+          "lynn_miller"
+        ],
+        "childrenIds": [],
+        "generation": "Baby Boomer",
+        "from_pat": -2,
+        "ethnicity": {
+          "German": 45,
+          "English": 15,
+          "Scottish": 15,
+          "Polish": 15,
+          "Irish": 10
+        },
+        "completion_percentage": 18.8
       },
       "beth_bradley": {
         "id": "beth_bradley",
@@ -383,9 +1009,26 @@
         "maidenName": "Beth Miller",
         "notes": "Known as the best aunt in the world, very youthful, healthy and fun to be around",
         "spouseId": "bryan_bradley",
-        "parentIds": ["stan_sr", "annette"],
-        "siblingIds": ["debbie", "stan_miller", "lynn_miller"],
-        "childrenIds": []
+        "parentIds": [
+          "stan_sr",
+          "annette"
+        ],
+        "siblingIds": [
+          "debbie",
+          "stan_miller",
+          "lynn_miller"
+        ],
+        "childrenIds": [],
+        "generation": "Baby Boomer",
+        "from_pat": -2,
+        "ethnicity": {
+          "German": 45,
+          "English": 15,
+          "Scottish": 15,
+          "Polish": 15,
+          "Irish": 10
+        },
+        "completion_percentage": 31.2
       },
       "bryan_bradley": {
         "id": "bryan_bradley",
@@ -395,7 +1038,15 @@
         "spouseId": "beth_bradley",
         "parentIds": [],
         "siblingIds": [],
-        "childrenIds": []
+        "childrenIds": [],
+        "generation": "Baby Boomer",
+        "from_pat": -2,
+        "ethnicity": {
+          "English": 50,
+          "Welsh": 30,
+          "Irish": 20
+        },
+        "completion_percentage": 6.2
       },
       "lynn_miller": {
         "id": "lynn_miller",
@@ -403,9 +1054,26 @@
         "dob": "1960",
         "dod": "alive",
         "spouseId": null,
-        "parentIds": ["stan_sr", "annette"],
-        "siblingIds": ["debbie", "stan_miller", "beth_bradley"],
-        "childrenIds": []
+        "parentIds": [
+          "stan_sr",
+          "annette"
+        ],
+        "siblingIds": [
+          "debbie",
+          "stan_miller",
+          "beth_bradley"
+        ],
+        "childrenIds": [],
+        "generation": "Baby Boomer",
+        "from_pat": -2,
+        "ethnicity": {
+          "German": 45,
+          "English": 15,
+          "Scottish": 15,
+          "Polish": 15,
+          "Irish": 10
+        },
+        "completion_percentage": 12.5
       },
       "jenny_father": {
         "id": "jenny_father",
@@ -415,7 +1083,15 @@
         "spouseId": "jenny_mother",
         "parentIds": [],
         "siblingIds": [],
-        "childrenIds": ["jenny"]
+        "childrenIds": [
+          "jenny"
+        ],
+        "generation": "Baby Boomer",
+        "from_pat": -2,
+        "ethnicity": {
+          "Chinese": 100
+        },
+        "completion_percentage": 12.5
       },
       "jenny_mother": {
         "id": "jenny_mother",
@@ -425,7 +1101,15 @@
         "spouseId": "jenny_father",
         "parentIds": [],
         "siblingIds": [],
-        "childrenIds": ["jenny"]
+        "childrenIds": [
+          "jenny"
+        ],
+        "generation": "Baby Boomer",
+        "from_pat": -2,
+        "ethnicity": {
+          "Chinese": 100
+        },
+        "completion_percentage": 12.5
       }
     }
   },
@@ -443,7 +1127,22 @@
       "spouseId": "ID of spouse, or null if no spouse",
       "parentIds": "Array of parent IDs (usually 2, can be 0-2)",
       "siblingIds": "Array of sibling IDs",
-      "childrenIds": "Array of children IDs"
+      "childrenIds": "Array of children IDs",
+      "generation": "Generation label (e.g., 'Millennial', 'Baby Boomer', 'Generation Z')",
+      "from_pat": "Integer showing generations from Patrick Ruff (Millennial = 0, Gen X = -1, Gen Z = +1, etc.)",
+      "ethnicity": "Optional: Object mapping countries to percentages (must sum to 100). Calculated from parents if not manually set.",
+      "home_city": "Optional: String for city where person lives/lived (e.g., 'Philadelphia')",
+      "home_state": "Optional: String for state where person lives/lived (e.g., 'Pennsylvania' or 'PA')",
+      "causeOfDeath": "Optional: String for deceased individuals indicating what they died from (e.g., 'heart-attack', 'pancreatic-cancer')",
+      "health_condition": "Optional: Array of strings for ongoing/chronic health conditions (e.g., ['diabetes', 'heart-disease']). Applies to both living and deceased.",
+      "cemetery_name": "Optional: String for deceased individuals indicating cemetery name (e.g., 'Oak Hill Cemetery')",
+      "cemetery_city": "Optional: String for deceased individuals indicating cemetery city (e.g., 'Philadelphia')",
+      "cemetery_state": "Optional: String for deceased individuals indicating cemetery state (e.g., 'Pennsylvania' or 'PA')",
+      "heritable_risk": "Optional: Object mapping health conditions to risk levels (low/moderate/high/very-high). Auto-calculated from parents' health conditions and causes of death.",
+      "heritable_traits": "Optional: Object mapping trait names to genotype/phenotype info. Auto-calculated from parents for Mendelian traits (eye color, hair texture, dimples, etc.)",
+      "gender": "String: 'male' or 'female'. Auto-inferred from name if not specified.",
+      "final_male": "Boolean: True if this male is the last male descendant in his Y chromosome (paternal) line. Auto-calculated.",
+      "final_female": "Boolean: True if this female is the last female descendant in her mitochondrial DNA (maternal) line. Auto-calculated."
     },
     "expandable_tree": {
       "description": "The tree starts with the person specified in 'startPerson'. Clicking a node expands to show their spouse, siblings, and parents. Clicking parents shows their siblings and parents, etc.",
