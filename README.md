@@ -494,6 +494,51 @@ python3 add_heritable_traits.py
 python3 add_final_lineage.py
 ```
 
+#### Family Tree Query & Extraction Scripts
+
+These scripts help you extract and view specific parts of the family tree:
+
+```bash
+# Get a person's immediate family tree (parents, siblings, spouse, children)
+python3 get_person_tree.py "Patrick Ruff"
+
+# Or run interactively (will prompt for name)
+python3 get_person_tree.py
+
+# Examples:
+python3 get_person_tree.py "Jenny"        # Searches by partial name
+python3 get_person_tree.py "Joe Ruff"     # Full name search
+```
+
+**What it does:**
+- Searches for a person by name (flexible matching)
+- Displays their parents, siblings, spouse, and children
+- Shows ages, generations, and locations
+- Optionally saves a focused JSON file with just that family subset
+- Handles multiple matches by letting you choose
+
+**Example Output:**
+```
+👤 PERSON:
+   Patrick Ruff (1985 - Present (age 39)) - Millennial
+
+👨‍👩 PARENTS (2):
+   • Joe Ruff Sr. (1960 - Present (age 64)) - Baby Boomer
+   • Debbie Ruff (1962 - Present (age 62)) - Baby Boomer
+
+💑 SPOUSE:
+   • Jenny Wang (1986 - Present (age 38)) - Millennial
+
+👥 SIBLINGS (3):
+   • Joe Ruff Jr. (1983 - Present (age 41)) - Millennial
+   • Sarah Boilon (1987 - Present (age 37)) - Millennial
+   • Phil Ruff (1990 - Present (age 34)) - Millennial
+
+👶 CHILDREN (2):
+   • Child 1 (name unknown) (2010 - Present (age 14)) - Generation Z
+   • Child 2 (name unknown) (2012 - Present (age 12)) - Generation Z
+```
+
 #### Setting Up GitHub Pages
 
 To enable the live family tree website:
