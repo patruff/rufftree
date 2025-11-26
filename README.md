@@ -2,6 +2,38 @@
 
 A Retrieval Augmented Generation (RAG) system for Ruff family documents using Google's Gemini File Search API. This system automatically syncs documents from a Google Drive folder and provides AI-powered search and question answering capabilities.
 
+## Table of Contents
+
+- [View the Family Tree Online](#-view-the-family-tree-online)
+- [Privacy & Repository Settings](#-privacy--repository-settings)
+- [Features](#features)
+  - [Visualization & Exploration](#-visualization--exploration)
+  - [Family Data & Tracking](#-family-data--tracking)
+  - [Person Management](#️-person-management)
+  - [Query & Search System](#-query--search-system)
+- [Architecture](#architecture)
+- [Setup](#setup)
+- [Usage](#usage)
+  - [View the Family Tree](#view-the-family-tree)
+  - [Adding Family Members](#adding-family-members)
+  - [Family Data Model](#family-data-model)
+- [GitHub Workflows](#github-workflows)
+  - [Deploy Pages](#deploy-pages)
+  - [Sync Documents from Google Drive](#sync-documents-from-google-drive)
+  - [Query Ruff Documents](#query-ruff-documents)
+  - [Integrate Generated People](#integrate-generated-people)
+  - [Edit Person Information](#edit-person-information)
+  - [Generate Person Tree to Drive](#generate-person-tree-to-drive)
+  - [Analyze Data Coverage](#analyze-data-coverage)
+- [Scripts Reference](#scripts-reference)
+  - [Data Calculation Scripts](#data-calculation-scripts)
+  - [Family Tree Query Scripts](#family-tree-query-scripts)
+  - [RAG & Document Scripts](#rag--document-scripts)
+- [File Search Store](#file-search-store)
+- [Supported File Types](#supported-file-types)
+- [Pricing](#pricing)
+- [Troubleshooting](#troubleshooting)
+
 ## 🌳 View the Family Tree Online
 
 **Live Demo**: [https://patruff.github.io/rufftree/](https://patruff.github.io/rufftree/)
@@ -844,6 +876,220 @@ When using Claude Desktop, you'll have access to these tools:
 3. **list_indexed_documents** - See all uploaded documents
 4. **get_store_info** - View store configuration
 5. **delete_document** - Remove a document from the system
+
+## GitHub Workflows
+
+All GitHub Actions workflows can be found in `.github/workflows/`. Below is a summary of each workflow:
+
+### Deploy Pages
+
+**File:** `deploy-pages.yml`
+
+Automatically deploys the family tree website to GitHub Pages whenever you push changes to the `main` branch.
+
+**Triggers:**
+- Push to `main` branch (changes to HTML, CSS, JS, or JSON files)
+
+**What it does:**
+- Builds and deploys `index.html`, `graph.html`, `queries.html`, `person_generator.html`
+- Serves `family_tree.json` and `stored_queries.json`
+
+### Sync Documents from Google Drive
+
+**File:** `sync-drive-documents.yml`
+
+Automatically syncs documents from your Google Drive "rufftree" folder to the RAG system.
+
+**Triggers:**
+- Scheduled: Every 6 hours
+- Manual: Actions → "Sync Documents from Google Drive" → Run workflow
+
+**Required Secrets:**
+- `GOOGLE_GENAI_API_KEY` - Gemini API key
+- `GOOGLE_DRIVE_CREDENTIALS` - Service account JSON
+
+**What it does:**
+- Connects to Google Drive
+- Finds the "rufftree" folder
+- Downloads new/updated documents
+- Uploads them to the File Search store
+- Tracks synced files to avoid duplicates
+
+### Query Ruff Documents
+
+**File:** `query-documents.yml`
+
+Run RAG queries directly from GitHub Actions - useful for testing or quick lookups without local setup.
+
+**Triggers:**
+- Manual only: Actions → "Query Ruff Documents" → Run workflow
+
+**Inputs:**
+- **query** (required): Question to ask about Ruff family documents
+- **model** (optional): Choose between `gemini-2.5-flash` (default) or `gemini-2.5-pro`
+
+**Required Secrets:**
+- `GOOGLE_GENAI_API_KEY` - Gemini API key
+
+**Example:**
+1. Go to Actions → "Query Ruff Documents"
+2. Click "Run workflow"
+3. Enter: "When did the Ruff family immigrate to America?"
+4. Select model (default: gemini-2.5-flash)
+5. View answer in workflow run output
+
+### Integrate Generated People
+
+**File:** `integrate-people.yml`
+
+Automatically integrates new people from the `generated_people/` folder into the family tree.
+
+**Triggers:**
+- Push to `main` branch with changes in `generated_people/*.json`
+- Manual: Actions → "Integrate Generated People" → Run workflow
+
+**What it does:**
+- Scans `generated_people/` folder for JSON files
+- Adds each person to `family_tree.json`
+- Moves processed files to `generated_people/processed/`
+- Commits and pushes the updated family tree
+
+**Workflow:**
+1. Use the Person Generator to create a family member
+2. Download the JSON file
+3. Add it to `generated_people/` folder
+4. Push to repository (or run workflow manually)
+5. Person is automatically added to the family tree
+
+### Edit Person Information
+
+**File:** `edit-person.yml`
+
+View and edit existing people's information in the family tree.
+
+**Triggers:**
+- Manual: Actions → "Edit Person Information" → Run workflow
+
+**Inputs:**
+- **person** (required): Name of the person to edit
+- **view_only**: Check to view information without making changes
+- **occupation**, **phone**, **home_city**, **home_state**, etc.: Fields to update
+
+**Examples:**
+
+*View someone's information:*
+- Person: `Patrick Ruff`
+- View only: ✓
+
+*Update contact info:*
+- Person: `Jenny Wang`
+- Occupation: `Software Engineer`
+- Home city: `Seattle`
+
+### Generate Person Tree to Drive
+
+**File:** `generate-person-tree.yml`
+
+Generate a person's immediate family tree and save it to Google Drive.
+
+**Triggers:**
+- Manual: Actions → "Generate Person Family Tree to Drive" → Run workflow
+
+**Inputs:**
+- **person_name** (required): Full or partial name
+
+**What it does:**
+- Extracts parents, siblings, spouse, and children
+- Generates timestamped JSON file
+- Uploads to Google Drive folder: `rufftree_person_trees`
+
+### Analyze Data Coverage
+
+**File:** `analyze-data-coverage.yml`
+
+Analyze how well-documented each person is in the RAG system.
+
+**Triggers:**
+- Scheduled: 1st of each month
+- Manual: Actions → "Analyze Family Tree Data Coverage" → Run workflow
+
+**What it does:**
+- Queries RAG system for each person
+- Counts document chunks mentioning them
+- Sets `rag_chunks` and `lacks_data` fields
+- Creates coverage report artifact
+- Opens GitHub issue listing people needing documentation
+
+## Scripts Reference
+
+### Data Calculation Scripts
+
+These scripts update auto-calculated fields in `family_tree.json`:
+
+| Script | Description |
+|--------|-------------|
+| `add_generations.py` | Calculate generation labels (Baby Boomer, Gen X, Millennial, etc.) and `from_pat` distance |
+| `add_ethnicity.py` | Calculate ethnicity from parents (50% each). Edit root ethnicities in script first |
+| `add_heritable_risk.py` | Calculate genetic health risk from parents' conditions and causes of death |
+| `add_heritable_traits.py` | Calculate Mendelian traits (eye color, etc.) from parents' genotypes |
+| `add_final_lineage.py` | Track Y chromosome and mtDNA lineages, identify final carriers |
+| `calculate_completion.py` | Calculate profile completion percentage for each person |
+
+**Usage:**
+```bash
+python3 add_generations.py        # Run after adding new people
+python3 add_ethnicity.py          # Run after updating parent relationships
+python3 add_heritable_risk.py     # Run after updating health conditions
+python3 add_heritable_traits.py   # Run after updating root genotypes
+python3 add_final_lineage.py      # Run after updating family structure
+python3 calculate_completion.py   # Run to update completion stats
+```
+
+### Family Tree Query Scripts
+
+| Script | Description |
+|--------|-------------|
+| `get_person_tree.py` | Extract a person's immediate family (parents, siblings, spouse, children) |
+| `edit_person.py` | View or update a person's information |
+| `generate_person_tree_to_drive.py` | Generate family tree JSON and upload to Google Drive |
+
+**Usage:**
+```bash
+# Get someone's family tree
+python3 get_person_tree.py "Patrick Ruff"
+
+# View person info
+python3 edit_person.py "Patrick Ruff" --view-only
+
+# Edit person info
+python3 edit_person.py "Patrick Ruff" --occupation "Engineer" --phone "555-1234"
+```
+
+### RAG & Document Scripts
+
+| Script | Description |
+|--------|-------------|
+| `mcp_server.py` | MCP server for Claude Desktop integration |
+| `sync_drive_documents.py` | Sync documents from Google Drive to RAG system |
+| `test_file_search.py` | Test uploads, queries, and list indexed documents |
+| `answer_query.py` | Answer family questions using RAG with citations |
+| `analyze_data_coverage.py` | Analyze RAG coverage for each family member |
+
+**Usage:**
+```bash
+# Sync documents from Google Drive
+python3 sync_drive_documents.py
+
+# Test a RAG query
+export QUERY="When did the Ruff family immigrate?"
+python3 test_file_search.py
+
+# Answer a question and save to stored_queries.json
+python3 answer_query.py --interactive
+
+# Analyze data coverage
+python3 analyze_data_coverage.py
+```
 
 ## File Search Store
 
