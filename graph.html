@@ -659,6 +659,24 @@
                 `;
             }
 
+            // Genetic Lineage Status
+            if (person.final_male === true || person.final_female === true) {
+                let lineageHtml = '';
+                if (person.final_male === true) {
+                    lineageHtml += `<div style="color: #4A90E2; font-weight: 500; margin-bottom: 6px;">🔵 Final Male in Y Chromosome Line</div>`;
+                }
+                if (person.final_female === true) {
+                    lineageHtml += `<div style="color: #E94B3C; font-weight: 500;">🔴 Final Female in Mitochondrial DNA Line</div>`;
+                }
+
+                html += `
+                    <div class="info-item">
+                        <div class="info-label">Genetic Lineage</div>
+                        <div class="info-value">${lineageHtml}</div>
+                    </div>
+                `;
+            }
+
             // Relationships
             if (person.spouseId) {
                 const spouse = familyData.people[person.spouseId];

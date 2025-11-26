@@ -737,23 +737,89 @@
             const deceased = total - living;
             const visible = visibleNodes.size;
 
+            // Calculate generation breakdown
+            const generationCounts = {};
+            const generationOrder = [
+                'Generation Alpha',
+                'Generation Z',
+                'Millennial',
+                'Generation X',
+                'Baby Boomer',
+                'Silent Generation',
+                'Greatest Generation'
+            ];
+
+            Object.values(familyData.people).forEach(person => {
+                const gen = person.generation || 'Unknown';
+                generationCounts[gen] = (generationCounts[gen] || 0) + 1;
+            });
+
+            // Count final males and females
+            const finalMales = Object.values(familyData.people).filter(p => p.final_male === true).length;
+            const finalFemales = Object.values(familyData.people).filter(p => p.final_female === true).length;
+
+            // Build generation breakdown HTML
+            let genBreakdown = '';
+            generationOrder.forEach(gen => {
+                if (generationCounts[gen]) {
+                    const count = generationCounts[gen];
+                    const barWidth = (count / total * 100);
+                    genBreakdown += `
+                        <div style="margin: 8px 0; padding: 6px 12px; background: rgba(255,255,255,0.05); border-radius: 6px;">
+                            <div style="display: flex; justify-content: space-between; margin-bottom: 4px;">
+                                <span style="font-weight: 500;">${gen}</span>
+                                <span style="color: #a0a0a0;">${count} ${count === 1 ? 'person' : 'people'}</span>
+                            </div>
+                            <div style="background: rgba(255,255,255,0.1); height: 8px; border-radius: 4px; overflow: hidden;">
+                                <div style="background: linear-gradient(90deg, #667eea 0%, #764ba2 100%); height: 100%; width: ${barWidth}%; transition: width 0.3s;"></div>
+                            </div>
+                        </div>
+                    `;
+                }
+            });
+
             const statsDiv = document.getElementById('stats');
             statsDiv.innerHTML = `
-                <div class="stat-box">
-                    <div class="number">${visible}</div>
-                    <div class="label">Visible</div>
+                <div style="display: grid; grid-template-columns: repeat(auto-fit, minmax(140px, 1fr)); gap: 15px; margin-bottom: 30px;">
+                    <div class="stat-box">
+                        <div class="number">${visible}</div>
+                        <div class="label">Visible</div>
+                    </div>
+                    <div class="stat-box">
+                        <div class="number">${total}</div>
+                        <div class="label">Total Members</div>
+                    </div>
+                    <div class="stat-box">
+                        <div class="number">${living}</div>
+                        <div class="label">Living</div>
+                    </div>
+                    <div class="stat-box">
+                        <div class="number">${deceased}</div>
+                        <div class="label">Deceased</div>
+                    </div>
+                    <div class="stat-box" style="border: 2px solid #4A90E2;">
+                        <div class="number" style="color: #4A90E2;">${finalMales}</div>
+                        <div class="label">Final Males<br><span style="font-size: 10px; opacity: 0.7;">(Y chromosome)</span></div>
+                    </div>
+                    <div class="stat-box" style="border: 2px solid #E94B3C;">
+                        <div class="number" style="color: #E94B3C;">${finalFemales}</div>
+                        <div class="label">Final Females<br><span style="font-size: 10px; opacity: 0.7;">(mtDNA)</span></div>
+                    </div>
                 </div>
-                <div class="stat-box">
-                    <div class="number">${total}</div>
-                    <div class="label">Total Members</div>
-                </div>
-                <div class="stat-box">
-                    <div class="number">${living}</div>
-                    <div class="label">Living</div>
-                </div>
-                <div class="stat-box">
-                    <div class="number">${deceased}</div>
-                    <div class="label">Deceased</div>
+
+                <div style="background: rgba(0,0,0,0.2); padding: 20px; border-radius: 12px; margin-top: 20px;">
+                    <h3 style="margin: 0 0 15px 0; font-size: 20px; font-weight: 600;">📊 Ruff Family Summary</h3>
+                    <div style="color: #e0e0e0; font-size: 14px;">
+                        ${genBreakdown}
+                    </div>
+                    ${finalMales > 0 || finalFemales > 0 ? `
+                        <div style="margin-top: 20px; padding-top: 15px; border-top: 1px solid rgba(255,255,255,0.1);">
+                            <div style="font-size: 13px; color: #b0b0b0; line-height: 1.6;">
+                                ${finalMales > 0 ? `<div style="margin-bottom: 8px;">🔵 <strong>${finalMales}</strong> male lineage${finalMales > 1 ? 's' : ''} ending (Y chromosome will not continue)</div>` : ''}
+                                ${finalFemales > 0 ? `<div>🔴 <strong>${finalFemales}</strong> female lineage${finalFemales > 1 ? 's' : ''} ending (mitochondrial DNA will not continue)</div>` : ''}
+                            </div>
+                        </div>
+                    ` : ''}
                 </div>
             `;
         }

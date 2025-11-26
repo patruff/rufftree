@@ -27,7 +27,10 @@ The interactive family tree is automatically deployed to GitHub Pages and update
   - Click to expand/collapse family members and relationships
   - Visual indicators: Green for living, purple for deceased
   - Hover tooltips showing ethnicity breakdown
-  - Real-time statistics: total members, living, deceased, and generations
+  - **Ruff Family Summary**: Comprehensive generation breakdown with visual bar charts
+    - Shows distribution across all generations (Greatest Generation through Generation Alpha)
+    - Highlights final male/female lineages (Y chromosome and mtDNA tracking)
+    - Real-time statistics: total members, living, deceased, visible, and genetic lineages
 
 - **Interactive Family Graph** ([graph.html](https://patruff.github.io/rufftree/graph.html)): Neo4j-style network visualization
   - Drag-and-drop nodes to arrange the family graph
@@ -60,6 +63,13 @@ The interactive family tree is automatically deployed to GitHub Pages and update
   - **Home Location**: `home_city` and `home_state` for all individuals (living and deceased)
   - **Cemetery Location**: `cemetery_name`, `cemetery_city`, and `cemetery_state` for deceased individuals
   - Displayed in graph info panels and tree tooltips
+
+- **Genetic Lineage Tracking**: Track Y chromosome and mitochondrial DNA lineages
+  - **Y Chromosome (Paternal Line)**: Identifies final males whose Y chromosome lineage ends (no male descendants)
+  - **Mitochondrial DNA (Maternal Line)**: Identifies final females whose mtDNA lineage ends (no female descendants)
+  - Auto-calculated based on descendant analysis
+  - Highlighted in Ruff Family Summary with generation breakdowns
+  - Shows which genetic lines are continuing vs. ending
 
 ### 🛠️ Person Management
 
@@ -332,7 +342,7 @@ When multiple attributes are selected, the system averages the mapped values for
 - **Location**: `home_city`, `home_state` (for all), `cemetery_name`, `cemetery_city`, `cemetery_state` (for deceased)
 - **Health**: `health_condition` (array), `causeOfDeath` (for deceased)
 - **Contact**: `occupation`, `phone`, `maidenName`, `notes`
-- **Auto-calculated** (run scripts): `generation`, `from_pat`, `ethnicity`, `heritable_risk`, `heritable_traits`
+- **Auto-calculated** (run scripts): `generation`, `from_pat`, `ethnicity`, `heritable_risk`, `heritable_traits`, `gender`, `final_male`, `final_female`
 
 See the **Family Data Model** section below for the complete list of all 30+ available fields with descriptions.
 
@@ -392,6 +402,9 @@ The `family_tree.json` file contains comprehensive data about each family member
 | `health_condition` | Array | Optional | Chronic/ongoing health conditions<br>• Values: ["diabetes", "heart-disease", "asthma"]<br>• Applies to both living and deceased<br>• 40+ conditions available |
 | `heritable_risk` | Object | Auto | Genetic predisposition risk levels<br>• Auto-calculated from parents' `causeOfDeath` and `health_condition`<br>• Format: `{"heart-disease": "moderate", "diabetes": "high"}`<br>• Risk levels: "low", "moderate", "high", "very-high" |
 | `heritable_traits` | Object | Auto | Genetic traits following Mendelian inheritance<br>• Auto-calculated from parents' genotypes<br>• Format: `{"eye_color": {"genotype": "Bb", "phenotype": "Brown"}}`<br>• Tracks: eye color (BB/Bb/bb), hair texture (CC/Cc/cc), dimples (DD/Dd/dd) |
+| `gender` | String | Auto | Gender of the person ("male" or "female")<br>• Auto-inferred from name if not specified<br>• Required for lineage calculations |
+| `final_male` | Boolean | Auto | True if this male is the last in his Y chromosome (paternal) line<br>• Auto-calculated based on male descendants<br>• Indicates Y chromosome lineage will end |
+| `final_female` | Boolean | Auto | True if this female is the last in her mitochondrial DNA (maternal) line<br>• Auto-calculated based on female descendants<br>• Indicates mtDNA lineage will end |
 
 #### Contact & Personal Information
 | Field | Type | Required | Description |
@@ -473,6 +486,9 @@ python3 add_heritable_risk.py
 
 # Recalculate genetic traits from parents' genotypes (edit root genotypes in script first)
 python3 add_heritable_traits.py
+
+# Calculate final male/female lineage status (Y chromosome and mtDNA tracking)
+python3 add_final_lineage.py
 ```
 
 #### Setting Up GitHub Pages
