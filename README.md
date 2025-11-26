@@ -539,6 +539,38 @@ python3 get_person_tree.py "Joe Ruff"     # Full name search
    • Child 2 (name unknown) (2012 - Present (age 12)) - Generation Z
 ```
 
+#### GitHub Workflow: Generate Person Tree to Drive
+
+Automatically generate a person's immediate family tree and save it to Google Drive using GitHub Actions:
+
+**How to Use:**
+
+1. Go to **Actions** tab in your GitHub repository
+2. Select "Generate Person Family Tree to Drive" workflow
+3. Click "Run workflow"
+4. Enter the person's name (full or partial)
+5. Click "Run workflow"
+
+The workflow will:
+- Search for the person in your family tree
+- Extract their parents, siblings, spouse, and children
+- Generate a timestamped JSON file
+- Upload it to Google Drive folder: `rufftree_person_trees`
+
+**Example inputs:**
+- `Patrick Ruff` - Exact name match
+- `Jenny` - Partial name (finds "Jenny Wang")
+- `Joe Ruff` - Multiple matches will use the first one
+
+**Output location:** All generated trees are saved to a Google Drive folder named `rufftree_person_trees` with filenames like:
+- `patrick_ruff_family_tree_20241126_143022.json`
+
+This is useful for:
+- Sharing family connections with relatives
+- Creating focused subsets of the tree
+- Generating reports for specific people
+- Backing up individual family units
+
 #### Setting Up GitHub Pages
 
 To enable the live family tree website:

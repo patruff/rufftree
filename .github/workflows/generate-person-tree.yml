@@ -1,0 +1,38 @@
+name: Generate Person Family Tree to Drive
+
+on:
+  # Allow manual trigger with person name input
+  workflow_dispatch:
+    inputs:
+      person_name:
+        description: 'Person name (full or partial)'
+        required: true
+        type: string
+
+jobs:
+  generate:
+    runs-on: ubuntu-latest
+
+    steps:
+      - name: Checkout repository
+        uses: actions/checkout@v4
+
+      - name: Set up Python
+        uses: actions/setup-python@v4
+        with:
+          python-version: '3.11'
+
+      - name: Install dependencies
+        run: |
+          pip install -r requirements.txt
+
+      - name: Generate person family tree and upload to Drive
+        env:
+          GOOGLE_DRIVE_CREDENTIALS: ${{ secrets.GOOGLE_DRIVE_CREDENTIALS }}
+        run: |
+          python3 generate_person_tree_to_drive.py "${{ inputs.person_name }}"
+
+      - name: Summary
+        run: |
+          echo "✅ Family tree generated for: ${{ inputs.person_name }}"
+          echo "📁 Saved to Google Drive folder: rufftree_person_trees"
