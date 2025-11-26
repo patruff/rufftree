@@ -1,0 +1,167 @@
+name: Process Add Person Issue
+
+on:
+  issues:
+    types: [labeled]
+
+jobs:
+  process-person:
+    # Only run when the 'add-person' label is added
+    if: github.event.label.name == 'add-person'
+    runs-on: ubuntu-latest
+    permissions:
+      contents: write
+      issues: write
+
+    steps:
+      - name: Checkout repository
+        uses: actions/checkout@v4
+
+      - name: Set up Python
+        uses: actions/setup-python@v4
+        with:
+          python-version: '3.11'
+
+      - name: Extract and integrate person from issue
+        id: integrate
+        env:
+          ISSUE_BODY: ${{ github.event.issue.body }}
+          ISSUE_NUMBER: ${{ github.event.issue.number }}
+        run: |
+          python - <<'EOF'
+          import json
+          import os
+          import re
+          import sys
+
+          issue_body = os.environ.get('ISSUE_BODY', '')
+          issue_number = os.environ.get('ISSUE_NUMBER', '')
+
+          print(f"Processing issue #{issue_number}")
+
+          # Extract JSON from the issue body (between ```json and ```)
+          json_match = re.search(r'```json\s*([\s\S]*?)\s*```', issue_body)
+
+          if not json_match:
+              print("❌ No JSON block found in issue body")
+              print("Issue body:", issue_body[:500])
+              sys.exit(1)
+
+          json_str = json_match.group(1).strip()
+
+          try:
+              person = json.loads(json_str)
+          except json.JSONDecodeError as e:
+              print(f"❌ Invalid JSON: {e}")
+              sys.exit(1)
+
+          # Validate required fields
+          if 'id' not in person or 'name' not in person:
+              print("❌ Person JSON must have 'id' and 'name' fields")
+              sys.exit(1)
+
+          person_id = person['id']
+          person_name = person['name']
+
+          print(f"Found person: {person_name} (ID: {person_id})")
+
+          # Load existing family tree
+          with open('family_tree.json', 'r') as f:
+              family_data = json.load(f)
+
+          people = family_data['family']['people']
+
+          # Check if person already exists
+          if person_id in people:
+              print(f"⚠️ Person {person_id} already exists in the family tree")
+              # Generate a unique ID
+              counter = 1
+              new_id = f"{person_id}_{counter}"
+              while new_id in people:
+                  counter += 1
+                  new_id = f"{person_id}_{counter}"
+              person['id'] = new_id
+              person_id = new_id
+              print(f"Using unique ID: {person_id}")
+
+          # Extract relationship update metadata if present
+          relationship_updates = person.pop('_relationshipUpdates', {})
+          add_as_child_of = relationship_updates.get('addAsChildOf')
+
+          # Add person to family tree
+          people[person_id] = person
+          print(f"✅ Added: {person_name} (ID: {person_id})")
+
+          # Handle bidirectional relationship updates
+          if add_as_child_of and add_as_child_of in people:
+              parent = people[add_as_child_of]
+              if person_id not in parent.get('childrenIds', []):
+                  if 'childrenIds' not in parent:
+                      parent['childrenIds'] = []
+                  parent['childrenIds'].append(person_id)
+                  print(f"✅ Added {person_name} as child of {parent['name']}")
+
+              # Also add to spouse's childrenIds if they have one
+              if parent.get('spouseId') and parent['spouseId'] in people:
+                  spouse = people[parent['spouseId']]
+                  if person_id not in spouse.get('childrenIds', []):
+                      if 'childrenIds' not in spouse:
+                          spouse['childrenIds'] = []
+                      spouse['childrenIds'].append(person_id)
+                      print(f"✅ Added {person_name} as child of {spouse['name']} (spouse)")
+
+          # Update parent's childrenIds for selected parents
+          for parent_id in person.get('parentIds', []):
+              if parent_id in people:
+                  parent = people[parent_id]
+                  if person_id not in parent.get('childrenIds', []):
+                      if 'childrenIds' not in parent:
+                          parent['childrenIds'] = []
+                      parent['childrenIds'].append(person_id)
+                      print(f"✅ Updated {parent['name']}'s childrenIds to include {person_name}")
+
+          # Save updated family tree
+          with open('family_tree.json', 'w') as f:
+              json.dump(family_data, f, indent=2)
+
+          print(f"\n✅ Successfully integrated {person_name} into the family tree!")
+
+          # Set output for commit message
+          with open(os.environ['GITHUB_OUTPUT'], 'a') as f:
+              f.write(f"person_name={person_name}\n")
+              f.write(f"person_id={person_id}\n")
+          EOF
+
+      - name: Commit changes
+        run: |
+          git config --local user.email "github-actions[bot]@users.noreply.github.com"
+          git config --local user.name "github-actions[bot]"
+          git add family_tree.json
+          git diff --staged --quiet || git commit -m "Add ${{ steps.integrate.outputs.person_name }} to family tree (closes #${{ github.event.issue.number }})"
+          git push
+
+      - name: Close issue with success comment
+        uses: actions/github-script@v7
+        with:
+          script: |
+            await github.rest.issues.createComment({
+              owner: context.repo.owner,
+              repo: context.repo.repo,
+              issue_number: context.issue.number,
+              body: `✅ **Person successfully added to the family tree!**
+
+              - **Name:** ${{ steps.integrate.outputs.person_name }}
+              - **ID:** ${{ steps.integrate.outputs.person_id }}
+
+              The family tree has been updated and will be visible on the website shortly.
+
+              ---
+              *This issue was automatically processed by the Person Integration workflow.*`
+            });
+
+            await github.rest.issues.update({
+              owner: context.repo.owner,
+              repo: context.repo.repo,
+              issue_number: context.issue.number,
+              state: 'closed'
+            });
