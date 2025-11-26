@@ -1,0 +1,120 @@
+name: Analyze Family Tree Data Coverage
+
+on:
+  # Run monthly to check data coverage
+  schedule:
+    - cron: '0 0 1 * *'  # First day of each month at midnight
+
+  # Allow manual trigger
+  workflow_dispatch:
+
+jobs:
+  analyze:
+    runs-on: ubuntu-latest
+
+    steps:
+      - name: Checkout repository
+        uses: actions/checkout@v4
+
+      - name: Set up Python
+        uses: actions/setup-python@v4
+        with:
+          python-version: '3.11'
+
+      - name: Install dependencies
+        run: |
+          pip install -r requirements.txt
+
+      - name: Analyze data coverage
+        env:
+          GOOGLE_GENAI_API_KEY: ${{ secrets.GOOGLE_GENAI_API_KEY }}
+        run: |
+          python3 analyze_data_coverage.py
+
+      - name: Upload coverage report
+        uses: actions/upload-artifact@v4
+        with:
+          name: data-coverage-report
+          path: data_coverage_report.json
+
+      - name: Commit updated family tree
+        run: |
+          git config --local user.email "github-actions[bot]@users.noreply.github.com"
+          git config --local user.name "github-actions[bot]"
+
+          if git diff --quiet family_tree.json; then
+            echo "No changes to commit"
+          else
+            git add family_tree.json
+            git commit -m "Update data coverage analysis (rag_chunks and lacks_data fields)"
+            git push
+          fi
+
+      - name: Create issue for people lacking data
+        if: success()
+        env:
+          GH_TOKEN: ${{ secrets.GITHUB_TOKEN }}
+        run: |
+          # Check if there are people lacking data
+          if [ -f data_coverage_report.json ]; then
+            LACKS_DATA=$(python3 -c "
+          import json
+          with open('data_coverage_report.json') as f:
+              data = json.load(f)
+              print(data.get('lacks_data', 0) + data.get('no_chunks', 0))
+          ")
+
+            if [ "$LACKS_DATA" -gt "0" ]; then
+              # Create issue with list of people needing documentation
+              python3 << 'EOF'
+          import json
+          import subprocess
+
+          with open('data_coverage_report.json') as f:
+              data = json.load(f)
+
+          lacks_data = [d for d in data['details'] if d['lacks_data']]
+
+          if lacks_data:
+              title = f"📊 Data Coverage: {len(lacks_data)} people need more documentation"
+
+              body = "## Data Coverage Analysis Results\n\n"
+              body += f"The following {len(lacks_data)} family members have insufficient documentation in the RAG system:\n\n"
+
+              for person in sorted(lacks_data, key=lambda x: x['chunks']):
+                  chunk_info = f"{person['chunks']} chunks" if person['chunks'] > 0 else "NO DATA"
+                  body += f"- **{person['name']}** ({chunk_info})\n"
+
+              body += "\n## What to do\n\n"
+              body += "1. Add documents about these people to the `rufftree` Google Drive folder\n"
+              body += "2. Wait for the sync workflow to index them (runs every 6 hours)\n"
+              body += "3. Re-run this workflow to check coverage\n\n"
+              body += f"**Threshold:** People with fewer than {data.get('threshold', 2)} document chunks are flagged.\n"
+
+              # Use gh CLI to create issue
+              subprocess.run([
+                  'gh', 'issue', 'create',
+                  '--title', title,
+                  '--body', body,
+                  '--label', 'documentation'
+              ])
+          EOF
+            fi
+          fi
+
+      - name: Summary
+        run: |
+          echo "✅ Data coverage analysis complete"
+          echo "📄 Report saved as artifact: data-coverage-report"
+          if [ -f data_coverage_report.json ]; then
+            python3 -c "
+          import json
+          with open('data_coverage_report.json') as f:
+              data = json.load(f)
+              print(f\"📊 Summary:\")
+              print(f\"   - Total: {data['total']} people\")
+              print(f\"   - Sufficient data: {data['with_data']} people\")
+              print(f\"   - Insufficient data: {data['lacks_data']} people\")
+              print(f\"   - No data: {data['no_chunks']} people\")
+          "
+          fi

@@ -342,7 +342,7 @@ When multiple attributes are selected, the system averages the mapped values for
 - **Location**: `home_city`, `home_state` (for all), `cemetery_name`, `cemetery_city`, `cemetery_state` (for deceased)
 - **Health**: `health_condition` (array), `causeOfDeath` (for deceased)
 - **Contact**: `occupation`, `phone`, `maidenName`, `notes`
-- **Auto-calculated** (run scripts): `generation`, `from_pat`, `ethnicity`, `heritable_risk`, `heritable_traits`, `gender`, `y_chromosome_line`, `y_chromosome_final`, `mtdna_line`, `mtdna_final`
+- **Auto-calculated** (run scripts): `generation`, `from_pat`, `ethnicity`, `heritable_risk`, `heritable_traits`, `gender`, `y_chromosome_line`, `y_chromosome_final`, `mtdna_line`, `mtdna_final`, `rag_chunks`, `lacks_data`
 
 See the **Family Data Model** section below for the complete list of all 30+ available fields with descriptions.
 
@@ -407,6 +407,8 @@ The `family_tree.json` file contains comprehensive data about each family member
 | `y_chromosome_final` | Boolean | Auto | True if this male is the last in his specific Y chromosome line<br>• Auto-calculated based on male descendants<br>• Indicates this specific ancestral Y chromosome lineage will end |
 | `mtdna_line` | String | Auto | Mitochondrial DNA lineage name traced from root maternal ancestor<br>• Format: "[LastName] mtDNA" (e.g., "Miller mtDNA", "Ruff mtDNA")<br>• Only assigned to females<br>• Allows tracking of unique maternal lines |
 | `mtdna_final` | Boolean | Auto | True if this female is the last in her specific mtDNA line<br>• Auto-calculated based on female descendants<br>• Indicates this specific ancestral mitochondrial DNA lineage will end |
+| `rag_chunks` | Number | Auto | Number of RAG document chunks that mention this person<br>• Auto-calculated by querying the RAG system<br>• Higher values indicate more documentation available |
+| `lacks_data` | Boolean | Auto | True if person has insufficient documentation in RAG system<br>• Auto-calculated: true when `rag_chunks` < 2<br>• Helps identify people needing more documentation |
 
 #### Contact & Personal Information
 | Field | Type | Required | Description |
@@ -570,6 +572,47 @@ This is useful for:
 - Creating focused subsets of the tree
 - Generating reports for specific people
 - Backing up individual family units
+
+#### GitHub Workflow: Analyze Data Coverage
+
+Automatically analyze how well-documented each person is in the RAG system by counting document chunks that mention them:
+
+**How it works:**
+
+1. **Automatic Monthly Analysis** - Runs on the 1st of each month
+2. **Manual Trigger** - Run anytime from Actions → "Analyze Family Tree Data Coverage"
+3. **What it does:**
+   - Queries the RAG system for each person in the family tree
+   - Counts how many document chunks mention them
+   - Sets `rag_chunks` field with the count
+   - Sets `lacks_data` to `true` if count < 2 (threshold)
+   - Creates detailed coverage report
+   - Commits updated family_tree.json
+   - Creates GitHub issue listing people who need more documentation
+
+**Output:**
+- **Updated family_tree.json** with `rag_chunks` and `lacks_data` fields
+- **Artifact:** `data_coverage_report.json` with detailed statistics
+- **GitHub Issue:** Lists people needing documentation (if any found)
+
+**Viewing Results:**
+
+The coverage data is displayed in the family tree visualizations:
+- **index.html** - Shows coverage summary in "Ruff Family Summary" section
+- **graph.html** - Shows coverage status when clicking on a person
+  - ✅ Green = Well documented (2+ chunks)
+  - ⚠️  Orange = Insufficient data (1 chunk)
+  - ❌ Red = No documentation (0 chunks)
+
+**Local Usage:**
+
+You can also run the analysis locally:
+```bash
+export GOOGLE_GENAI_API_KEY=your_api_key
+python3 analyze_data_coverage.py
+```
+
+This helps identify which family members need more stories, photos, or documents added to the `rufftree` Google Drive folder.
 
 #### Setting Up GitHub Pages
 

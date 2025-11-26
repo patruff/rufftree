@@ -689,6 +689,33 @@
                 `;
             }
 
+            // Data Coverage (RAG chunks)
+            if (typeof person.rag_chunks === 'number') {
+                const chunkCount = person.rag_chunks;
+                const lacksData = person.lacks_data === true;
+
+                let coverageHtml = '';
+                let coverageColor = '';
+
+                if (chunkCount === 0) {
+                    coverageHtml = `<span style="color: #E94B3C; font-weight: 500;">❌ No documentation found</span>`;
+                    coverageColor = '#E94B3C';
+                } else if (lacksData) {
+                    coverageHtml = `<span style="color: #FFA500; font-weight: 500;">⚠️  Insufficient documentation (${chunkCount} chunk${chunkCount > 1 ? 's' : ''})</span>`;
+                    coverageColor = '#FFA500';
+                } else {
+                    coverageHtml = `<span style="color: #4CAF50; font-weight: 500;">✅ Well documented (${chunkCount} chunks)</span>`;
+                    coverageColor = '#4CAF50';
+                }
+
+                html += `
+                    <div class="info-item">
+                        <div class="info-label">Documentation Coverage</div>
+                        <div class="info-value">${coverageHtml}</div>
+                    </div>
+                `;
+            }
+
             // Relationships
             if (person.spouseId) {
                 const spouse = familyData.people[person.spouseId];

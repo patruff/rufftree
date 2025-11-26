@@ -789,6 +789,28 @@
             const totalYFinals = Object.values(yLineages).reduce((sum, line) => sum + line.finals, 0);
             const totalMtDNAFinals = Object.values(mtdnaLineages).reduce((sum, line) => sum + line.finals, 0);
 
+            // Track data coverage
+            let dataCoverage = {
+                wellDocumented: 0,
+                insufficient: 0,
+                noData: 0,
+                notAnalyzed: 0
+            };
+
+            Object.values(familyData.people).forEach(person => {
+                if (typeof person.rag_chunks === 'number') {
+                    if (person.rag_chunks === 0) {
+                        dataCoverage.noData++;
+                    } else if (person.lacks_data === true) {
+                        dataCoverage.insufficient++;
+                    } else {
+                        dataCoverage.wellDocumented++;
+                    }
+                } else {
+                    dataCoverage.notAnalyzed++;
+                }
+            });
+
             // Build generation breakdown HTML
             let genBreakdown = '';
             generationOrder.forEach(gen => {
@@ -889,6 +911,36 @@
                         ${genBreakdown}
                     </div>
                     ${lineageBreakdown}
+                    ${dataCoverage.notAnalyzed < total ? `
+                        <div style="margin-top: 20px; padding-top: 15px; border-top: 1px solid rgba(255,255,255,0.1);">
+                            <div style="font-size: 14px; font-weight: 600; color: #a0a0a0; margin-bottom: 8px;">📚 Documentation Coverage</div>
+                            <div style="display: grid; grid-template-columns: repeat(auto-fit, minmax(150px, 1fr)); gap: 10px; margin-top: 8px;">
+                                ${dataCoverage.wellDocumented > 0 ? `
+                                    <div style="padding: 8px 12px; background: rgba(76, 175, 80, 0.1); border-radius: 6px; border: 1px solid rgba(76, 175, 80, 0.3);">
+                                        <div style="font-size: 20px; font-weight: 600; color: #4CAF50;">${dataCoverage.wellDocumented}</div>
+                                        <div style="font-size: 11px; color: #a0a0a0;">Well Documented</div>
+                                    </div>
+                                ` : ''}
+                                ${dataCoverage.insufficient > 0 ? `
+                                    <div style="padding: 8px 12px; background: rgba(255, 165, 0, 0.1); border-radius: 6px; border: 1px solid rgba(255, 165, 0, 0.3);">
+                                        <div style="font-size: 20px; font-weight: 600; color: #FFA500;">${dataCoverage.insufficient}</div>
+                                        <div style="font-size: 11px; color: #a0a0a0;">Insufficient Data</div>
+                                    </div>
+                                ` : ''}
+                                ${dataCoverage.noData > 0 ? `
+                                    <div style="padding: 8px 12px; background: rgba(233, 75, 60, 0.1); border-radius: 6px; border: 1px solid rgba(233, 75, 60, 0.3);">
+                                        <div style="font-size: 20px; font-weight: 600; color: #E94B3C;">${dataCoverage.noData}</div>
+                                        <div style="font-size: 11px; color: #a0a0a0;">No Documentation</div>
+                                    </div>
+                                ` : ''}
+                            </div>
+                            ${dataCoverage.noData + dataCoverage.insufficient > 0 ? `
+                                <div style="margin-top: 10px; padding: 8px 12px; background: rgba(255,255,255,0.03); border-radius: 4px; font-size: 12px; color: #b0b0b0;">
+                                    ℹ️  ${dataCoverage.noData + dataCoverage.insufficient} people need more documentation in the RAG system
+                                </div>
+                            ` : ''}
+                        </div>
+                    ` : ''}
                 </div>
             `;
         }
