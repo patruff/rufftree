@@ -1,0 +1,714 @@
+<!DOCTYPE html>
+<html lang="en">
+<head>
+    <meta charset="UTF-8">
+    <meta name="viewport" content="width=device-width, initial-scale=1.0">
+    <title>Submit Family Story - Rufftree</title>
+    <style>
+        * {
+            margin: 0;
+            padding: 0;
+            box-sizing: border-box;
+        }
+
+        body {
+            font-family: -apple-system, BlinkMacSystemFont, "Segoe UI", Roboto, sans-serif;
+            background: linear-gradient(135deg, #667eea 0%, #764ba2 100%);
+            min-height: 100vh;
+            padding: 20px;
+        }
+
+        .container {
+            max-width: 900px;
+            margin: 0 auto;
+            background: white;
+            border-radius: 20px;
+            box-shadow: 0 20px 60px rgba(0, 0, 0, 0.3);
+            padding: 40px;
+        }
+
+        h1 {
+            color: #333;
+            margin-bottom: 10px;
+            font-size: 32px;
+        }
+
+        .subtitle {
+            color: #666;
+            margin-bottom: 30px;
+            font-size: 16px;
+        }
+
+        .form-group {
+            margin-bottom: 25px;
+        }
+
+        .form-group.inline {
+            display: grid;
+            grid-template-columns: 1fr 1fr;
+            gap: 20px;
+        }
+
+        label {
+            display: block;
+            font-weight: 600;
+            margin-bottom: 8px;
+            color: #333;
+            font-size: 14px;
+        }
+
+        input[type="text"],
+        textarea {
+            width: 100%;
+            padding: 12px;
+            border: 2px solid #e0e0e0;
+            border-radius: 8px;
+            font-size: 14px;
+            transition: border-color 0.3s;
+            font-family: inherit;
+        }
+
+        input[type="text"]:focus,
+        textarea:focus {
+            outline: none;
+            border-color: #667eea;
+        }
+
+        textarea {
+            resize: vertical;
+            min-height: 250px;
+            line-height: 1.6;
+        }
+
+        .section-header {
+            font-size: 20px;
+            color: #333;
+            margin-top: 20px;
+            margin-bottom: 15px;
+            padding-bottom: 10px;
+            border-bottom: 2px solid #667eea;
+        }
+
+        .family-members-grid {
+            display: grid;
+            grid-template-columns: repeat(auto-fill, minmax(180px, 1fr));
+            gap: 10px;
+            max-height: 300px;
+            overflow-y: auto;
+            padding: 15px;
+            background: #f8f9fa;
+            border-radius: 8px;
+            border: 2px solid #e0e0e0;
+        }
+
+        .family-member-checkbox {
+            display: flex;
+            align-items: center;
+            gap: 8px;
+            padding: 8px 12px;
+            background: white;
+            border-radius: 6px;
+            cursor: pointer;
+            transition: all 0.2s;
+            border: 2px solid transparent;
+        }
+
+        .family-member-checkbox:hover {
+            background: #e9ecef;
+        }
+
+        .family-member-checkbox.selected {
+            background: #e7e9ff;
+            border-color: #667eea;
+        }
+
+        .family-member-checkbox input[type="checkbox"] {
+            cursor: pointer;
+            width: 18px;
+            height: 18px;
+            accent-color: #667eea;
+        }
+
+        .family-member-checkbox label {
+            cursor: pointer;
+            margin: 0;
+            font-size: 13px;
+            font-weight: normal;
+            user-select: none;
+            white-space: nowrap;
+            overflow: hidden;
+            text-overflow: ellipsis;
+        }
+
+        .family-member-checkbox .lifespan {
+            font-size: 11px;
+            color: #888;
+            display: block;
+        }
+
+        .search-box {
+            margin-bottom: 10px;
+        }
+
+        .search-box input {
+            width: 100%;
+            padding: 10px 15px;
+            border: 2px solid #e0e0e0;
+            border-radius: 8px;
+            font-size: 14px;
+        }
+
+        .search-box input:focus {
+            outline: none;
+            border-color: #667eea;
+        }
+
+        .selected-members {
+            margin-top: 10px;
+            display: flex;
+            flex-wrap: wrap;
+            gap: 8px;
+        }
+
+        .selected-tag {
+            display: inline-flex;
+            align-items: center;
+            gap: 6px;
+            padding: 6px 12px;
+            background: linear-gradient(135deg, #667eea 0%, #764ba2 100%);
+            color: white;
+            border-radius: 20px;
+            font-size: 13px;
+        }
+
+        .selected-tag button {
+            background: none;
+            border: none;
+            color: white;
+            cursor: pointer;
+            font-size: 16px;
+            line-height: 1;
+            padding: 0;
+            opacity: 0.8;
+        }
+
+        .selected-tag button:hover {
+            opacity: 1;
+        }
+
+        .btn {
+            background: linear-gradient(135deg, #667eea 0%, #764ba2 100%);
+            color: white;
+            padding: 15px 30px;
+            border: none;
+            border-radius: 8px;
+            font-size: 16px;
+            font-weight: 600;
+            cursor: pointer;
+            transition: transform 0.2s, box-shadow 0.2s;
+            margin-top: 20px;
+        }
+
+        .btn:hover {
+            transform: translateY(-2px);
+            box-shadow: 0 10px 20px rgba(102, 126, 234, 0.3);
+        }
+
+        .btn:active {
+            transform: translateY(0);
+        }
+
+        .btn-github {
+            background: linear-gradient(135deg, #24292e 0%, #1a1e22 100%);
+        }
+
+        .btn-github:hover {
+            box-shadow: 0 10px 20px rgba(36, 41, 46, 0.3);
+        }
+
+        .btn-secondary {
+            background: #6c757d;
+        }
+
+        .btn-secondary:hover {
+            box-shadow: 0 10px 20px rgba(108, 117, 125, 0.3);
+        }
+
+        .actions {
+            display: flex;
+            gap: 10px;
+            margin-top: 20px;
+            flex-wrap: wrap;
+        }
+
+        .preview {
+            margin-top: 30px;
+            padding: 20px;
+            background: #f8f9fa;
+            border-radius: 8px;
+            display: none;
+        }
+
+        .preview h3 {
+            color: #333;
+            margin-bottom: 15px;
+        }
+
+        .preview-content {
+            background: white;
+            padding: 20px;
+            border-radius: 8px;
+            border: 1px solid #e0e0e0;
+        }
+
+        .preview-meta {
+            font-size: 14px;
+            color: #666;
+            margin-bottom: 15px;
+            padding-bottom: 15px;
+            border-bottom: 1px solid #e0e0e0;
+        }
+
+        .preview-meta strong {
+            color: #333;
+        }
+
+        .preview-story {
+            white-space: pre-wrap;
+            line-height: 1.7;
+            font-size: 15px;
+        }
+
+        .success-message {
+            display: none;
+            margin-top: 15px;
+            padding: 15px;
+            background: #e8f5e9;
+            border-radius: 8px;
+            border: 1px solid #4CAF50;
+        }
+
+        .success-message p {
+            margin: 0;
+            color: #2e7d32;
+        }
+
+        .success-message p:first-child {
+            font-weight: bold;
+        }
+
+        .success-message p:last-child {
+            font-size: 14px;
+            margin-top: 5px;
+        }
+
+        .char-count {
+            text-align: right;
+            font-size: 12px;
+            color: #888;
+            margin-top: 5px;
+        }
+
+        .writing-tips {
+            background: #fff3cd;
+            border: 1px solid #ffc107;
+            border-radius: 8px;
+            padding: 15px;
+            margin-bottom: 20px;
+            font-size: 14px;
+        }
+
+        .writing-tips h4 {
+            color: #856404;
+            margin-bottom: 10px;
+        }
+
+        .writing-tips ul {
+            margin: 0;
+            padding-left: 20px;
+            color: #856404;
+        }
+
+        .writing-tips li {
+            margin-bottom: 5px;
+        }
+
+        @media (max-width: 768px) {
+            .form-group.inline {
+                grid-template-columns: 1fr;
+            }
+
+            .family-members-grid {
+                grid-template-columns: repeat(auto-fill, minmax(150px, 1fr));
+            }
+
+            .actions {
+                flex-direction: column;
+            }
+
+            .btn {
+                width: 100%;
+            }
+        }
+    </style>
+</head>
+<body>
+    <div class="container">
+        <h1>📖 Submit a Family Story</h1>
+        <p class="subtitle">Share memories, anecdotes, and stories about family members</p>
+
+        <nav style="display: flex; gap: 15px; justify-content: center; margin-bottom: 30px; flex-wrap: wrap;">
+            <a href="index.html" style="padding: 10px 20px; background: #f8f9fa; color: #667eea; text-decoration: none; border-radius: 8px; transition: all 0.3s; font-weight: 500;">🌳 Family Tree</a>
+            <a href="graph.html" style="padding: 10px 20px; background: #f8f9fa; color: #667eea; text-decoration: none; border-radius: 8px; transition: all 0.3s; font-weight: 500;">📊 Family Graph</a>
+            <a href="queries.html" style="padding: 10px 20px; background: #f8f9fa; color: #667eea; text-decoration: none; border-radius: 8px; transition: all 0.3s; font-weight: 500;">💬 Ask Questions</a>
+            <a href="person_generator.html" style="padding: 10px 20px; background: #f8f9fa; color: #667eea; text-decoration: none; border-radius: 8px; transition: all 0.3s; font-weight: 500;">👤 Add Person</a>
+            <a href="submit_story.html" style="padding: 10px 20px; background: #667eea; color: white; text-decoration: none; border-radius: 8px; transition: all 0.3s; font-weight: 500;">📖 Submit Story</a>
+        </nav>
+
+        <div class="writing-tips">
+            <h4>💡 Story Ideas</h4>
+            <ul>
+                <li>Favorite memories with grandparents, aunts, uncles</li>
+                <li>Family traditions and holiday celebrations</li>
+                <li>How family members met (parents, grandparents)</li>
+                <li>Funny stories or memorable quotes</li>
+                <li>Career stories, achievements, or life lessons</li>
+                <li>Historical events family lived through</li>
+            </ul>
+        </div>
+
+        <form id="storyForm">
+            <div class="form-group inline">
+                <div>
+                    <label for="storyTitle">Story Title <span style="color: #e74c3c;">*</span></label>
+                    <input type="text" id="storyTitle" required placeholder="e.g., Grandpa's WWII Stories">
+                </div>
+                <div>
+                    <label for="authorName">Your Name (Optional)</label>
+                    <input type="text" id="authorName" placeholder="e.g., Patrick Ruff">
+                </div>
+            </div>
+
+            <h3 class="section-header">👥 Family Members Mentioned</h3>
+            <p style="margin-bottom: 15px; color: #666; font-size: 14px;">
+                Select the family members this story is about or mentions. This helps organize and search stories later.
+            </p>
+
+            <div class="search-box">
+                <input type="text" id="memberSearch" placeholder="Search family members...">
+            </div>
+
+            <div class="family-members-grid" id="familyMembersGrid">
+                <p style="color: #888; grid-column: 1 / -1; text-align: center;">Loading family members...</p>
+            </div>
+
+            <div class="selected-members" id="selectedMembers"></div>
+
+            <h3 class="section-header">📝 Your Story</h3>
+
+            <div class="form-group">
+                <label for="storyContent">Write your story here <span style="color: #e74c3c;">*</span></label>
+                <textarea id="storyContent" required placeholder="Share your family story here...
+
+Start with some context - when and where did this happen? Who was involved?
+
+Then tell us what happened. Include details that bring the story to life - what people said, how they reacted, any funny or touching moments.
+
+End with why this story matters to you or what it teaches about your family."></textarea>
+                <div class="char-count" id="charCount">0 characters</div>
+            </div>
+
+            <button type="submit" class="btn">Preview Story</button>
+        </form>
+
+        <div class="preview" id="preview">
+            <h3>📄 Story Preview</h3>
+            <div class="preview-content">
+                <div class="preview-meta" id="previewMeta"></div>
+                <div class="preview-story" id="previewStory"></div>
+            </div>
+            <div class="actions">
+                <button class="btn btn-github" onclick="submitAsGitHubIssue()">📝 Submit as GitHub Issue</button>
+                <button class="btn btn-secondary" onclick="copyStory()">📋 Copy to Clipboard</button>
+                <button class="btn btn-secondary" onclick="downloadStory()">💾 Download as Text</button>
+            </div>
+            <div class="success-message" id="successMessage">
+                <p>Story Submitted Successfully!</p>
+                <p>Your story has been submitted as a GitHub issue. A maintainer will review it and add it to the family archive.</p>
+            </div>
+        </div>
+    </div>
+
+    <script>
+        let familyTreeData = null;
+        let selectedMemberIds = new Set();
+        let storyData = null;
+        const GITHUB_REPO = 'patruff/rufftree';
+
+        // Load family tree data
+        async function loadFamilyTree() {
+            try {
+                const response = await fetch('family_tree.json');
+                familyTreeData = await response.json();
+                populateFamilyMembers();
+            } catch (error) {
+                console.error('Failed to load family tree:', error);
+                try {
+                    const response = await fetch('./family_tree.json');
+                    familyTreeData = await response.json();
+                    populateFamilyMembers();
+                } catch (e) {
+                    document.getElementById('familyMembersGrid').innerHTML =
+                        '<p style="color: #e74c3c; grid-column: 1 / -1; text-align: center;">Could not load family members</p>';
+                }
+            }
+        }
+
+        function populateFamilyMembers() {
+            if (!familyTreeData || !familyTreeData.family || !familyTreeData.family.people) return;
+
+            const grid = document.getElementById('familyMembersGrid');
+            const people = familyTreeData.family.people;
+
+            // Sort by name
+            const sortedPeople = Object.values(people).sort((a, b) =>
+                a.name.localeCompare(b.name)
+            );
+
+            grid.innerHTML = '';
+
+            sortedPeople.forEach((person, index) => {
+                const lifespan = person.dod === 'alive'
+                    ? `b. ${person.dob}`
+                    : `${person.dob}-${person.dod}`;
+
+                const div = document.createElement('div');
+                div.className = 'family-member-checkbox';
+                div.dataset.name = person.name.toLowerCase();
+                div.dataset.id = person.id;
+
+                div.innerHTML = `
+                    <input type="checkbox" id="member-${index}" value="${person.id}">
+                    <label for="member-${index}">
+                        ${person.name}
+                        <span class="lifespan">${lifespan}</span>
+                    </label>
+                `;
+
+                const checkbox = div.querySelector('input');
+                checkbox.addEventListener('change', function() {
+                    if (this.checked) {
+                        selectedMemberIds.add(person.id);
+                        div.classList.add('selected');
+                    } else {
+                        selectedMemberIds.delete(person.id);
+                        div.classList.remove('selected');
+                    }
+                    updateSelectedTags();
+                });
+
+                div.addEventListener('click', function(e) {
+                    if (e.target.tagName !== 'INPUT') {
+                        checkbox.checked = !checkbox.checked;
+                        checkbox.dispatchEvent(new Event('change'));
+                    }
+                });
+
+                grid.appendChild(div);
+            });
+        }
+
+        function updateSelectedTags() {
+            const container = document.getElementById('selectedMembers');
+            container.innerHTML = '';
+
+            if (selectedMemberIds.size === 0) return;
+
+            selectedMemberIds.forEach(id => {
+                const person = familyTreeData.family.people[id];
+                if (!person) return;
+
+                const tag = document.createElement('span');
+                tag.className = 'selected-tag';
+                tag.innerHTML = `
+                    ${person.name}
+                    <button type="button" onclick="removeMember('${id}')">&times;</button>
+                `;
+                container.appendChild(tag);
+            });
+        }
+
+        function removeMember(id) {
+            selectedMemberIds.delete(id);
+
+            // Uncheck the checkbox
+            const checkbox = document.querySelector(`input[value="${id}"]`);
+            if (checkbox) {
+                checkbox.checked = false;
+                checkbox.closest('.family-member-checkbox').classList.remove('selected');
+            }
+
+            updateSelectedTags();
+        }
+
+        // Search functionality
+        document.getElementById('memberSearch').addEventListener('input', function() {
+            const searchTerm = this.value.toLowerCase();
+            const members = document.querySelectorAll('.family-member-checkbox');
+
+            members.forEach(member => {
+                const name = member.dataset.name;
+                if (name.includes(searchTerm)) {
+                    member.style.display = 'flex';
+                } else {
+                    member.style.display = 'none';
+                }
+            });
+        });
+
+        // Character count
+        document.getElementById('storyContent').addEventListener('input', function() {
+            document.getElementById('charCount').textContent = this.value.length + ' characters';
+        });
+
+        // Form submission
+        document.getElementById('storyForm').addEventListener('submit', function(e) {
+            e.preventDefault();
+
+            const title = document.getElementById('storyTitle').value.trim();
+            const author = document.getElementById('authorName').value.trim();
+            const content = document.getElementById('storyContent').value.trim();
+
+            // Get selected members' names
+            const mentionedMembers = [];
+            selectedMemberIds.forEach(id => {
+                const person = familyTreeData?.family?.people?.[id];
+                if (person) {
+                    mentionedMembers.push({
+                        id: person.id,
+                        name: person.name
+                    });
+                }
+            });
+
+            storyData = {
+                title: title,
+                author: author || 'Anonymous',
+                mentionedMembers: mentionedMembers,
+                content: content,
+                submittedAt: new Date().toISOString(),
+                wordCount: content.split(/\s+/).filter(w => w).length
+            };
+
+            // Update preview
+            let metaHtml = `<strong>Title:</strong> ${title}<br>`;
+            metaHtml += `<strong>Author:</strong> ${author || 'Anonymous'}<br>`;
+            if (mentionedMembers.length > 0) {
+                metaHtml += `<strong>Mentions:</strong> ${mentionedMembers.map(m => m.name).join(', ')}<br>`;
+            }
+            metaHtml += `<strong>Word Count:</strong> ${storyData.wordCount}`;
+
+            document.getElementById('previewMeta').innerHTML = metaHtml;
+            document.getElementById('previewStory').textContent = content;
+
+            document.getElementById('preview').style.display = 'block';
+            document.getElementById('preview').scrollIntoView({ behavior: 'smooth' });
+        });
+
+        function submitAsGitHubIssue() {
+            if (!storyData) {
+                alert('Please preview your story first');
+                return;
+            }
+
+            const mentionedNames = storyData.mentionedMembers.map(m => m.name).join(', ') || 'None specified';
+            const mentionedIds = storyData.mentionedMembers.map(m => m.id);
+
+            const title = encodeURIComponent(`Story: ${storyData.title}`);
+            const body = encodeURIComponent(
+`## Family Story Submission
+
+**Title:** ${storyData.title}
+**Author:** ${storyData.author}
+**Family Members Mentioned:** ${mentionedNames}
+**Word Count:** ${storyData.wordCount}
+**Submitted:** ${new Date().toLocaleDateString()}
+
+---
+
+### Story Content
+
+${storyData.content}
+
+---
+
+### Metadata (for processing)
+
+\`\`\`json
+${JSON.stringify({
+    title: storyData.title,
+    author: storyData.author,
+    mentionedMemberIds: mentionedIds,
+    submittedAt: storyData.submittedAt,
+    wordCount: storyData.wordCount
+}, null, 2)}
+\`\`\`
+
+---
+*This story was submitted via the Family Story form.*
+*A maintainer will review and add it to the family archive.*`
+            );
+
+            const issueUrl = `https://github.com/${GITHUB_REPO}/issues/new?title=${title}&body=${body}&labels=family-story`;
+            window.open(issueUrl, '_blank');
+
+            document.getElementById('successMessage').style.display = 'block';
+        }
+
+        function copyStory() {
+            if (!storyData) return;
+
+            const text = `${storyData.title}
+By ${storyData.author}
+
+${storyData.mentionedMembers.length > 0 ? 'Mentions: ' + storyData.mentionedMembers.map(m => m.name).join(', ') + '\n\n' : ''}${storyData.content}`;
+
+            navigator.clipboard.writeText(text).then(() => {
+                alert('Story copied to clipboard!');
+            }).catch(err => {
+                console.error('Failed to copy:', err);
+                alert('Failed to copy to clipboard');
+            });
+        }
+
+        function downloadStory() {
+            if (!storyData) return;
+
+            const text = `${storyData.title}
+By ${storyData.author}
+Date: ${new Date().toLocaleDateString()}
+${storyData.mentionedMembers.length > 0 ? 'Family Members Mentioned: ' + storyData.mentionedMembers.map(m => m.name).join(', ') : ''}
+
+---
+
+${storyData.content}
+
+---
+Word Count: ${storyData.wordCount}`;
+
+            const blob = new Blob([text], { type: 'text/plain' });
+            const url = URL.createObjectURL(blob);
+            const a = document.createElement('a');
+            a.href = url;
+            a.download = `${storyData.title.replace(/[^a-z0-9]/gi, '_').toLowerCase()}_${Date.now()}.txt`;
+            document.body.appendChild(a);
+            a.click();
+            document.body.removeChild(a);
+            URL.revokeObjectURL(url);
+        }
+
+        // Initialize
+        document.addEventListener('DOMContentLoaded', loadFamilyTree);
+    </script>
+</body>
+</html>

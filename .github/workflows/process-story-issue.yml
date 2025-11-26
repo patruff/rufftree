@@ -1,0 +1,180 @@
+name: Process Family Story Issue
+
+on:
+  issues:
+    types: [labeled]
+
+jobs:
+  process-story:
+    # Only run when the 'family-story' label is added
+    if: github.event.label.name == 'family-story'
+    runs-on: ubuntu-latest
+    permissions:
+      contents: write
+      issues: write
+
+    steps:
+      - name: Checkout repository
+        uses: actions/checkout@v4
+
+      - name: Set up Python
+        uses: actions/setup-python@v4
+        with:
+          python-version: '3.11'
+
+      - name: Extract and save story from issue
+        id: process
+        env:
+          ISSUE_BODY: ${{ github.event.issue.body }}
+          ISSUE_NUMBER: ${{ github.event.issue.number }}
+          ISSUE_TITLE: ${{ github.event.issue.title }}
+        run: |
+          python - <<'EOF'
+          import json
+          import os
+          import re
+          import sys
+          from datetime import datetime
+          from pathlib import Path
+
+          issue_body = os.environ.get('ISSUE_BODY', '')
+          issue_number = os.environ.get('ISSUE_NUMBER', '')
+          issue_title = os.environ.get('ISSUE_TITLE', '')
+
+          print(f"Processing story issue #{issue_number}: {issue_title}")
+
+          # Extract metadata JSON from the issue body
+          json_match = re.search(r'```json\s*([\s\S]*?)\s*```', issue_body)
+
+          metadata = {}
+          if json_match:
+              try:
+                  metadata = json.loads(json_match.group(1).strip())
+              except json.JSONDecodeError:
+                  print("Warning: Could not parse metadata JSON")
+
+          # Extract story content (between "### Story Content" and "---")
+          story_match = re.search(r'### Story Content\s*\n\n([\s\S]*?)\n\n---', issue_body)
+          story_content = story_match.group(1).strip() if story_match else ''
+
+          if not story_content:
+              # Fallback: try to get content after "Story Content" header
+              story_match = re.search(r'### Story Content\s*\n\n([\s\S]*?)(?:\n\n###|\n\n---|\Z)', issue_body)
+              story_content = story_match.group(1).strip() if story_match else ''
+
+          if not story_content:
+              print("❌ No story content found in issue body")
+              sys.exit(1)
+
+          # Extract other fields from issue body
+          title_match = re.search(r'\*\*Title:\*\*\s*(.+)', issue_body)
+          author_match = re.search(r'\*\*Author:\*\*\s*(.+)', issue_body)
+          mentions_match = re.search(r'\*\*Family Members Mentioned:\*\*\s*(.+)', issue_body)
+
+          title = metadata.get('title') or (title_match.group(1).strip() if title_match else 'Untitled Story')
+          author = metadata.get('author') or (author_match.group(1).strip() if author_match else 'Anonymous')
+          mentions = mentions_match.group(1).strip() if mentions_match else 'None'
+          word_count = metadata.get('wordCount') or len(story_content.split())
+
+          print(f"Title: {title}")
+          print(f"Author: {author}")
+          print(f"Mentions: {mentions}")
+          print(f"Word Count: {word_count}")
+
+          # Create stories folder if it doesn't exist
+          stories_folder = Path('family_stories')
+          stories_folder.mkdir(exist_ok=True)
+
+          # Generate filename
+          safe_title = re.sub(r'[^a-z0-9]+', '_', title.lower()).strip('_')
+          timestamp = datetime.now().strftime('%Y%m%d')
+          filename = f"{safe_title}_{timestamp}.txt"
+
+          # Create story file content
+          file_content = f"""{title}
+          By {author}
+          Date Submitted: {datetime.now().strftime('%B %d, %Y')}
+          Family Members Mentioned: {mentions}
+
+          {'=' * 60}
+
+          {story_content}
+
+          {'=' * 60}
+
+          Word Count: {word_count}
+          Source: GitHub Issue #{issue_number}
+          """
+
+          # Write story file
+          story_path = stories_folder / filename
+          with open(story_path, 'w') as f:
+              f.write(file_content)
+
+          print(f"\n✅ Story saved to: {story_path}")
+
+          # Also update a stories index file
+          index_path = stories_folder / 'index.json'
+          stories_index = []
+          if index_path.exists():
+              with open(index_path, 'r') as f:
+                  stories_index = json.load(f)
+
+          stories_index.append({
+              'filename': filename,
+              'title': title,
+              'author': author,
+              'mentions': mentions,
+              'wordCount': word_count,
+              'issueNumber': int(issue_number),
+              'addedAt': datetime.now().isoformat()
+          })
+
+          with open(index_path, 'w') as f:
+              json.dump(stories_index, f, indent=2)
+
+          print(f"✅ Updated stories index")
+
+          # Set outputs
+          with open(os.environ['GITHUB_OUTPUT'], 'a') as f:
+              f.write(f"story_title={title}\n")
+              f.write(f"story_author={author}\n")
+              f.write(f"story_filename={filename}\n")
+          EOF
+
+      - name: Commit story
+        run: |
+          git config --local user.email "github-actions[bot]@users.noreply.github.com"
+          git config --local user.name "github-actions[bot]"
+          git add family_stories/
+          git diff --staged --quiet || git commit -m "Add family story: ${{ steps.process.outputs.story_title }} (closes #${{ github.event.issue.number }})"
+          git push
+
+      - name: Close issue with success comment
+        uses: actions/github-script@v7
+        with:
+          script: |
+            await github.rest.issues.createComment({
+              owner: context.repo.owner,
+              repo: context.repo.repo,
+              issue_number: context.issue.number,
+              body: `📖 **Story successfully added to the family archive!**
+
+              - **Title:** ${{ steps.process.outputs.story_title }}
+              - **Author:** ${{ steps.process.outputs.story_author }}
+              - **File:** \`family_stories/${{ steps.process.outputs.story_filename }}\`
+
+              The story has been saved and will be synced to the family documents archive.
+
+              Thank you for sharing this family memory! 💜
+
+              ---
+              *This issue was automatically processed by the Family Story workflow.*`
+            });
+
+            await github.rest.issues.update({
+              owner: context.repo.owner,
+              repo: context.repo.repo,
+              issue_number: context.issue.number,
+              state: 'closed'
+            });
