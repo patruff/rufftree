@@ -541,6 +541,80 @@ python3 get_person_tree.py "Joe Ruff"     # Full name search
    • Child 2 (name unknown) (2012 - Present (age 12)) - Generation Z
 ```
 
+#### GitHub Workflow: Edit Person Information
+
+View and edit existing people's information in the family tree using GitHub Actions:
+
+**How to Use:**
+
+1. Go to **Actions** tab in your GitHub repository
+2. Select "Edit Person Information" workflow
+3. Click "Run workflow"
+4. Enter the person's name (required)
+5. Fill in any fields you want to update (all optional)
+6. Click "Run workflow"
+
+**Available fields:**
+- Occupation
+- Phone number
+- Home city/state
+- Date of death (year or "alive")
+- Cemetery information (name, city, state)
+- Health conditions (comma-separated)
+- Notes/stories
+- Maiden name
+- Education level
+
+**View-only mode:**
+- Check "View only" to see all information without making changes
+- Useful for reviewing what data exists for a person
+
+**Examples:**
+
+*View someone's information:*
+- Person: `Patrick Ruff`
+- View only: ✓ (checked)
+
+*Update contact info:*
+- Person: `Jenny Wang`
+- Occupation: `Software Engineer`
+- Phone: `555-1234`
+- Home city: `Seattle`
+- Home state: `Washington`
+
+*Record a passing:*
+- Person: `Joe Ruff Sr.`
+- Date of death: `2023`
+- Cemetery name: `Oak Hill Cemetery`
+- Cemetery city: `Philadelphia`
+- Cemetery state: `Pennsylvania`
+
+**What happens:**
+1. Script displays current information
+2. Applies your updates
+3. Commits changes to `family_tree.json`
+4. Auto-pushes to repository
+
+**Local usage:**
+
+You can also run the script locally:
+```bash
+# View information only
+python3 edit_person.py "Patrick Ruff" --view-only
+
+# Update specific fields
+python3 edit_person.py "Patrick Ruff" --occupation "Engineer" --phone "555-1234"
+
+# Update multiple fields
+python3 edit_person.py "Jenny Wang" \
+  --home_city "Seattle" \
+  --home_state "Washington" \
+  --occupation "Software Engineer"
+
+# Remove a field (set to "null")
+python3 edit_person.py "Patrick Ruff" --phone "null"
+```
+
 #### GitHub Workflow: Generate Person Tree to Drive
 
 Automatically generate a person's immediate family tree and save it to Google Drive using GitHub Actions:
