@@ -754,9 +754,40 @@
                 generationCounts[gen] = (generationCounts[gen] || 0) + 1;
             });
 
-            // Count final males and females
-            const finalMales = Object.values(familyData.people).filter(p => p.final_male === true).length;
-            const finalFemales = Object.values(familyData.people).filter(p => p.final_female === true).length;
+            // Track Y chromosome and mtDNA lineages
+            const yLineages = {};
+            const mtdnaLineages = {};
+
+            Object.values(familyData.people).forEach(person => {
+                // Track Y chromosome lines
+                if (person.y_chromosome_line) {
+                    if (!yLineages[person.y_chromosome_line]) {
+                        yLineages[person.y_chromosome_line] = {total: 0, finals: 0, finalPeople: []};
+                    }
+                    yLineages[person.y_chromosome_line].total++;
+                    if (person.y_chromosome_final) {
+                        yLineages[person.y_chromosome_line].finals++;
+                        yLineages[person.y_chromosome_line].finalPeople.push(person.name);
+                    }
+                }
+
+                // Track mtDNA lines
+                if (person.mtdna_line) {
+                    if (!mtdnaLineages[person.mtdna_line]) {
+                        mtdnaLineages[person.mtdna_line] = {total: 0, finals: 0, finalPeople: []};
+                    }
+                    mtdnaLineages[person.mtdna_line].total++;
+                    if (person.mtdna_final) {
+                        mtdnaLineages[person.mtdna_line].finals++;
+                        mtdnaLineages[person.mtdna_line].finalPeople.push(person.name);
+                    }
+                }
+            });
+
+            const totalYChromosomes = Object.keys(yLineages).length;
+            const totalMtDNA = Object.keys(mtdnaLineages).length;
+            const totalYFinals = Object.values(yLineages).reduce((sum, line) => sum + line.finals, 0);
+            const totalMtDNAFinals = Object.values(mtdnaLineages).reduce((sum, line) => sum + line.finals, 0);
 
             // Build generation breakdown HTML
             let genBreakdown = '';
@@ -778,6 +809,51 @@
                 }
             });
 
+            // Build detailed lineage breakdown HTML
+            let lineageBreakdown = '';
+
+            if (totalYChromosomes > 0 || totalMtDNA > 0) {
+                lineageBreakdown += '<div style="margin-top: 20px; padding-top: 15px; border-top: 1px solid rgba(255,255,255,0.1);">';
+
+                // Y Chromosome lineages
+                if (totalYChromosomes > 0) {
+                    lineageBreakdown += '<div style="margin-bottom: 15px;">';
+                    lineageBreakdown += '<div style="font-size: 14px; font-weight: 600; color: #4A90E2; margin-bottom: 8px;">🔵 Y Chromosome Lineages</div>';
+
+                    Object.entries(yLineages).sort().forEach(([lineName, data]) => {
+                        const status = data.finals > 0 ? `<strong>${data.finals} of ${data.total}</strong> ending` : `All ${data.total} continuing`;
+                        const statusColor = data.finals > 0 ? '#E94B3C' : '#4CAF50';
+                        lineageBreakdown += `
+                            <div style="margin: 6px 0; padding: 6px 10px; background: rgba(255,255,255,0.03); border-radius: 4px; font-size: 13px;">
+                                <span style="font-weight: 500;">${lineName}:</span>
+                                <span style="color: ${statusColor};">${status}</span>
+                            </div>
+                        `;
+                    });
+                    lineageBreakdown += '</div>';
+                }
+
+                // mtDNA lineages
+                if (totalMtDNA > 0) {
+                    lineageBreakdown += '<div>';
+                    lineageBreakdown += '<div style="font-size: 14px; font-weight: 600; color: #E94B3C; margin-bottom: 8px;">🔴 Mitochondrial DNA Lineages</div>';
+
+                    Object.entries(mtdnaLineages).sort().forEach(([lineName, data]) => {
+                        const status = data.finals > 0 ? `<strong>${data.finals} of ${data.total}</strong> ending` : `All ${data.total} continuing`;
+                        const statusColor = data.finals > 0 ? '#E94B3C' : '#4CAF50';
+                        lineageBreakdown += `
+                            <div style="margin: 6px 0; padding: 6px 10px; background: rgba(255,255,255,0.03); border-radius: 4px; font-size: 13px;">
+                                <span style="font-weight: 500;">${lineName}:</span>
+                                <span style="color: ${statusColor};">${status}</span>
+                            </div>
+                        `;
+                    });
+                    lineageBreakdown += '</div>';
+                }
+
+                lineageBreakdown += '</div>';
+            }
+
             const statsDiv = document.getElementById('stats');
             statsDiv.innerHTML = `
                 <div style="display: grid; grid-template-columns: repeat(auto-fit, minmax(140px, 1fr)); gap: 15px; margin-bottom: 30px;">
@@ -798,11 +874,11 @@
                         <div class="label">Deceased</div>
                     </div>
                     <div class="stat-box" style="border: 2px solid #4A90E2;">
-                        <div class="number" style="color: #4A90E2;">${finalMales}</div>
+                        <div class="number" style="color: #4A90E2;">${totalYFinals}</div>
                         <div class="label">Final Males<br><span style="font-size: 10px; opacity: 0.7;">(Y chromosome)</span></div>
                     </div>
                     <div class="stat-box" style="border: 2px solid #E94B3C;">
-                        <div class="number" style="color: #E94B3C;">${finalFemales}</div>
+                        <div class="number" style="color: #E94B3C;">${totalMtDNAFinals}</div>
                         <div class="label">Final Females<br><span style="font-size: 10px; opacity: 0.7;">(mtDNA)</span></div>
                     </div>
                 </div>
@@ -812,14 +888,7 @@
                     <div style="color: #e0e0e0; font-size: 14px;">
                         ${genBreakdown}
                     </div>
-                    ${finalMales > 0 || finalFemales > 0 ? `
-                        <div style="margin-top: 20px; padding-top: 15px; border-top: 1px solid rgba(255,255,255,0.1);">
-                            <div style="font-size: 13px; color: #b0b0b0; line-height: 1.6;">
-                                ${finalMales > 0 ? `<div style="margin-bottom: 8px;">🔵 <strong>${finalMales}</strong> male lineage${finalMales > 1 ? 's' : ''} ending (Y chromosome will not continue)</div>` : ''}
-                                ${finalFemales > 0 ? `<div>🔴 <strong>${finalFemales}</strong> female lineage${finalFemales > 1 ? 's' : ''} ending (mitochondrial DNA will not continue)</div>` : ''}
-                            </div>
-                        </div>
-                    ` : ''}
+                    ${lineageBreakdown}
                 </div>
             `;
         }

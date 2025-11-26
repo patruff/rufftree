@@ -342,7 +342,7 @@ When multiple attributes are selected, the system averages the mapped values for
 - **Location**: `home_city`, `home_state` (for all), `cemetery_name`, `cemetery_city`, `cemetery_state` (for deceased)
 - **Health**: `health_condition` (array), `causeOfDeath` (for deceased)
 - **Contact**: `occupation`, `phone`, `maidenName`, `notes`
-- **Auto-calculated** (run scripts): `generation`, `from_pat`, `ethnicity`, `heritable_risk`, `heritable_traits`, `gender`, `final_male`, `final_female`
+- **Auto-calculated** (run scripts): `generation`, `from_pat`, `ethnicity`, `heritable_risk`, `heritable_traits`, `gender`, `y_chromosome_line`, `y_chromosome_final`, `mtdna_line`, `mtdna_final`
 
 See the **Family Data Model** section below for the complete list of all 30+ available fields with descriptions.
 
@@ -403,8 +403,10 @@ The `family_tree.json` file contains comprehensive data about each family member
 | `heritable_risk` | Object | Auto | Genetic predisposition risk levels<br>• Auto-calculated from parents' `causeOfDeath` and `health_condition`<br>• Format: `{"heart-disease": "moderate", "diabetes": "high"}`<br>• Risk levels: "low", "moderate", "high", "very-high" |
 | `heritable_traits` | Object | Auto | Genetic traits following Mendelian inheritance<br>• Auto-calculated from parents' genotypes<br>• Format: `{"eye_color": {"genotype": "Bb", "phenotype": "Brown"}}`<br>• Tracks: eye color (BB/Bb/bb), hair texture (CC/Cc/cc), dimples (DD/Dd/dd) |
 | `gender` | String | Auto | Gender of the person ("male" or "female")<br>• Auto-inferred from name if not specified<br>• Required for lineage calculations |
-| `final_male` | Boolean | Auto | True if this male is the last in his Y chromosome (paternal) line<br>• Auto-calculated based on male descendants<br>• Indicates Y chromosome lineage will end |
-| `final_female` | Boolean | Auto | True if this female is the last in her mitochondrial DNA (maternal) line<br>• Auto-calculated based on female descendants<br>• Indicates mtDNA lineage will end |
+| `y_chromosome_line` | String | Auto | Y chromosome lineage name traced from root paternal ancestor<br>• Format: "[LastName] Y" (e.g., "Ruff Y", "Miller Y")<br>• Only assigned to males<br>• Allows tracking of unique paternal lines |
+| `y_chromosome_final` | Boolean | Auto | True if this male is the last in his specific Y chromosome line<br>• Auto-calculated based on male descendants<br>• Indicates this specific ancestral Y chromosome lineage will end |
+| `mtdna_line` | String | Auto | Mitochondrial DNA lineage name traced from root maternal ancestor<br>• Format: "[LastName] mtDNA" (e.g., "Miller mtDNA", "Ruff mtDNA")<br>• Only assigned to females<br>• Allows tracking of unique maternal lines |
+| `mtdna_final` | Boolean | Auto | True if this female is the last in her specific mtDNA line<br>• Auto-calculated based on female descendants<br>• Indicates this specific ancestral mitochondrial DNA lineage will end |
 
 #### Contact & Personal Information
 | Field | Type | Required | Description |
@@ -487,7 +489,8 @@ python3 add_heritable_risk.py
 # Recalculate genetic traits from parents' genotypes (edit root genotypes in script first)
 python3 add_heritable_traits.py
 
-# Calculate final male/female lineage status (Y chromosome and mtDNA tracking)
+# Track specific ancestral lineages - traces Y chromosome and mtDNA lines back to root ancestors
+# Assigns line names (e.g., "Ruff Y", "Miller mtDNA") and identifies final carriers
 python3 add_final_lineage.py
 ```
 

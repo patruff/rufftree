@@ -660,13 +660,25 @@
             }
 
             // Genetic Lineage Status
-            if (person.final_male === true || person.final_female === true) {
+            if (person.y_chromosome_line || person.mtdna_line) {
                 let lineageHtml = '';
-                if (person.final_male === true) {
-                    lineageHtml += `<div style="color: #4A90E2; font-weight: 500; margin-bottom: 6px;">🔵 Final Male in Y Chromosome Line</div>`;
+
+                if (person.y_chromosome_line) {
+                    const lineName = person.y_chromosome_line;
+                    if (person.y_chromosome_final === true) {
+                        lineageHtml += `<div style="color: #4A90E2; font-weight: 500; margin-bottom: 6px;">🔵 Final Male in <strong>${lineName}</strong> Line</div>`;
+                    } else {
+                        lineageHtml += `<div style="color: #4A90E2; margin-bottom: 6px;">🔵 Carries <strong>${lineName}</strong></div>`;
+                    }
                 }
-                if (person.final_female === true) {
-                    lineageHtml += `<div style="color: #E94B3C; font-weight: 500;">🔴 Final Female in Mitochondrial DNA Line</div>`;
+
+                if (person.mtdna_line) {
+                    const lineName = person.mtdna_line;
+                    if (person.mtdna_final === true) {
+                        lineageHtml += `<div style="color: #E94B3C; font-weight: 500;">🔴 Final Female in <strong>${lineName}</strong> Line</div>`;
+                    } else {
+                        lineageHtml += `<div style="color: #E94B3C;">🔴 Carries <strong>${lineName}</strong></div>`;
+                    }
                 }
 
                 html += `
