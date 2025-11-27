@@ -24,7 +24,7 @@ A Retrieval Augmented Generation (RAG) system for Ruff family documents using Go
   - [Deploy Pages](#deploy-pages)
   - [Sync Documents from Google Drive](#sync-documents-from-google-drive)
   - [Query Ruff Documents](#query-ruff-documents)
-  - [Add Story to Google Drive](#add-story-to-google-drive)
+  - [Add Story to RAG](#add-story-to-rag)
   - [Integrate Generated People](#integrate-generated-people)
   - [Edit Person Information](#edit-person-information)
   - [Generate Person Tree to Drive](#generate-person-tree-to-drive)
@@ -1089,14 +1089,14 @@ Run RAG queries directly from GitHub Actions - useful for testing or quick looku
 4. Select model (default: gemini-2.5-flash)
 5. View answer in workflow run output
 
-### Add Story to Google Drive
+### Add Story to RAG
 
 **File:** `add-story-to-drive.yml`
 
-**(Repo Owner Only)** Quickly add a story directly to Google Drive for RAG indexing.
+**(Repo Owner Only)** Quickly add a story directly to the RAG File Search store.
 
 **Triggers:**
-- Manual only: Actions → "Add Story to Google Drive" → Run workflow
+- Manual only: Actions → "Add Story to RAG" → Run workflow
 
 **Inputs:**
 - **title** (required): Story title
@@ -1105,25 +1105,25 @@ Run RAG queries directly from GitHub Actions - useful for testing or quick looku
 - **author** (optional): Author name (default: Patrick Ruff)
 
 **Required Secrets:**
-- `GOOGLE_DRIVE_CREDENTIALS` - Service account JSON (with write access)
+- `GOOGLE_GENAI_API_KEY` - Gemini API key
 
 **What it does:**
 1. Creates a Word document (.docx) with formatted story content
 2. Names it: `yyyymmdd_patstory_title.docx`
-3. Uploads to Google Drive `rufftree` folder
-4. Story becomes available for RAG after next sync
+3. Uploads directly to the Gemini File Search store
+4. **Story is immediately searchable** - no sync required!
 
 **Example:**
-1. Go to Actions → "Add Story to Google Drive"
+1. Go to Actions → "Add Story to RAG"
 2. Click "Run workflow"
 3. Fill in:
    - Title: `The Christmas Cookie Tradition`
    - About: `Debbie Ruff, Sarah Boilon`
    - Story: `Every Christmas Eve, Debbie would bake...\n\nThe recipe had been passed down...`
 4. Run workflow
-5. Manually trigger "Sync Documents from Google Drive" (or wait 6 hours)
+5. Story is immediately available for RAG queries!
 
-This is the fastest way for the repo owner to add stories directly to the RAG system without creating issues.
+This is the fastest way for the repo owner to add stories directly to the RAG system - bypasses Google Drive entirely.
 
 ### Integrate Generated People
 

@@ -1,49 +1,48 @@
 #!/usr/bin/env python3
 """
-Add Story to Google Drive
+Add Story to Google Drive and RAG System
 
-Creates a .docx document from story text and uploads it to the rufftree
-Google Drive folder for RAG indexing.
+Creates a Google Doc in Google Drive AND uploads to the Gemini File Search
+store for RAG indexing.
 
-IMPORTANT: The 'rufftree' folder must be:
-1. Created by YOU (the user) in your Google Drive
-2. Shared with the service account email (with Editor access)
-
-Service accounts cannot create their own storage - they must write to
-folders shared with them by real users.
+Uses the Google Docs API to create native Google Docs (not upload .docx files)
+which avoids service account storage quota issues.
 
 Usage:
     python add_story_to_drive.py --title "Story Title" --about "Patrick Ruff, Jenny Wang" --story "Story content..."
-
-    Or interactively:
-    python add_story_to_drive.py --interactive
 """
 
 import os
 import sys
 import json
 import argparse
+import tempfile
 from datetime import datetime
 from pathlib import Path
 from io import BytesIO
 
 from docx import Document
-from docx.shared import Inches, Pt
+from docx.shared import Pt
 from docx.enum.text import WD_ALIGN_PARAGRAPH
 
 from google.oauth2 import service_account
 from googleapiclient.discovery import build
-from googleapiclient.http import MediaIoBaseUpload
+
+# Import our existing file search functions
+from test_file_search import get_client, get_or_create_store, upload_document
 
 
 # Configuration
 DRIVE_FOLDER_NAME = "rufftree"
-# Need full drive access to see folders shared with us and write to them
-SCOPES = ['https://www.googleapis.com/auth/drive']
+# Need drive scope to create files in shared folders
+SCOPES = [
+    'https://www.googleapis.com/auth/drive',
+    'https://www.googleapis.com/auth/documents'
+]
 
 
-def get_drive_service():
-    """Initialize Google Drive API service with write access."""
+def get_google_services():
+    """Initialize Google Drive and Docs API services."""
     creds_json = os.getenv("GOOGLE_DRIVE_CREDENTIALS")
 
     if not creds_json:
@@ -63,16 +62,17 @@ def get_drive_service():
         scopes=SCOPES
     )
 
-    service = build('drive', 'v3', credentials=credentials)
-    print("✅ Connected to Google Drive API")
+    drive_service = build('drive', 'v3', credentials=credentials)
+    docs_service = build('docs', 'v1', credentials=credentials)
+
+    print("✅ Connected to Google APIs")
     print(f"   Service Account: {service_account_email}")
 
-    return service, service_account_email
+    return drive_service, docs_service, service_account_email
 
 
 def find_folder(service, folder_name: str, service_account_email: str) -> str:
     """Find the rufftree folder that was shared with the service account."""
-    # Search for folder shared with us
     query = f"name='{folder_name}' and mimeType='application/vnd.google-apps.folder' and trashed=false"
 
     results = service.files().list(
@@ -102,46 +102,133 @@ def find_folder(service, folder_name: str, service_account_email: str) -> str:
     return folder_id
 
 
-def create_story_docx(title: str, about: str, story: str, author: str = "Patrick Ruff") -> BytesIO:
-    """Create a Word document with the story content."""
+def generate_filename(title: str) -> str:
+    """Generate filename: yyyymmdd_patstory_title"""
+    date_str = datetime.now().strftime("%Y%m%d")
+    safe_title = "".join(c if c.isalnum() or c in ' -_' else '' for c in title)
+    safe_title = safe_title.strip().replace(' ', '_').lower()[:50]
+    return f"{date_str}_patstory_{safe_title}"
+
+
+def create_google_doc(drive_service, docs_service, folder_id: str, title: str,
+                      about: str, story: str, author: str) -> tuple:
+    """Create a Google Doc in the specified folder."""
+
+    doc_title = generate_filename(title)
+
+    # Step 1: Create empty Google Doc in the folder
+    file_metadata = {
+        'name': doc_title,
+        'mimeType': 'application/vnd.google-apps.document',
+        'parents': [folder_id]
+    }
+
+    doc_file = drive_service.files().create(
+        body=file_metadata,
+        fields='id, webViewLink',
+        supportsAllDrives=True
+    ).execute()
+
+    doc_id = doc_file.get('id')
+    web_link = doc_file.get('webViewLink', '')
+
+    print(f"   Created Google Doc: {doc_title}")
+    print(f"   Doc ID: {doc_id}")
+
+    # Step 2: Populate the document with content
+    date_str = datetime.now().strftime("%B %d, %Y")
+    word_count = len(story.split())
+
+    # Build the document content using Docs API
+    requests = [
+        # Title
+        {
+            'insertText': {
+                'location': {'index': 1},
+                'text': f"{title}\n\n"
+            }
+        },
+        # Metadata
+        {
+            'insertText': {
+                'location': {'index': 1 + len(title) + 2},
+                'text': f"By: {author}\nAbout: {about}\nDate: {date_str}\n\n{'─' * 50}\n\n"
+            }
+        },
+    ]
+
+    # Calculate where to insert story content
+    meta_text = f"By: {author}\nAbout: {about}\nDate: {date_str}\n\n{'─' * 50}\n\n"
+    story_start = 1 + len(title) + 2 + len(meta_text)
+
+    # Add story content
+    requests.append({
+        'insertText': {
+            'location': {'index': story_start},
+            'text': f"{story}\n\n{'─' * 50}\n\nWord Count: {word_count}"
+        }
+    })
+
+    # Apply formatting - make title larger
+    title_end = 1 + len(title)
+    requests.append({
+        'updateParagraphStyle': {
+            'range': {'startIndex': 1, 'endIndex': title_end},
+            'paragraphStyle': {
+                'namedStyleType': 'HEADING_1',
+                'alignment': 'CENTER'
+            },
+            'fields': 'namedStyleType,alignment'
+        }
+    })
+
+    # Execute the batch update
+    docs_service.documents().batchUpdate(
+        documentId=doc_id,
+        body={'requests': requests}
+    ).execute()
+
+    print(f"   ✅ Document content added")
+    if web_link:
+        print(f"   🔗 Link: {web_link}")
+
+    return doc_id, doc_title, web_link
+
+
+def create_docx_for_rag(title: str, about: str, story: str, author: str) -> BytesIO:
+    """Create a Word document for RAG indexing."""
     doc = Document()
 
-    # Title
     title_para = doc.add_heading(title, level=0)
     title_para.alignment = WD_ALIGN_PARAGRAPH.CENTER
 
-    # Metadata section
     doc.add_paragraph()
     meta_para = doc.add_paragraph()
-    meta_para.add_run(f"By: ").bold = True
+    meta_para.add_run("By: ").bold = True
     meta_para.add_run(author)
 
     meta_para2 = doc.add_paragraph()
-    meta_para2.add_run(f"About: ").bold = True
+    meta_para2.add_run("About: ").bold = True
     meta_para2.add_run(about)
 
     meta_para3 = doc.add_paragraph()
-    meta_para3.add_run(f"Date: ").bold = True
+    meta_para3.add_run("Date: ").bold = True
     meta_para3.add_run(datetime.now().strftime("%B %d, %Y"))
 
-    # Separator
     doc.add_paragraph("─" * 50)
-
-    # Story content
     doc.add_paragraph()
+
     story_paragraphs = story.strip().split('\n\n')
     for para_text in story_paragraphs:
         if para_text.strip():
             p = doc.add_paragraph(para_text.strip())
             p.paragraph_format.space_after = Pt(12)
 
-    # Footer
     doc.add_paragraph()
     doc.add_paragraph("─" * 50)
     footer = doc.add_paragraph()
     footer.add_run(f"Word Count: {len(story.split())}").italic = True
 
-    # Save to BytesIO
     docx_buffer = BytesIO()
     doc.save(docx_buffer)
     docx_buffer.seek(0)
@@ -149,50 +236,9 @@ def create_story_docx(title: str, about: str, story: str, author: str = "Patrick
     return docx_buffer
 
 
-def generate_filename(title: str) -> str:
-    """Generate filename: yyyymmdd_patstory_title.docx"""
-    date_str = datetime.now().strftime("%Y%m%d")
-    # Clean title for filename
-    safe_title = "".join(c if c.isalnum() or c in ' -_' else '' for c in title)
-    safe_title = safe_title.strip().replace(' ', '_').lower()[:50]
-
-    return f"{date_str}_patstory_{safe_title}.docx"
-
-
-def upload_to_drive(service, folder_id: str, filename: str, docx_buffer: BytesIO) -> str:
-    """Upload the .docx file to Google Drive."""
-    file_metadata = {
-        'name': filename,
-        'parents': [folder_id]
-    }
-
-    media = MediaIoBaseUpload(
-        docx_buffer,
-        mimetype='application/vnd.openxmlformats-officedocument.wordprocessingml.document',
-        resumable=True
-    )
-
-    file = service.files().create(
-        body=file_metadata,
-        media_body=media,
-        fields='id, webViewLink',
-        supportsAllDrives=True
-    ).execute()
-
-    file_id = file.get('id')
-    web_link = file.get('webViewLink', '')
-
-    print(f"✅ Uploaded: {filename}")
-    print(f"   File ID: {file_id}")
-    if web_link:
-        print(f"   Link: {web_link}")
-
-    return file_id
-
-
 def add_story(title: str, about: str, story: str, author: str = "Patrick Ruff"):
-    """Main function to create and upload a story to Google Drive."""
-    print("📖 Adding Story to Google Drive")
+    """Main function to create story in Google Drive AND RAG system."""
+    print("📖 Adding Story to Google Drive & RAG System")
     print("=" * 60)
     print(f"Title: {title}")
     print(f"About: {about}")
@@ -200,38 +246,47 @@ def add_story(title: str, about: str, story: str, author: str = "Patrick Ruff"):
     print(f"Word Count: {len(story.split())}")
     print("=" * 60)
 
-    # Connect to Google Drive
-    print("\n📡 Connecting to Google Drive...")
-    service, service_account_email = get_drive_service()
+    # === Part 1: Create Google Doc in Drive ===
+    print("\n📄 STEP 1: Creating Google Doc in Drive...")
 
-    # Find the rufftree folder (must be shared with service account)
-    folder_id = find_folder(service, DRIVE_FOLDER_NAME, service_account_email)
+    drive_service, docs_service, service_account_email = get_google_services()
+    folder_id = find_folder(drive_service, DRIVE_FOLDER_NAME, service_account_email)
 
-    # Create the document
-    print("\n📝 Creating Word document...")
-    docx_buffer = create_story_docx(title, about, story, author)
+    doc_id, doc_title, web_link = create_google_doc(
+        drive_service, docs_service, folder_id, title, about, story, author
+    )
 
-    # Generate filename
-    filename = generate_filename(title)
-    print(f"   Filename: {filename}")
+    # === Part 2: Upload to File Search Store for RAG ===
+    print("\n🔍 STEP 2: Adding to RAG File Search store...")
 
-    # Upload to Drive
-    print("\n📤 Uploading to Google Drive...")
-    file_id = upload_to_drive(service, folder_id, filename, docx_buffer)
+    docx_buffer = create_docx_for_rag(title, about, story, author)
+    filename = f"{doc_title}.docx"
 
+    with tempfile.TemporaryDirectory() as temp_dir:
+        temp_path = Path(temp_dir) / filename
+        with open(temp_path, 'wb') as f:
+            f.write(docx_buffer.getvalue())
+
+        print("   Connecting to Gemini File Search...")
+        client = get_client()
+        store_name = get_or_create_store(client)
+        upload_document(client, store_name, str(temp_path))
+
+    # === Summary ===
     print("\n" + "=" * 60)
     print("✅ STORY ADDED SUCCESSFULLY!")
     print("=" * 60)
-    print(f"📁 Location: Google Drive / {DRIVE_FOLDER_NAME} / {filename}")
-    print(f"🔄 The story will be indexed on the next sync (every 6 hours)")
-    print(f"   Or manually trigger: Actions → 'Sync Documents from Google Drive'")
+    print(f"📄 Google Doc: {doc_title}")
+    if web_link:
+        print(f"🔗 View: {web_link}")
+    print(f"🔍 RAG: Indexed in File Search store")
     print("=" * 60)
 
-    return file_id, filename
+    return doc_id, filename
 
 
 def main():
-    parser = argparse.ArgumentParser(description='Add a family story to Google Drive')
+    parser = argparse.ArgumentParser(description='Add a family story to Google Drive and RAG')
     parser.add_argument('--title', '-t', help='Story title')
     parser.add_argument('--about', '-a', help='Who the story is about (comma-separated names)')
     parser.add_argument('--story', '-s', help='Story content')
@@ -241,27 +296,29 @@ def main():
     args = parser.parse_args()
 
     if args.interactive:
-        print("📖 Add Family Story to Google Drive")
+        print("📖 Add Family Story")
         print("=" * 60)
         title = input("\nStory Title: ").strip()
         about = input("Who is this story about? (comma-separated): ").strip()
         author = input("Your name (press Enter for 'Patrick Ruff'): ").strip() or "Patrick Ruff"
-        print("\nEnter your story (end with an empty line):")
+        print("\nEnter your story (end with two empty lines):")
         lines = []
+        empty_count = 0
         while True:
             try:
                 line = input()
                 if line == "":
-                    if lines and lines[-1] == "":
-                        break  # Two empty lines = done
+                    empty_count += 1
+                    if empty_count >= 2:
+                        break
                     lines.append(line)
                 else:
+                    empty_count = 0
                     lines.append(line)
             except EOFError:
                 break
         story = "\n".join(lines).strip()
     else:
-        # Check required args
         if not args.title or not args.about or not args.story:
             parser.error("--title, --about, and --story are required (or use --interactive)")
 
