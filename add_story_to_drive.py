@@ -5,6 +5,13 @@ Add Story to Google Drive
 Creates a .docx document from story text and uploads it to the rufftree
 Google Drive folder for RAG indexing.
 
+IMPORTANT: The 'rufftree' folder must be:
+1. Created by YOU (the user) in your Google Drive
+2. Shared with the service account email (with Editor access)
+
+Service accounts cannot create their own storage - they must write to
+folders shared with them by real users.
+
 Usage:
     python add_story_to_drive.py --title "Story Title" --about "Patrick Ruff, Jenny Wang" --story "Story content..."
 
@@ -31,7 +38,8 @@ from googleapiclient.http import MediaIoBaseUpload
 
 # Configuration
 DRIVE_FOLDER_NAME = "rufftree"
-SCOPES = ['https://www.googleapis.com/auth/drive.file']  # Write access to files created by the app
+# Need full drive access to see folders shared with us and write to them
+SCOPES = ['https://www.googleapis.com/auth/drive']
 
 
 def get_drive_service():
@@ -46,6 +54,7 @@ def get_drive_service():
 
     try:
         creds_info = json.loads(creds_json)
+        service_account_email = creds_info.get('client_email', 'unknown')
     except json.JSONDecodeError as e:
         raise ValueError(f"Invalid JSON in GOOGLE_DRIVE_CREDENTIALS: {e}")
 
@@ -56,42 +65,40 @@ def get_drive_service():
 
     service = build('drive', 'v3', credentials=credentials)
     print("✅ Connected to Google Drive API")
+    print(f"   Service Account: {service_account_email}")
 
-    return service
+    return service, service_account_email
 
 
-def find_or_create_folder(service, folder_name: str) -> str:
-    """Find the rufftree folder or create it if it doesn't exist."""
-    # Search for existing folder
+def find_folder(service, folder_name: str, service_account_email: str) -> str:
+    """Find the rufftree folder that was shared with the service account."""
+    # Search for folder shared with us
     query = f"name='{folder_name}' and mimeType='application/vnd.google-apps.folder' and trashed=false"
 
     results = service.files().list(
         q=query,
         spaces='drive',
-        fields='files(id, name)'
+        fields='files(id, name, owners)',
+        supportsAllDrives=True,
+        includeItemsFromAllDrives=True
     ).execute()
 
     files = results.get('files', [])
 
-    if files:
-        folder_id = files[0]['id']
-        print(f"📁 Found folder: {folder_name} (ID: {folder_id})")
-        return folder_id
+    if not files:
+        print(f"\n❌ ERROR: Folder '{folder_name}' not found!")
+        print(f"\n📋 To fix this, you need to:")
+        print(f"   1. Go to your Google Drive (drive.google.com)")
+        print(f"   2. Create a folder named '{folder_name}'")
+        print(f"   3. Right-click the folder → Share")
+        print(f"   4. Add this email with 'Editor' access:")
+        print(f"      {service_account_email}")
+        print(f"   5. Click 'Share'")
+        print(f"\n   Then run this workflow again.")
+        raise ValueError(f"Folder '{folder_name}' not found. See instructions above.")
 
-    # Create the folder if it doesn't exist
-    file_metadata = {
-        'name': folder_name,
-        'mimeType': 'application/vnd.google-apps.folder'
-    }
-
-    folder = service.files().create(
-        body=file_metadata,
-        fields='id'
-    ).execute()
-
-    folder_id = folder.get('id')
-    print(f"📁 Created folder: {folder_name} (ID: {folder_id})")
-
+    folder_id = files[0]['id']
+    print(f"📁 Found folder: {folder_name} (ID: {folder_id})")
     return folder_id
 
 
@@ -168,7 +175,8 @@ def upload_to_drive(service, folder_id: str, filename: str, docx_buffer: BytesIO
     file = service.files().create(
         body=file_metadata,
         media_body=media,
-        fields='id, webViewLink'
+        fields='id, webViewLink',
+        supportsAllDrives=True
     ).execute()
 
     file_id = file.get('id')
@@ -194,10 +202,10 @@ def add_story(title: str, about: str, story: str, author: str = "Patrick Ruff"):
 
     # Connect to Google Drive
     print("\n📡 Connecting to Google Drive...")
-    service = get_drive_service()
+    service, service_account_email = get_drive_service()
 
-    # Find or create the rufftree folder
-    folder_id = find_or_create_folder(service, DRIVE_FOLDER_NAME)
+    # Find the rufftree folder (must be shared with service account)
+    folder_id = find_folder(service, DRIVE_FOLDER_NAME, service_account_email)
 
     # Create the document
     print("\n📝 Creating Word document...")
