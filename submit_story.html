@@ -659,7 +659,7 @@ ${JSON.stringify({
 *A maintainer will review and add it to the family archive.*`
             );
 
-            const issueUrl = `https://github.com/${GITHUB_REPO}/issues/new?title=${title}&body=${body}&labels=family-story`;
+            const issueUrl = `https://github.com/${GITHUB_REPO}/issues/new?title=${title}&body=${body}&labels=family-story,story:pending`;
             window.open(issueUrl, '_blank');
 
             document.getElementById('successMessage').style.display = 'block';

@@ -1,0 +1,72 @@
+name: Add Story to Google Drive
+
+on:
+  workflow_dispatch:
+    inputs:
+      title:
+        description: 'Story title'
+        required: true
+        type: string
+      about:
+        description: 'Who is this story about? (comma-separated names)'
+        required: true
+        type: string
+      story:
+        description: 'The story content (use \n for line breaks)'
+        required: true
+        type: string
+      author:
+        description: 'Author name'
+        required: false
+        default: 'Patrick Ruff'
+        type: string
+
+jobs:
+  add-story:
+    runs-on: ubuntu-latest
+
+    steps:
+      - name: Checkout repository
+        uses: actions/checkout@v4
+
+      - name: Set up Python
+        uses: actions/setup-python@v4
+        with:
+          python-version: '3.11'
+
+      - name: Install dependencies
+        run: |
+          pip install -r requirements.txt
+
+      - name: Add story to Google Drive
+        id: add_story
+        env:
+          GOOGLE_DRIVE_CREDENTIALS: ${{ secrets.GOOGLE_DRIVE_CREDENTIALS }}
+        run: |
+          # Convert \n to actual newlines in story content
+          STORY_CONTENT=$(echo "${{ github.event.inputs.story }}" | sed 's/\\n/\n/g')
+
+          python add_story_to_drive.py \
+            --title "${{ github.event.inputs.title }}" \
+            --about "${{ github.event.inputs.about }}" \
+            --author "${{ github.event.inputs.author }}" \
+            --story "$STORY_CONTENT"
+
+      - name: Summary
+        run: |
+          echo "## Story Added to Google Drive" >> $GITHUB_STEP_SUMMARY
+          echo "" >> $GITHUB_STEP_SUMMARY
+          echo "| Field | Value |" >> $GITHUB_STEP_SUMMARY
+          echo "|-------|-------|" >> $GITHUB_STEP_SUMMARY
+          echo "| **Title** | ${{ github.event.inputs.title }} |" >> $GITHUB_STEP_SUMMARY
+          echo "| **About** | ${{ github.event.inputs.about }} |" >> $GITHUB_STEP_SUMMARY
+          echo "| **Author** | ${{ github.event.inputs.author }} |" >> $GITHUB_STEP_SUMMARY
+          echo "" >> $GITHUB_STEP_SUMMARY
+          echo "### Next Steps" >> $GITHUB_STEP_SUMMARY
+          echo "" >> $GITHUB_STEP_SUMMARY
+          echo "The story has been uploaded to Google Drive. To make it searchable:" >> $GITHUB_STEP_SUMMARY
+          echo "" >> $GITHUB_STEP_SUMMARY
+          echo "1. **Wait for automatic sync** (runs every 6 hours)" >> $GITHUB_STEP_SUMMARY
+          echo "2. **Or manually trigger** the 'Sync Documents from Google Drive' workflow" >> $GITHUB_STEP_SUMMARY
+          echo "" >> $GITHUB_STEP_SUMMARY
+          echo "Once synced, the story will be available for RAG queries." >> $GITHUB_STEP_SUMMARY
