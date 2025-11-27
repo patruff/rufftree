@@ -27,49 +27,106 @@ jobs:
         env:
           ISSUE_BODY: ${{ github.event.issue.body }}
           ISSUE_NUMBER: ${{ github.event.issue.number }}
+          ISSUE_TITLE: ${{ github.event.issue.title }}
         run: |
           python - <<'EOF'
           import json
           import os
           import re
           import sys
+          from datetime import datetime
 
           issue_body = os.environ.get('ISSUE_BODY', '')
           issue_number = os.environ.get('ISSUE_NUMBER', '')
+          issue_title = os.environ.get('ISSUE_TITLE', '')
 
-          print(f"Processing issue #{issue_number}")
-
-          # Extract JSON from the issue body (between ```json and ```)
-          json_match = re.search(r'```json\s*([\s\S]*?)\s*```', issue_body)
-
-          if not json_match:
-              print("❌ No JSON block found in issue body")
-              print("Issue body:", issue_body[:500])
-              sys.exit(1)
-
-          json_str = json_match.group(1).strip()
-
-          try:
-              person = json.loads(json_str)
-          except json.JSONDecodeError as e:
-              print(f"❌ Invalid JSON: {e}")
-              sys.exit(1)
-
-          # Validate required fields
-          if 'id' not in person or 'name' not in person:
-              print("❌ Person JSON must have 'id' and 'name' fields")
-              sys.exit(1)
-
-          person_id = person['id']
-          person_name = person['name']
-
-          print(f"Found person: {person_name} (ID: {person_id})")
+          print(f"Processing issue #{issue_number}: {issue_title}")
 
           # Load existing family tree
           with open('family_tree.json', 'r') as f:
               family_data = json.load(f)
 
           people = family_data['family']['people']
+
+          # First try to extract JSON from a code block
+          json_match = re.search(r'```json\s*([\s\S]*?)\s*```', issue_body)
+          person = None
+
+          if json_match:
+              json_str = json_match.group(1).strip()
+              try:
+                  person = json.loads(json_str)
+                  print("Found JSON data in code block")
+              except json.JSONDecodeError as e:
+                  print(f"Warning: Invalid JSON in code block: {e}")
+
+          # If no JSON block, try to parse from form fields
+          if not person:
+              print("Parsing from form fields...")
+              person = {}
+
+              # Extract full name
+              name_match = re.search(r'### Full Name\s*\n\n(.+?)(?:\n\n###|\Z)', issue_body)
+              if name_match:
+                  person['name'] = name_match.group(1).strip()
+
+              # Extract birth year
+              birth_match = re.search(r'### Birth Year\s*\n\n(.+?)(?:\n\n###|\Z)', issue_body)
+              if birth_match:
+                  person['dob'] = birth_match.group(1).strip()
+
+              # Extract living status
+              status_match = re.search(r'### Living Status\s*\n\n(.+?)(?:\n\n###|\Z)', issue_body)
+              if status_match:
+                  status = status_match.group(1).strip().lower()
+                  if status == 'living':
+                      person['dod'] = 'alive'
+                  else:
+                      # Try to get death year
+                      death_match = re.search(r'### Death Year.*?\s*\n\n(.+?)(?:\n\n###|\Z)', issue_body)
+                      if death_match:
+                          death_year = death_match.group(1).strip()
+                          if death_year and death_year.lower() not in ['_no response_', 'n/a', '']:
+                              person['dod'] = death_year
+                          else:
+                              person['dod'] = 'unknown'
+
+              # Extract relationship info
+              rel_type_match = re.search(r'### Relationship to Existing Tree\s*\n\n(.+?)(?:\n\n###|\Z)', issue_body)
+              related_to_match = re.search(r'### Related To\s*\n\n(.+?)(?:\n\n###|\Z)', issue_body)
+
+              # Extract optional fields
+              occupation_match = re.search(r'### Occupation.*?\s*\n\n(.+?)(?:\n\n###|\Z)', issue_body)
+              if occupation_match and occupation_match.group(1).strip().lower() not in ['_no response_', '']:
+                  person['occupation'] = occupation_match.group(1).strip()
+
+              location_match = re.search(r'### Home Location.*?\s*\n\n(.+?)(?:\n\n###|\Z)', issue_body)
+              if location_match and location_match.group(1).strip().lower() not in ['_no response_', '']:
+                  location = location_match.group(1).strip()
+                  if ',' in location:
+                      parts = location.split(',')
+                      person['home_city'] = parts[0].strip()
+                      person['home_state'] = parts[1].strip()
+
+              notes_match = re.search(r'### Notes.*?\s*\n\n(.+?)(?:\n\n###|\Z)', issue_body)
+              if notes_match and notes_match.group(1).strip().lower() not in ['_no response_', '']:
+                  person['notes'] = notes_match.group(1).strip()
+
+          # Validate required fields
+          if not person.get('name'):
+              print("❌ Person must have a name")
+              sys.exit(1)
+
+          person_name = person['name']
+
+          # Generate ID if not provided
+          if 'id' not in person:
+              safe_id = re.sub(r'[^a-z0-9]+', '_', person_name.lower()).strip('_')
+              person['id'] = safe_id
+
+          person_id = person['id']
+
+          print(f"Found person: {person_name} (ID: {person_id})")
 
           # Check if person already exists
           if person_id in people:
@@ -84,15 +141,82 @@ jobs:
               person_id = new_id
               print(f"Using unique ID: {person_id}")
 
+          # Set defaults for required relationship fields
+          if 'parentIds' not in person:
+              person['parentIds'] = []
+          if 'siblingIds' not in person:
+              person['siblingIds'] = []
+          if 'childrenIds' not in person:
+              person['childrenIds'] = []
+          if 'spouseId' not in person:
+              person['spouseId'] = None
+
           # Extract relationship update metadata if present
           relationship_updates = person.pop('_relationshipUpdates', {})
           add_as_child_of = relationship_updates.get('addAsChildOf')
+
+          # Try to find the related person and set up relationship
+          rel_type_match = re.search(r'### Relationship to Existing Tree\s*\n\n(.+?)(?:\n\n###|\Z)', issue_body)
+          related_to_match = re.search(r'### Related To\s*\n\n(.+?)(?:\n\n###|\Z)', issue_body)
+
+          if rel_type_match and related_to_match:
+              rel_type = rel_type_match.group(1).strip().lower()
+              related_name = related_to_match.group(1).strip().lower()
+
+              # Find the related person in the tree
+              related_person_id = None
+              for pid, p in people.items():
+                  if related_name in p.get('name', '').lower():
+                      related_person_id = pid
+                      break
+
+              if related_person_id:
+                  related_person = people[related_person_id]
+                  print(f"Found related person: {related_person['name']} ({related_person_id})")
+
+                  if 'child of' in rel_type:
+                      # New person is child of related person
+                      person['parentIds'] = [related_person_id]
+                      if related_person.get('spouseId') and related_person['spouseId'] in people:
+                          person['parentIds'].append(related_person['spouseId'])
+                      add_as_child_of = related_person_id
+
+                  elif 'parent of' in rel_type:
+                      # New person is parent of related person
+                      if person_id not in related_person.get('parentIds', []):
+                          if 'parentIds' not in related_person:
+                              related_person['parentIds'] = []
+                          related_person['parentIds'].append(person_id)
+                      person['childrenIds'] = [related_person_id]
+
+                  elif 'spouse of' in rel_type:
+                      # New person is spouse of related person
+                      person['spouseId'] = related_person_id
+                      related_person['spouseId'] = person_id
+                      # Inherit children
+                      person['childrenIds'] = related_person.get('childrenIds', []).copy()
+
+                  elif 'sibling of' in rel_type:
+                      # New person is sibling of related person
+                      person['siblingIds'] = [related_person_id]
+                      person['parentIds'] = related_person.get('parentIds', []).copy()
+                      # Update the related person's siblings
+                      if 'siblingIds' not in related_person:
+                          related_person['siblingIds'] = []
+                      related_person['siblingIds'].append(person_id)
+                      # Update other siblings too
+                      for sib_id in related_person.get('siblingIds', []):
+                          if sib_id in people and sib_id != person_id:
+                              if person_id not in people[sib_id].get('siblingIds', []):
+                                  people[sib_id]['siblingIds'].append(person_id)
+                              if sib_id not in person['siblingIds']:
+                                  person['siblingIds'].append(sib_id)
 
           # Add person to family tree
           people[person_id] = person
           print(f"✅ Added: {person_name} (ID: {person_id})")
 
-          # Handle bidirectional relationship updates
+          # Handle bidirectional relationship updates for child relationships
           if add_as_child_of and add_as_child_of in people:
               parent = people[add_as_child_of]
               if person_id not in parent.get('childrenIds', []):
@@ -132,6 +256,26 @@ jobs:
               f.write(f"person_id={person_id}\n")
           EOF
 
+      - name: Run calculation scripts
+        run: |
+          # Run generation calculation
+          if [ -f "add_generations.py" ]; then
+            python add_generations.py
+            echo "✅ Updated generation labels"
+          fi
+
+          # Run ethnicity calculation if parents set
+          if [ -f "add_ethnicity.py" ]; then
+            python add_ethnicity.py
+            echo "✅ Updated ethnicity calculations"
+          fi
+
+          # Run completion percentage
+          if [ -f "calculate_completion.py" ]; then
+            python calculate_completion.py
+            echo "✅ Updated completion percentages"
+          fi
+
       - name: Commit changes
         run: |
           git config --local user.email "github-actions[bot]@users.noreply.github.com"
@@ -139,6 +283,29 @@ jobs:
           git add family_tree.json
           git diff --staged --quiet || git commit -m "Add ${{ steps.integrate.outputs.person_name }} to family tree (closes #${{ github.event.issue.number }})"
           git push
+
+      - name: Update labels
+        uses: actions/github-script@v7
+        with:
+          script: |
+            // Remove pending label and add completed label
+            try {
+              await github.rest.issues.removeLabel({
+                owner: context.repo.owner,
+                repo: context.repo.repo,
+                issue_number: context.issue.number,
+                name: 'person:pending'
+              });
+            } catch (e) {
+              console.log('person:pending label not present');
+            }
+
+            await github.rest.issues.addLabels({
+              owner: context.repo.owner,
+              repo: context.repo.repo,
+              issue_number: context.issue.number,
+              labels: ['person:added']
+            });
 
       - name: Close issue with success comment
         uses: actions/github-script@v7
@@ -148,15 +315,21 @@ jobs:
               owner: context.repo.owner,
               repo: context.repo.repo,
               issue_number: context.issue.number,
-              body: `✅ **Person successfully added to the family tree!**
+              body: `## Person Successfully Added to Family Tree!
 
-              - **Name:** ${{ steps.integrate.outputs.person_name }}
-              - **ID:** ${{ steps.integrate.outputs.person_id }}
+| Field | Value |
+|-------|-------|
+| **Name** | ${{ steps.integrate.outputs.person_name }} |
+| **ID** | \`${{ steps.integrate.outputs.person_id }}\` |
 
-              The family tree has been updated and will be visible on the website shortly.
+The family tree has been updated and will be visible on the website shortly.
 
-              ---
-              *This issue was automatically processed by the Person Integration workflow.*`
+**Next steps:**
+- View on the [Family Tree](https://patruff.github.io/rufftree/)
+- View on the [Family Graph](https://patruff.github.io/rufftree/graph.html)
+
+---
+*This issue was automatically processed by the Person Integration workflow.*`
             });
 
             await github.rest.issues.update({

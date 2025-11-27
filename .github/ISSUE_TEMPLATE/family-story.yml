@@ -1,0 +1,94 @@
+name: "Share a Family Story"
+description: "Share a memory, story, or piece of family history to be preserved in the archive"
+title: "[Story] "
+labels: ["family-story", "story:pending"]
+body:
+  - type: markdown
+    attributes:
+      value: |
+        ## Share a Family Memory
+
+        Thank you for sharing a piece of family history! Your story will be preserved in the family archive and can be used to answer future questions about our family.
+
+        **How this works:**
+        1. You submit your story here
+        2. The repo owner reviews and approves the submission
+        3. A workflow saves your story to the `family_stories/` folder
+        4. The story becomes searchable in the family RAG system
+
+        ---
+
+  - type: input
+    id: title
+    attributes:
+      label: Story Title
+      description: Give your story a memorable title
+      placeholder: "The Time Grandpa Built the Treehouse"
+    validations:
+      required: true
+
+  - type: input
+    id: author
+    attributes:
+      label: Your Name
+      description: Who is sharing this story?
+      placeholder: "Sarah Ruff"
+    validations:
+      required: true
+
+  - type: checkboxes
+    id: mentions
+    attributes:
+      label: Family Members in This Story
+      description: Select all family members mentioned in your story. If someone isn't listed, they may need to be added to the tree first.
+      options:
+        - label: Patrick Ruff
+        - label: Jenny Wang
+        - label: Joe Ruff Sr.
+        - label: Debbie Ruff
+        - label: Joe Ruff Jr.
+        - label: Katie Ruff
+        - label: Sarah Boilon
+        - label: Kevin Boilon
+        - label: Phil Ruff
+        - label: Ashley Ruff
+        - label: Annette Ludke
+        - label: Stan Miller Sr.
+        - label: Beth Miller Bradley
+        - label: Other (specify in story)
+
+  - type: input
+    id: other_people
+    attributes:
+      label: Other People Mentioned
+      description: If you mentioned people NOT in the family tree, list their names here (comma-separated). These may be added to the tree.
+      placeholder: "Uncle Bob, Cousin Lisa, Grandma Rose"
+
+  - type: input
+    id: time_period
+    attributes:
+      label: Time Period
+      description: When did this story take place?
+      placeholder: "Summer 1985" or "1960s" or "Christmas 2010"
+
+  - type: textarea
+    id: story
+    attributes:
+      label: Your Story
+      description: Share your family memory, story, or piece of history. Include as many details as you can remember!
+      placeholder: |
+        Tell your story here...
+
+        - What happened?
+        - Who was there?
+        - Where did it take place?
+        - What makes this memory special?
+    validations:
+      required: true
+
+  - type: textarea
+    id: additional_context
+    attributes:
+      label: Additional Context (Optional)
+      description: Any additional information, corrections to the family tree, or context that might be helpful
+      placeholder: "This story was told to me by my grandmother. The house mentioned is no longer standing."

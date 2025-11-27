@@ -1,0 +1,122 @@
+name: "Add Person to Family Tree"
+description: "Request to add a new family member to the tree"
+title: "[Add Person] "
+labels: ["add-person", "person:pending"]
+body:
+  - type: markdown
+    attributes:
+      value: |
+        ## Add a New Family Member
+
+        Use this form to request adding a new person to the family tree.
+
+        **How this works:**
+        1. Fill out the information below
+        2. The repo owner reviews the request
+        3. If approved, a workflow adds the person to `family_tree.json`
+        4. The tree visualization updates automatically
+
+        **Note:** Only the repo owner can actually modify the family tree. This issue creates a request that will be reviewed.
+
+        ---
+
+  - type: input
+    id: name
+    attributes:
+      label: Full Name
+      description: The person's full name
+      placeholder: "John Michael Ruff"
+    validations:
+      required: true
+
+  - type: input
+    id: birth_year
+    attributes:
+      label: Birth Year
+      description: Year the person was born (YYYY format)
+      placeholder: "1985"
+    validations:
+      required: true
+
+  - type: dropdown
+    id: status
+    attributes:
+      label: Living Status
+      options:
+        - Living
+        - Deceased
+    validations:
+      required: true
+
+  - type: input
+    id: death_year
+    attributes:
+      label: Death Year (if deceased)
+      description: Year the person passed away (YYYY format)
+      placeholder: "2020"
+
+  - type: dropdown
+    id: relationship_type
+    attributes:
+      label: Relationship to Existing Tree
+      description: How is this person connected to someone already in the tree?
+      options:
+        - Child of
+        - Parent of
+        - Spouse of
+        - Sibling of
+    validations:
+      required: true
+
+  - type: input
+    id: related_to
+    attributes:
+      label: Related To
+      description: Name of the person in the tree they are related to
+      placeholder: "Patrick Ruff"
+    validations:
+      required: true
+
+  - type: input
+    id: occupation
+    attributes:
+      label: Occupation (Optional)
+      placeholder: "Teacher"
+
+  - type: input
+    id: location
+    attributes:
+      label: Home Location (Optional)
+      description: City and state where they live/lived
+      placeholder: "Philadelphia, PA"
+
+  - type: textarea
+    id: ethnicity
+    attributes:
+      label: Ethnicity (Optional)
+      description: If known, list country/percentage pairs. If parents are in the tree, this will be calculated automatically.
+      placeholder: |
+        German: 50%
+        Irish: 25%
+        English: 25%
+
+  - type: textarea
+    id: notes
+    attributes:
+      label: Notes (Optional)
+      description: Any additional information about this person
+      placeholder: "Known for their sense of humor. Always hosted Christmas dinner."
+
+  - type: textarea
+    id: json_data
+    attributes:
+      label: JSON Data (Advanced - Optional)
+      description: If you have the full person JSON from the Person Generator, paste it here
+      placeholder: |
+        ```json
+        {
+          "id": "john_ruff",
+          "name": "John Michael Ruff",
+          ...
+        }
+        ```

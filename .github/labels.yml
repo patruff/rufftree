@@ -1,0 +1,93 @@
+# Rufftree GitHub Labels Configuration
+# Run: gh label import .github/labels.yml
+# Or manually create these labels in GitHub Settings > Labels
+
+# =============================================================================
+# STORY & MEMORY LABELS
+# =============================================================================
+- name: "family-story"
+  color: "9B59B6"  # Purple
+  description: "A family story or memory to add to the archive"
+
+- name: "story:pending"
+  color: "E8DAEF"  # Light purple
+  description: "Story submitted but not yet processed"
+
+- name: "story:processed"
+  color: "27AE60"  # Green
+  description: "Story has been saved to the archive"
+
+# =============================================================================
+# PERSON / FAMILY MEMBER LABELS
+# =============================================================================
+- name: "add-person"
+  color: "3498DB"  # Blue
+  description: "Add a new person to the family tree"
+
+- name: "missing-person"
+  color: "E74C3C"  # Red
+  description: "Person mentioned in story but not in tree - needs identification"
+
+- name: "person:pending"
+  color: "AED6F1"  # Light blue
+  description: "Person addition pending processing"
+
+- name: "person:added"
+  color: "27AE60"  # Green
+  description: "Person successfully added to the tree"
+
+# =============================================================================
+# QUERY LABELS
+# =============================================================================
+- name: "family-query"
+  color: "F39C12"  # Orange
+  description: "A question about family history for RAG to answer"
+
+- name: "query:pending"
+  color: "FAD7A0"  # Light orange
+  description: "Query submitted but not yet answered"
+
+- name: "query:answered"
+  color: "27AE60"  # Green
+  description: "Query has been answered and saved"
+
+# =============================================================================
+# DOCUMENTATION & DATA LABELS
+# =============================================================================
+- name: "documentation"
+  color: "1ABC9C"  # Teal
+  description: "Person needs more documentation in RAG system"
+
+- name: "needs-info"
+  color: "95A5A6"  # Gray
+  description: "More information needed to process this issue"
+
+# =============================================================================
+# STATUS LABELS
+# =============================================================================
+- name: "awaiting-review"
+  color: "F1C40F"  # Yellow
+  description: "Awaiting repo owner review before processing"
+
+- name: "approved"
+  color: "27AE60"  # Green
+  description: "Approved by repo owner - ready for processing"
+
+- name: "rejected"
+  color: "C0392B"  # Dark red
+  description: "Rejected - will not be processed"
+
+# =============================================================================
+# PRIORITY LABELS
+# =============================================================================
+- name: "priority:high"
+  color: "E74C3C"  # Red
+  description: "High priority - process as soon as possible"
+
+- name: "priority:medium"
+  color: "F39C12"  # Orange
+  description: "Medium priority - normal processing queue"
+
+- name: "priority:low"
+  color: "3498DB"  # Blue
+  description: "Low priority - can wait"

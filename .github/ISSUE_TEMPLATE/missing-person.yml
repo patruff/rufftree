@@ -1,0 +1,93 @@
+name: "Identify Unknown Person"
+description: "Help identify someone mentioned in a story who is not in the family tree"
+title: "[Who Is] "
+labels: ["missing-person", "needs-info"]
+body:
+  - type: markdown
+    attributes:
+      value: |
+        ## Help Identify This Person
+
+        This issue was created because someone was mentioned in a family story but isn't currently in the family tree.
+
+        **How you can help:**
+        - If you know this person's full name, share it
+        - Explain their relationship to the family
+        - Provide any other information you know about them
+
+        Once identified, they can be added to the family tree!
+
+        ---
+
+  - type: input
+    id: mentioned_name
+    attributes:
+      label: Name as Mentioned
+      description: How was this person referred to in the story?
+      placeholder: "Uncle Bob" or "Grandma Rose" or "Aunt Mary"
+    validations:
+      required: true
+
+  - type: input
+    id: source_story
+    attributes:
+      label: Story/Source Reference
+      description: Which story or issue mentioned this person?
+      placeholder: "#42 or 'The Christmas Story'"
+
+  - type: textarea
+    id: context
+    attributes:
+      label: Context from Story
+      description: What context was given about this person in the story?
+      placeholder: "Mentioned as 'Uncle Bob who always brought presents on Christmas'"
+
+  - type: input
+    id: full_name
+    attributes:
+      label: Full Name (if known)
+      description: Do you know this person's full name?
+      placeholder: "Robert James Ruff"
+
+  - type: dropdown
+    id: relationship_type
+    attributes:
+      label: Relationship Type (if known)
+      options:
+        - Unknown
+        - Great-grandparent
+        - Grandparent
+        - Parent
+        - Aunt/Uncle
+        - Sibling
+        - Cousin
+        - Child
+        - Niece/Nephew
+        - Spouse
+        - In-law
+        - Family friend
+
+  - type: input
+    id: related_to
+    attributes:
+      label: Related To (if known)
+      description: Who in the current tree are they related to?
+      placeholder: "Brother of Joe Ruff Sr."
+
+  - type: input
+    id: time_period
+    attributes:
+      label: Time Period
+      description: When were they alive or active in family life?
+      placeholder: "1920s-1980s" or "Baby Boomer generation"
+
+  - type: textarea
+    id: additional_info
+    attributes:
+      label: Additional Information
+      description: Any other details that might help identify this person
+      placeholder: |
+        - Where they lived
+        - Their occupation
+        - Any stories or memories about them
+        - How they're related to the family
