@@ -6,6 +6,9 @@ A Retrieval Augmented Generation (RAG) system for Ruff family documents using Go
 
 - [View the Family Tree Online](#-view-the-family-tree-online)
 - [Privacy & Repository Settings](#-privacy--repository-settings)
+- [How It Works for Family Members](#-how-it-works-for-family-members)
+- [Issue Types & Labels](#-issue-types--labels)
+- [How Issues Get Resolved](#-how-issues-get-resolved)
 - [Features](#features)
   - [Visualization & Exploration](#-visualization--exploration)
   - [Family Data & Tracking](#-family-data--tracking)
@@ -25,6 +28,8 @@ A Retrieval Augmented Generation (RAG) system for Ruff family documents using Go
   - [Edit Person Information](#edit-person-information)
   - [Generate Person Tree to Drive](#generate-person-tree-to-drive)
   - [Analyze Data Coverage](#analyze-data-coverage)
+  - [Process Family Story Issue](#process-family-story-issue)
+  - [Process Add Person Issue](#process-add-person-issue)
 - [Scripts Reference](#scripts-reference)
   - [Data Calculation Scripts](#data-calculation-scripts)
   - [Family Tree Query Scripts](#family-tree-query-scripts)
@@ -50,6 +55,151 @@ The interactive family tree is automatically deployed to GitHub Pages and update
 - GitHub Pages works on private repositories with GitHub Pro, Team, or Enterprise
 - Alternatively, you can keep the repo private and deploy only the Pages site publicly
 - Family members only need the URL to view the tree and submit questions
+
+## 👥 How It Works for Family Members
+
+This system is designed so that **family members can participate** without needing technical knowledge or repository access.
+
+### What Family Members Can Do
+
+| Action | How | What Happens |
+|--------|-----|--------------|
+| **View the family tree** | Visit [the website](https://patruff.github.io/rufftree/) | See all family members and relationships |
+| **Share a story or memory** | Create a [Story Issue](../../issues/new?template=family-story.yml) | Story is saved to the archive |
+| **Ask about family history** | Create a [Query Issue](../../issues/new?template=family-query.yml) | Question is answered using RAG |
+| **Request adding someone** | Create an [Add Person Issue](../../issues/new?template=add-person.yml) | Person is added to the tree |
+| **Help identify someone** | Comment on a [Missing Person Issue](../../issues?q=label%3Amissing-person) | Help identify unknown people |
+
+### What Only the Repo Owner Can Do
+
+| Action | Description |
+|--------|-------------|
+| **Process issues** | Review and approve story/person submissions |
+| **Kick off workflows** | Run GitHub Actions to modify data |
+| **Add documents to Google Drive** | Upload family documents for RAG |
+| **Modify the family tree** | Make direct changes to `family_tree.json` |
+| **Run RAG queries** | Execute queries against the document store |
+| **Sync with Google Drive** | Trigger document synchronization |
+
+### The Issue Workflow
+
+```
+Family Member                    Repo Owner                     System
+     │                               │                             │
+     │ Creates Issue                 │                             │
+     │──────────────────────────────>│                             │
+     │                               │                             │
+     │                               │ Reviews & Labels Issue      │
+     │                               │────────────────────────────>│
+     │                               │                             │
+     │                               │     Workflow Processes      │
+     │                               │<────────────────────────────│
+     │                               │                             │
+     │      Issue Closed with        │                             │
+     │<─────────Success Comment──────│                             │
+     │                               │                             │
+     │      See changes on website   │                             │
+     │<──────────────────────────────│                             │
+```
+
+## 🏷️ Issue Types & Labels
+
+Issues are color-coded by type and status to make the system easier to navigate.
+
+### Issue Types
+
+| Label | Color | Description | Template |
+|-------|-------|-------------|----------|
+| `family-story` | 🟣 Purple | A family story or memory | [Create Story](../../issues/new?template=family-story.yml) |
+| `add-person` | 🔵 Blue | Add new person to tree | [Add Person](../../issues/new?template=add-person.yml) |
+| `family-query` | 🟠 Orange | Question about family history | [Ask Question](../../issues/new?template=family-query.yml) |
+| `missing-person` | 🔴 Red | Unknown person needs identification | [Identify Person](../../issues/new?template=missing-person.yml) |
+| `documentation` | 🟢 Teal | Person needs more RAG documentation | Auto-created |
+
+### Status Labels
+
+| Label | Color | Meaning |
+|-------|-------|---------|
+| `story:pending` | Light Purple | Story submitted, awaiting processing |
+| `story:processed` | Green | Story saved to archive |
+| `person:pending` | Light Blue | Person addition awaiting processing |
+| `person:added` | Green | Person added to tree |
+| `query:pending` | Light Orange | Query awaiting answer |
+| `query:answered` | Green | Query answered and saved |
+| `needs-info` | Gray | More information needed |
+| `awaiting-review` | Yellow | Awaiting repo owner review |
+
+### Setting Up Labels
+
+Labels need to be created in your repository. You can do this manually in **Settings > Labels**, or use the GitHub CLI:
+
+```bash
+# Import all labels from the configuration file
+gh label import .github/labels.yml
+```
+
+## 📋 How Issues Get Resolved
+
+### Stories
+
+When someone shares a family story:
+
+1. **Submit**: Family member creates a story issue using the template
+2. **Process**: Repo owner adds the `family-story` label
+3. **Workflow runs**:
+   - Story is extracted from the issue
+   - Story is saved to `family_stories/` folder
+   - Stories index is updated
+   - People mentioned are checked against the tree
+   - **If unknown people are mentioned**: Separate "Who Is" issues are created
+4. **Sync to RAG**: On next sync, stories become searchable
+5. **Close**: Issue is closed with a success summary
+
+**Where stories are stored:**
+- `family_stories/*.txt` - Individual story files
+- `family_stories/index.json` - Index of all stories with metadata
+
+**How stories become searchable:**
+1. Stories are saved to the repository
+2. The Google Drive sync includes the `family_stories/` folder
+3. Stories are indexed in the RAG system
+4. Future queries can reference the stories
+
+### Adding People to the Tree
+
+When someone requests adding a person:
+
+1. **Submit**: Create an add-person issue with the template
+2. **Process**: Repo owner reviews and adds the `add-person` label
+3. **Workflow runs**:
+   - Person data is extracted from the issue
+   - Relationships are set up bidirectionally
+   - Person is added to `family_tree.json`
+   - Calculation scripts run (generation, ethnicity, completion)
+4. **Website updates**: GitHub Pages redeploys with the new person
+5. **Close**: Issue is closed with a success summary
+
+### Answering Queries
+
+When someone asks about family history:
+
+1. **Submit**: Create a query issue using the template
+2. **Process**: Repo owner runs the RAG query system:
+   ```bash
+   python answer_query.py --interactive
+   ```
+3. **Answer saved**: Answer with citations is saved to `stored_queries.json`
+4. **Website updates**: Answer appears on [queries.html](https://patruff.github.io/rufftree/queries.html)
+5. **Close**: Issue is closed with the answer
+
+### Identifying Unknown People
+
+When a story mentions someone not in the tree:
+
+1. **Auto-created**: The story workflow creates a "Who Is" issue
+2. **Community help**: Family members comment with identification info
+3. **Identified**: Once identified, create an add-person issue
+4. **Close**: Original "Who Is" issue is closed
 
 ## Features
 
@@ -1019,6 +1169,67 @@ Analyze how well-documented each person is in the RAG system.
 - Sets `rag_chunks` and `lacks_data` fields
 - Creates coverage report artifact
 - Opens GitHub issue listing people needing documentation
+
+### Process Family Story Issue
+
+**File:** `process-story-issue.yml`
+
+Automatically processes family story submissions from GitHub Issues.
+
+**Triggers:**
+- When the `family-story` label is added to an issue
+
+**What it does:**
+1. Extracts story content and metadata from the issue
+2. Checks mentioned people against the family tree
+3. Creates "Who Is" issues for unknown people
+4. Saves story to `family_stories/` folder
+5. Updates the stories index
+6. Updates labels (`story:pending` → `story:processed`)
+7. Closes issue with success comment
+
+**Labels Used:**
+- `family-story` - Triggers the workflow
+- `story:pending` - Initial status (from template)
+- `story:processed` - Set when complete
+- `missing-person` - Created for unknown people
+
+**Output:**
+- `family_stories/{title}_{date}.txt` - The story file
+- `family_stories/index.json` - Updated index with metadata
+
+### Process Add Person Issue
+
+**File:** `process-person-issue.yml`
+
+Automatically adds new people to the family tree from GitHub Issues.
+
+**Triggers:**
+- When the `add-person` label is added to an issue
+
+**What it does:**
+1. Extracts person data from issue (form fields or JSON block)
+2. Generates unique ID if not provided
+3. Sets up bidirectional relationships
+4. Adds person to `family_tree.json`
+5. Runs calculation scripts (generation, ethnicity, completion)
+6. Updates labels (`person:pending` → `person:added`)
+7. Closes issue with success comment
+
+**Labels Used:**
+- `add-person` - Triggers the workflow
+- `person:pending` - Initial status (from template)
+- `person:added` - Set when complete
+
+**Supported Input Formats:**
+1. **Form Fields**: Fill out the issue template form
+2. **JSON Block**: Paste person JSON from Person Generator
+
+**Automatic Relationship Setup:**
+- "Child of" - Sets parentIds, updates parent's childrenIds
+- "Parent of" - Sets childrenIds, updates child's parentIds
+- "Spouse of" - Sets spouseId bidirectionally, copies children
+- "Sibling of" - Sets siblingIds, copies parentIds, updates all siblings
 
 ## Scripts Reference
 

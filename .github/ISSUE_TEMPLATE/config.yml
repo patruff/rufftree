@@ -1,0 +1,12 @@
+# Issue Template Configuration
+blank_issues_enabled: false
+contact_links:
+  - name: View Family Tree
+    url: https://patruff.github.io/rufftree/
+    about: View the interactive family tree online
+  - name: View Family Graph
+    url: https://patruff.github.io/rufftree/graph.html
+    about: View the network visualization of family connections
+  - name: Browse Answered Questions
+    url: https://patruff.github.io/rufftree/queries.html
+    about: See previously answered family questions

@@ -1,0 +1,69 @@
+name: "Ask a Family Question"
+description: "Ask a question about family history for the AI to answer"
+title: "[Query] "
+labels: ["family-query", "query:pending"]
+body:
+  - type: markdown
+    attributes:
+      value: |
+        ## Ask About Family History
+
+        Have a question about your family history? Ask it here and the repo owner will use the RAG system to find an answer from our family documents.
+
+        **How this works:**
+        1. You submit your question here
+        2. The repo owner runs the RAG query system
+        3. The AI searches through family documents and stories
+        4. The answer (with citations) is posted on [queries.html](https://patruff.github.io/rufftree/queries.html)
+
+        **Good questions to ask:**
+        - When did the family immigrate to America?
+        - What was [person]'s occupation?
+        - Where did [person] grow up?
+        - How did [person A] and [person B] meet?
+
+        ---
+
+  - type: input
+    id: asker_name
+    attributes:
+      label: Your Name
+      description: Who is asking this question?
+      placeholder: "Sarah Ruff"
+    validations:
+      required: true
+
+  - type: textarea
+    id: question
+    attributes:
+      label: Your Question
+      description: What would you like to know about the family?
+      placeholder: "When did the Ruff family immigrate to America and where did they settle?"
+    validations:
+      required: true
+
+  - type: checkboxes
+    id: people_mentioned
+    attributes:
+      label: People This Question Is About (Optional)
+      description: Select any specific family members your question is about
+      options:
+        - label: Patrick Ruff
+        - label: Jenny Wang
+        - label: Joe Ruff Sr.
+        - label: Debbie Ruff
+        - label: Joe Ruff Jr.
+        - label: Sarah Boilon
+        - label: Phil Ruff
+        - label: Annette Ludke
+        - label: Stan Miller Sr.
+        - label: Beth Miller Bradley
+        - label: Grandparents generation
+        - label: General family history
+
+  - type: textarea
+    id: context
+    attributes:
+      label: Additional Context (Optional)
+      description: Any additional information that might help answer your question
+      placeholder: "I heard a story about this from my grandmother but can't remember the details..."
