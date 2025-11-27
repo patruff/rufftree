@@ -149,6 +149,37 @@
             box-shadow: 0 10px 20px rgba(108, 117, 125, 0.3);
         }
 
+        .btn-github {
+            background: linear-gradient(135deg, #24292e 0%, #1a1e22 100%);
+        }
+
+        .btn-github:hover {
+            box-shadow: 0 10px 20px rgba(36, 41, 46, 0.3);
+        }
+
+        .loading-spinner {
+            display: inline-block;
+            width: 16px;
+            height: 16px;
+            border: 2px solid #ffffff;
+            border-radius: 50%;
+            border-top-color: transparent;
+            animation: spin 1s linear infinite;
+            margin-right: 8px;
+        }
+
+        @keyframes spin {
+            to { transform: rotate(360deg); }
+        }
+
+        .family-tree-loading {
+            padding: 10px;
+            background: #f0f0f0;
+            border-radius: 8px;
+            text-align: center;
+            color: #666;
+        }
+
         .section-header {
             grid-column: 1 / -1;
             font-size: 20px;
@@ -313,6 +344,7 @@
             <a href="graph.html" style="padding: 10px 20px; background: #f8f9fa; color: #667eea; text-decoration: none; border-radius: 8px; transition: all 0.3s; font-weight: 500;">📊 Family Graph</a>
             <a href="queries.html" style="padding: 10px 20px; background: #f8f9fa; color: #667eea; text-decoration: none; border-radius: 8px; transition: all 0.3s; font-weight: 500;">💬 Ask Questions</a>
             <a href="person_generator.html" style="padding: 10px 20px; background: #667eea; color: white; text-decoration: none; border-radius: 8px; transition: all 0.3s; font-weight: 500;">👤 Add Person</a>
+            <a href="submit_story.html" style="padding: 10px 20px; background: #f8f9fa; color: #667eea; text-decoration: none; border-radius: 8px; transition: all 0.3s; font-weight: 500;">📖 Submit Story</a>
         </nav>
 
         <form id="personForm">
@@ -696,6 +728,32 @@
                     <input type="text" id="homeState" placeholder="e.g., Pennsylvania or PA">
                 </div>
 
+                <h3 class="section-header">👨‍👩‍👧 Family Relationships</h3>
+
+                <div class="form-group">
+                    <label for="parent1">Parent 1 (from existing tree)</label>
+                    <select id="parent1">
+                        <option value="">-- Select Parent 1 --</option>
+                    </select>
+                </div>
+
+                <div class="form-group">
+                    <label for="parent2">Parent 2 (from existing tree)</label>
+                    <select id="parent2">
+                        <option value="">-- Select Parent 2 --</option>
+                    </select>
+                </div>
+
+                <div class="form-group full-width">
+                    <label for="addAsChildOf">Add as Child of (existing person)</label>
+                    <select id="addAsChildOf">
+                        <option value="">-- Not adding as child --</option>
+                    </select>
+                    <div style="margin-top: 5px; font-size: 12px; color: #666;">
+                        Select a person to add this new person as their child. This will update both records.
+                    </div>
+                </div>
+
                 <h3 class="section-header">🌍 Ethnicity (Optional)</h3>
                 <div class="form-group full-width">
                     <label>Ancestry Breakdown (must total 100%)</label>
@@ -789,12 +847,136 @@
             <div class="actions">
                 <button class="btn" onclick="downloadJSON()">Download JSON</button>
                 <button class="btn btn-secondary" onclick="copyToClipboard()">Copy to Clipboard</button>
+                <button class="btn btn-github" onclick="createGitHubIssue()">Submit as GitHub Issue</button>
+            </div>
+            <div id="issueInfo" style="display: none; margin-top: 15px; padding: 15px; background: #e8f5e9; border-radius: 8px; border: 1px solid #4CAF50;">
+                <p style="margin: 0; color: #2e7d32;"><strong>GitHub Issue Created!</strong></p>
+                <p style="margin: 5px 0 0 0; font-size: 14px;">Your issue has been created. A maintainer will review and integrate the person into the family tree.</p>
             </div>
         </div>
     </div>
 
     <script>
         let generatedData = null;
+        let familyTreeData = null;
+        const GITHUB_REPO = 'patruff/rufftree';  // Update this to your repo
+
+        // Load family tree data for parent/child selection
+        async function loadFamilyTree() {
+            try {
+                const response = await fetch('family_tree.json');
+                familyTreeData = await response.json();
+                populateRelationshipDropdowns();
+            } catch (error) {
+                console.error('Failed to load family tree:', error);
+                // Try loading from a relative path if running locally
+                try {
+                    const response = await fetch('./family_tree.json');
+                    familyTreeData = await response.json();
+                    populateRelationshipDropdowns();
+                } catch (e) {
+                    console.error('Could not load family tree data');
+                }
+            }
+        }
+
+        function populateRelationshipDropdowns() {
+            if (!familyTreeData || !familyTreeData.family || !familyTreeData.family.people) return;
+
+            const people = familyTreeData.family.people;
+            const parent1Select = document.getElementById('parent1');
+            const parent2Select = document.getElementById('parent2');
+            const addAsChildSelect = document.getElementById('addAsChildOf');
+
+            // Sort people by name for easier selection
+            const sortedPeople = Object.values(people).sort((a, b) =>
+                a.name.localeCompare(b.name)
+            );
+
+            // Clear existing options (except the first default option)
+            parent1Select.innerHTML = '<option value="">-- Select Parent 1 --</option>';
+            parent2Select.innerHTML = '<option value="">-- Select Parent 2 --</option>';
+            addAsChildSelect.innerHTML = '<option value="">-- Not adding as child --</option>';
+
+            sortedPeople.forEach(person => {
+                const lifespan = person.dod === 'alive'
+                    ? `b. ${person.dob}`
+                    : `${person.dob}-${person.dod}`;
+                const optionText = `${person.name} (${lifespan})`;
+
+                // Add to parent dropdowns
+                const parent1Option = document.createElement('option');
+                parent1Option.value = person.id;
+                parent1Option.textContent = optionText;
+                parent1Select.appendChild(parent1Option);
+
+                const parent2Option = document.createElement('option');
+                parent2Option.value = person.id;
+                parent2Option.textContent = optionText;
+                parent2Select.appendChild(parent2Option);
+
+                // Add to "add as child of" dropdown
+                const childOption = document.createElement('option');
+                childOption.value = person.id;
+                childOption.textContent = optionText;
+                addAsChildSelect.appendChild(childOption);
+            });
+        }
+
+        // Auto-fill parent 2 when selecting from "add as child of"
+        document.addEventListener('DOMContentLoaded', () => {
+            loadFamilyTree();
+
+            const addAsChildSelect = document.getElementById('addAsChildOf');
+            addAsChildSelect.addEventListener('change', function() {
+                if (this.value && familyTreeData) {
+                    const selectedPerson = familyTreeData.family.people[this.value];
+                    if (selectedPerson) {
+                        // Set parent 1 to the selected person
+                        document.getElementById('parent1').value = this.value;
+                        // If the selected person has a spouse, set parent 2 to the spouse
+                        if (selectedPerson.spouseId) {
+                            document.getElementById('parent2').value = selectedPerson.spouseId;
+                        }
+                    }
+                }
+            });
+        });
+
+        function createGitHubIssue() {
+            if (!generatedData) {
+                alert('Please generate a person first');
+                return;
+            }
+
+            const personName = generatedData.name;
+            const jsonString = JSON.stringify(generatedData, null, 2);
+
+            // Create issue title and body
+            const title = encodeURIComponent(`Add Person: ${personName}`);
+            const body = encodeURIComponent(
+`## New Family Member Request
+
+**Name:** ${personName}
+
+### Person JSON Data
+
+\`\`\`json
+${jsonString}
+\`\`\`
+
+---
+*This issue was automatically generated from the Person Generator form.*
+*A maintainer will review and integrate this person into the family tree.*`
+            );
+
+            // Open GitHub issue creation page
+            const issueUrl = `https://github.com/${GITHUB_REPO}/issues/new?title=${title}&body=${body}&labels=add-person`;
+            window.open(issueUrl, '_blank');
+
+            // Show success info
+            document.getElementById('issueInfo').style.display = 'block';
+        }
 
         // Define attributes and their OCEAN mappings
         const attributes = [
@@ -1212,11 +1394,29 @@
             const notes = document.getElementById('notes').value.trim();
             if (notes) person.notes = notes;
 
-            // Placeholder for relationships
+            // Collect parent relationships from dropdowns
+            const parent1 = document.getElementById('parent1').value;
+            const parent2 = document.getElementById('parent2').value;
+            const parentIds = [];
+            if (parent1) parentIds.push(parent1);
+            if (parent2 && parent2 !== parent1) parentIds.push(parent2);
+
+            // Get "add as child of" selection
+            const addAsChildOf = document.getElementById('addAsChildOf').value;
+
+            // Set up relationships
             person.spouseId = null;
-            person.parentIds = [];
+            person.parentIds = parentIds;
             person.siblingIds = [];
             person.childrenIds = [];
+
+            // If we have parents selected, include metadata for the workflow
+            if (parentIds.length > 0 || addAsChildOf) {
+                person._relationshipUpdates = {};
+                if (addAsChildOf) {
+                    person._relationshipUpdates.addAsChildOf = addAsChildOf;
+                }
+            }
 
             generatedData = person;
 
