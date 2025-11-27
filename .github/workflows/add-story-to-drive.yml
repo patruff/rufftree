@@ -42,6 +42,7 @@ jobs:
         id: add_story
         env:
           GOOGLE_GENAI_API_KEY: ${{ secrets.GOOGLE_GENAI_API_KEY }}
+          GOOGLE_DRIVE_CREDENTIALS: ${{ secrets.GOOGLE_DRIVE_CREDENTIALS }}
         run: |
           # Convert \n to actual newlines in story content
           STORY_CONTENT=$(echo "${{ github.event.inputs.story }}" | sed 's/\\n/\n/g')
@@ -54,7 +55,7 @@ jobs:
 
       - name: Summary
         run: |
-          echo "## Story Added to RAG System" >> $GITHUB_STEP_SUMMARY
+          echo "## Story Added Successfully" >> $GITHUB_STEP_SUMMARY
           echo "" >> $GITHUB_STEP_SUMMARY
           echo "| Field | Value |" >> $GITHUB_STEP_SUMMARY
           echo "|-------|-------|" >> $GITHUB_STEP_SUMMARY
@@ -62,7 +63,7 @@ jobs:
           echo "| **About** | ${{ github.event.inputs.about }} |" >> $GITHUB_STEP_SUMMARY
           echo "| **Author** | ${{ github.event.inputs.author }} |" >> $GITHUB_STEP_SUMMARY
           echo "" >> $GITHUB_STEP_SUMMARY
-          echo "### Status" >> $GITHUB_STEP_SUMMARY
+          echo "### Where it was saved" >> $GITHUB_STEP_SUMMARY
           echo "" >> $GITHUB_STEP_SUMMARY
-          echo "The story has been uploaded directly to the File Search store." >> $GITHUB_STEP_SUMMARY
-          echo "It is **immediately searchable** via RAG queries - no sync needed!" >> $GITHUB_STEP_SUMMARY
+          echo "1. **Google Drive** - Native Google Doc in the \`rufftree\` folder" >> $GITHUB_STEP_SUMMARY
+          echo "2. **RAG File Search** - Indexed and immediately searchable" >> $GITHUB_STEP_SUMMARY
