@@ -1,4 +1,4 @@
-name: Add Story to Google Drive
+name: Add Story to RAG
 
 on:
   workflow_dispatch:
@@ -38,10 +38,10 @@ jobs:
         run: |
           pip install -r requirements.txt
 
-      - name: Add story to Google Drive
+      - name: Add story to RAG system
         id: add_story
         env:
-          GOOGLE_DRIVE_CREDENTIALS: ${{ secrets.GOOGLE_DRIVE_CREDENTIALS }}
+          GOOGLE_GENAI_API_KEY: ${{ secrets.GOOGLE_GENAI_API_KEY }}
         run: |
           # Convert \n to actual newlines in story content
           STORY_CONTENT=$(echo "${{ github.event.inputs.story }}" | sed 's/\\n/\n/g')
@@ -54,7 +54,7 @@ jobs:
 
       - name: Summary
         run: |
-          echo "## Story Added to Google Drive" >> $GITHUB_STEP_SUMMARY
+          echo "## Story Added to RAG System" >> $GITHUB_STEP_SUMMARY
           echo "" >> $GITHUB_STEP_SUMMARY
           echo "| Field | Value |" >> $GITHUB_STEP_SUMMARY
           echo "|-------|-------|" >> $GITHUB_STEP_SUMMARY
@@ -62,11 +62,7 @@ jobs:
           echo "| **About** | ${{ github.event.inputs.about }} |" >> $GITHUB_STEP_SUMMARY
           echo "| **Author** | ${{ github.event.inputs.author }} |" >> $GITHUB_STEP_SUMMARY
           echo "" >> $GITHUB_STEP_SUMMARY
-          echo "### Next Steps" >> $GITHUB_STEP_SUMMARY
+          echo "### Status" >> $GITHUB_STEP_SUMMARY
           echo "" >> $GITHUB_STEP_SUMMARY
-          echo "The story has been uploaded to Google Drive. To make it searchable:" >> $GITHUB_STEP_SUMMARY
-          echo "" >> $GITHUB_STEP_SUMMARY
-          echo "1. **Wait for automatic sync** (runs every 6 hours)" >> $GITHUB_STEP_SUMMARY
-          echo "2. **Or manually trigger** the 'Sync Documents from Google Drive' workflow" >> $GITHUB_STEP_SUMMARY
-          echo "" >> $GITHUB_STEP_SUMMARY
-          echo "Once synced, the story will be available for RAG queries." >> $GITHUB_STEP_SUMMARY
+          echo "The story has been uploaded directly to the File Search store." >> $GITHUB_STEP_SUMMARY
+          echo "It is **immediately searchable** via RAG queries - no sync needed!" >> $GITHUB_STEP_SUMMARY
