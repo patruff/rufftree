@@ -1,0 +1,124 @@
+name: List RAG Documents
+
+on:
+  workflow_dispatch:
+    inputs:
+      show_details:
+        description: 'Show detailed document info (size, tokens, etc)'
+        required: false
+        type: boolean
+        default: true
+
+jobs:
+  list-documents:
+    runs-on: ubuntu-latest
+
+    steps:
+      - name: Checkout repository
+        uses: actions/checkout@v4
+
+      - name: Set up Python
+        uses: actions/setup-python@v4
+        with:
+          python-version: '3.11'
+
+      - name: Install dependencies
+        run: |
+          pip install -r requirements.txt
+
+      - name: List all indexed documents
+        id: list_docs
+        env:
+          GOOGLE_GENAI_API_KEY: ${{ secrets.GOOGLE_GENAI_API_KEY }}
+          SHOW_DETAILS: ${{ inputs.show_details }}
+        run: |
+          python -c "
+          import os
+          import json
+          from test_file_search import get_client, get_or_create_store
+
+          client = get_client()
+          store_name = get_or_create_store(client)
+          show_details = os.getenv('SHOW_DETAILS', 'true').lower() == 'true'
+
+          print('\n📚 Listing all indexed documents in File Search store...')
+          print(f'   Store: {store_name}')
+          print('=' * 80)
+
+          # Get all documents
+          docs = list(client.file_search_stores.documents.list(parent=store_name))
+
+          if not docs:
+              print('\nℹ️  No documents found in the store.')
+              with open(os.environ['GITHUB_OUTPUT'], 'a') as f:
+                  f.write('doc_count=0\n')
+              exit(0)
+
+          # Sort by create_time (newest first) if available
+          def get_create_time(doc):
+              ct = getattr(doc, 'create_time', None)
+              return str(ct) if ct else '0000-00-00'
+
+          docs_sorted = sorted(docs, key=get_create_time, reverse=True)
+
+          # Calculate totals
+          total_bytes = sum(int(getattr(doc, 'size_bytes', 0)) for doc in docs)
+          total_mb = total_bytes / (1024 * 1024)
+          estimated_tokens = total_bytes // 4
+
+          print(f'\n📄 Found {len(docs)} document(s):\n')
+
+          # Create summary for GitHub Step Summary
+          summary_lines = []
+          summary_lines.append('## RAG Document Index')
+          summary_lines.append('')
+          summary_lines.append(f'**Store:** \`{store_name}\`')
+          summary_lines.append(f'**Total Documents:** {len(docs)}')
+          summary_lines.append(f'**Total Size:** {total_mb:.2f} MB')
+          summary_lines.append(f'**Estimated Tokens:** ~{estimated_tokens:,}')
+          summary_lines.append('')
+          summary_lines.append('### Documents (newest first)')
+          summary_lines.append('')
+          summary_lines.append('| # | Document | Added | Size |')
+          summary_lines.append('|---|----------|-------|------|')
+
+          for i, doc in enumerate(docs_sorted, 1):
+              display_name = getattr(doc, 'display_name', 'Unknown')
+              size_bytes = int(getattr(doc, 'size_bytes', 0))
+              size_kb = size_bytes / 1024
+              create_time = getattr(doc, 'create_time', 'Unknown')
+              state = getattr(doc, 'state', 'unknown')
+
+              # Format create_time for display
+              if hasattr(create_time, 'strftime'):
+                  create_str = create_time.strftime('%Y-%m-%d %H:%M')
+              else:
+                  create_str = str(create_time)[:16] if create_time else 'Unknown'
+
+              print(f'{i}. {display_name}')
+              print(f'   Added: {create_str}')
+              if show_details:
+                  print(f'   Size: {size_kb:.1f} KB')
+                  print(f'   State: {state}')
+                  print(f'   ID: {doc.name}')
+              print()
+
+              # Add to summary table
+              summary_lines.append(f'| {i} | {display_name} | {create_str} | {size_kb:.1f} KB |')
+
+          # Write summary
+          summary_lines.append('')
+          summary_lines.append('---')
+          summary_lines.append(f'*Generated at: $(date)*')
+
+          with open(os.environ['GITHUB_STEP_SUMMARY'], 'a') as f:
+              f.write('\n'.join(summary_lines))
+
+          # Output count for other steps
+          with open(os.environ['GITHUB_OUTPUT'], 'a') as f:
+              f.write(f'doc_count={len(docs)}\n')
+
+          print('=' * 80)
+          print(f'✅ Total: {len(docs)} documents ({total_mb:.2f} MB)')
+          print('=' * 80)
+          "
