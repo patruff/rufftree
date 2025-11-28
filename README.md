@@ -25,6 +25,7 @@ A Retrieval Augmented Generation (RAG) system for Ruff family documents using Go
   - [Sync Documents from Google Drive](#sync-documents-from-google-drive)
   - [Query Ruff Documents](#query-ruff-documents)
   - [Add Story to RAG](#add-story-to-rag)
+  - [Process Story Form Submissions](#process-story-form-submissions)
   - [List RAG Documents](#list-rag-documents)
   - [Integrate Generated People](#integrate-generated-people)
   - [Edit Person Information](#edit-person-information)
@@ -32,6 +33,7 @@ A Retrieval Augmented Generation (RAG) system for Ruff family documents using Go
   - [Analyze Data Coverage](#analyze-data-coverage)
   - [Process Family Story Issue](#process-family-story-issue)
   - [Process Add Person Issue](#process-add-person-issue)
+- [Setting Up Story Form](#setting-up-story-form)
 - [Scripts Reference](#scripts-reference)
   - [Data Calculation Scripts](#data-calculation-scripts)
   - [Family Tree Query Scripts](#family-tree-query-scripts)
@@ -148,21 +150,29 @@ gh label import .github/labels.yml
 
 There are **two ways** to add stories to the system:
 
-#### Option 1: Family Member Submits via GitHub Issue
+#### Option 1: Family Members Submit via Google Form (Recommended)
 
-When someone shares a family story through the issue template:
+The simplest way for family members to submit stories - just fill out a form!
 
-1. **Submit**: Family member creates a story issue using the template
-2. **Process**: Repo owner adds the `family-story` label
-3. **Workflow runs**:
-   - Story is extracted from the issue
-   - Story is saved to `family_stories/` folder
-   - Stories index is updated
-   - People mentioned are checked against the tree
-   - **If unknown people are mentioned**: Separate "Who Is" issues are created
-4. **Close**: Issue is closed with a success summary
+1. **User visits** the website → "Submit Story" page
+2. **Fills out form** with title, who the story is about, and the story content
+3. **Clicks submit** - done! No GitHub knowledge needed
+4. **Automatic processing** - stories are added to RAG within an hour
 
-#### Option 2: Owner Adds Directly (Recommended for Quick Entry)
+**Setup Required (one-time, by owner):**
+1. Create a Google Form with these fields:
+   - Story Title (required)
+   - Who is this story about? (required)
+   - Your Story (required, paragraph)
+   - Your Name (optional)
+2. Link form responses to a Google Sheet
+3. Share the Sheet with your service account email (Editor access)
+4. Add `STORY_SUBMISSIONS_SHEET_ID` to GitHub secrets
+5. Set the form URL in `submit_story.html`
+
+See [Setting Up Story Form](#setting-up-story-form) for detailed instructions.
+
+#### Option 2: Owner Adds Directly (For Quick Entry)
 
 When the repo owner wants to quickly add a story:
 
@@ -178,7 +188,7 @@ When the repo owner wants to quickly add a story:
 
 | Location | Purpose | Format |
 |----------|---------|--------|
-| `family_stories/*.txt` | Repository archive (from issues) | Plain text |
+| Google Sheets | Form submissions (temporary) | Spreadsheet rows |
 | Google Docs "stories" | Human-readable shared document | Google Doc |
 | RAG File Search | AI-searchable index | Individual .docx files |
 
@@ -1156,6 +1166,29 @@ Run RAG queries directly from GitHub Actions - useful for testing or quick looku
 
 This is the fastest way for the repo owner to add stories directly to the RAG system - bypasses Google Drive sync entirely.
 
+### Process Story Form Submissions
+
+**File:** `process-story-form.yml`
+
+Automatically processes story submissions from the Google Form.
+
+**Triggers:**
+- Scheduled: Every hour
+- Manual: Actions → "Process Story Form Submissions" → Run workflow
+
+**Required Secrets:**
+- `GOOGLE_GENAI_API_KEY` - Gemini API key
+- `GOOGLE_DRIVE_CREDENTIALS` - Service account JSON
+- `STORY_SUBMISSIONS_SHEET_ID` - Google Sheet ID (from form responses)
+
+**What it does:**
+1. Reads new submissions from Google Sheet
+2. For each unprocessed row:
+   - Adds story to Google Docs (human archive)
+   - Uploads to RAG File Search (AI searchable)
+3. Marks rows as "Processed" in the sheet
+4. Stories are immediately searchable!
+
 ### List RAG Documents
 
 **File:** `list-rag-documents.yml`
@@ -1375,6 +1408,7 @@ python3 edit_person.py "Patrick Ruff" --occupation "Engineer" --phone "555-1234"
 | `mcp_server.py` | MCP server for Claude Desktop integration |
 | `sync_drive_documents.py` | Sync **new** documents from Google Drive to RAG (excludes "stories" doc) |
 | `add_story_to_drive.py` | Add stories to Google Docs AND RAG File Search |
+| `process_story_submissions.py` | Process story submissions from Google Form/Sheet |
 | `test_file_search.py` | Test uploads, queries, and list indexed documents |
 | `answer_query.py` | Answer family questions using RAG with citations |
 | `analyze_data_coverage.py` | Analyze RAG coverage for each family member |
@@ -1462,6 +1496,58 @@ Google Drive/
 | **Supported Files** | PDFs only | PDFs, DOCX, TXT, MD, Google Docs |
 | **Purpose** | Scientific papers | Family documents |
 | **MCP Server Name** | "longevity-papers-rag" | "rufftree-rag" |
+
+## Setting Up Story Form
+
+To enable family members to submit stories via a simple form:
+
+### Step 1: Create a Google Form
+
+1. Go to [Google Forms](https://forms.google.com)
+2. Create a new form with these fields (in this order):
+   - **Story Title** (Short answer, required)
+   - **Who is this story about?** (Short answer, required) - comma-separated names
+   - **Your Story** (Paragraph, required)
+   - **Your Name** (Short answer, optional)
+3. Click the "Responses" tab
+4. Click the Google Sheets icon to create a linked spreadsheet
+5. Name it something like "Rufftree Story Submissions"
+
+### Step 2: Share the Sheet
+
+1. Open the linked Google Sheet
+2. Click "Share" in the top right
+3. Add your service account email (from your `GOOGLE_DRIVE_CREDENTIALS`)
+4. Give it **Editor** access
+5. Copy the Sheet ID from the URL:
+   - URL: `https://docs.google.com/spreadsheets/d/SHEET_ID_HERE/edit`
+   - Copy the `SHEET_ID_HERE` part
+
+### Step 3: Add GitHub Secret
+
+1. Go to your repo → Settings → Secrets and variables → Actions
+2. Click "New repository secret"
+3. Name: `STORY_SUBMISSIONS_SHEET_ID`
+4. Value: paste the Sheet ID from Step 2
+
+### Step 4: Update the Website
+
+1. Open `submit_story.html`
+2. Find the line: `const GOOGLE_FORM_URL = '';`
+3. Add your form URL (from Google Forms → Send → Link):
+   ```javascript
+   const GOOGLE_FORM_URL = 'https://docs.google.com/forms/d/e/YOUR_FORM_ID/viewform';
+   ```
+4. Commit and push
+
+### Step 5: Test It!
+
+1. Fill out the form with a test story
+2. Go to Actions → "Process Story Form Submissions" → Run workflow
+3. Check the workflow logs to see your story processed
+4. Run "List RAG Documents" to verify it was indexed
+
+**That's it!** Stories submitted via the form will now be automatically processed every hour.
 
 ## Troubleshooting
 
