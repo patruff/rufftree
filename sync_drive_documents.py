@@ -2,9 +2,13 @@
 """
 Sync Documents from Google Drive to File Search Store
 
-Automatically checks the "rufftree" Google Drive folder for new documents
+Automatically checks the "rufftree" Google Drive folder for NEW documents only
 (PDFs, Google Docs, DOCX, TXT) and uploads them to the Google File Search RAG system.
-Tracks uploaded files to avoid duplicates.
+
+IMPORTANT: This script only syncs NEW documents, never modified ones.
+- Documents are tracked by file_id, so modifications don't trigger re-upload
+- The "stories" doc is excluded (managed separately by add_story_to_drive.py)
+- Individual stories are uploaded as separate DOCX files to File Search
 """
 
 import os
@@ -26,6 +30,13 @@ from test_file_search import get_client, get_or_create_store, upload_document, l
 DRIVE_FOLDER_NAME = "rufftree"
 STATE_FILE = Path.home() / ".rufftree_mcp" / "synced_files.json"
 SCOPES = ['https://www.googleapis.com/auth/drive.readonly']
+
+# Documents to exclude from sync (managed separately)
+# The "stories" doc is appended to by add_story_to_drive.py and individual stories
+# are uploaded to File Search separately - we don't want to re-sync the whole doc
+EXCLUDED_DOCUMENTS = {
+    'stories',  # Managed by add_story_to_drive.py
+}
 
 # Supported file types
 SUPPORTED_MIME_TYPES = {
@@ -229,23 +240,34 @@ def sync_documents():
     synced_files = load_synced_files()
     print(f"📋 Local sync state: {len(synced_files)} file(s)")
 
-    # Identify new files - check both local state AND actual File Search store
+    # Identify NEW files only - we never re-upload modified documents
+    # Modified documents keep the same file_id, so they'll be skipped
     new_files = []
+    skipped_already_synced = []
     skipped_already_indexed = []
+    skipped_excluded = []
+
     for doc in drive_docs:
         file_id = doc['id']
-        doc_name = doc['name'].lower()
+        doc_name = doc['name']
+        doc_name_lower = doc_name.lower()
 
-        # Skip if already in local sync state
+        # Skip excluded documents (e.g., "stories" which is managed separately)
+        if doc_name_lower in EXCLUDED_DOCUMENTS or doc_name in EXCLUDED_DOCUMENTS:
+            skipped_excluded.append(doc_name)
+            continue
+
+        # Skip if already in local sync state (includes previously synced docs that may have been modified)
         if file_id in synced_files:
+            skipped_already_synced.append(doc_name)
             continue
 
         # Skip if already indexed in File Search store (prevents re-upload after state loss)
-        if doc_name in indexed_names:
-            skipped_already_indexed.append(doc['name'])
+        if doc_name_lower in indexed_names:
+            skipped_already_indexed.append(doc_name)
             # Update local state to reflect it's synced
             synced_files[file_id] = {
-                'name': doc['name'],
+                'name': doc_name,
                 'mime_type': doc['mimeType'],
                 'synced_at': time.strftime('%Y-%m-%d %H:%M:%S'),
                 'size': doc.get('size', 0),
@@ -254,6 +276,15 @@ def sync_documents():
             continue
 
         new_files.append(doc)
+
+    # Log what we're skipping
+    if skipped_excluded:
+        print(f"\n🚫 Excluding {len(skipped_excluded)} document(s) (managed separately):")
+        for name in skipped_excluded:
+            print(f"   - {name}")
+
+    if skipped_already_synced:
+        print(f"\n⏭️  Skipping {len(skipped_already_synced)} previously synced document(s) (won't re-upload modified docs)")
 
     if skipped_already_indexed:
         print(f"\n⏭️  Skipping {len(skipped_already_indexed)} document(s) already in File Search store:")
