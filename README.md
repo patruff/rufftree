@@ -148,21 +148,19 @@ gh label import .github/labels.yml
 
 There are **two ways** to add stories to the system:
 
-#### Option 1: Family Member Submits via GitHub Issue
+#### Option 1: Family Members Submit via Website (Fully Automatic)
 
-When someone shares a family story through the issue template:
+The simplest way for family members to submit stories - just click a button!
 
-1. **Submit**: Family member creates a story issue using the template
-2. **Process**: Repo owner adds the `family-story` label
-3. **Workflow runs**:
-   - Story is extracted from the issue
-   - Story is saved to `family_stories/` folder
-   - Stories index is updated
-   - People mentioned are checked against the tree
-   - **If unknown people are mentioned**: Separate "Who Is" issues are created
-4. **Close**: Issue is closed with a success summary
+1. **User visits** the website → "Submit Story" page
+2. **Clicks** "Submit Your Story" button
+3. **Fills out form** with title, who the story is about, and the story content
+4. **Submits** - a GitHub issue is created with the `family-story` label
+5. **Automatic processing** - the workflow triggers immediately, adds story to RAG, and closes the issue
 
-#### Option 2: Owner Adds Directly (Recommended for Quick Entry)
+No manual review needed - stories are processed automatically!
+
+#### Option 2: Owner Adds Directly (For Quick Entry)
 
 When the repo owner wants to quickly add a story:
 
@@ -178,7 +176,6 @@ When the repo owner wants to quickly add a story:
 
 | Location | Purpose | Format |
 |----------|---------|--------|
-| `family_stories/*.txt` | Repository archive (from issues) | Plain text |
 | Google Docs "stories" | Human-readable shared document | Google Doc |
 | RAG File Search | AI-searchable index | Individual .docx files |
 

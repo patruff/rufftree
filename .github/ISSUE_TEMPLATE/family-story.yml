@@ -8,13 +8,13 @@ body:
       value: |
         ## Share a Family Memory
 
-        Thank you for sharing a piece of family history! Your story will be preserved in the family archive and can be used to answer future questions about our family.
+        Thank you for sharing a piece of family history! Your story will be preserved in the family archive.
 
         **How this works:**
         1. You submit your story here
-        2. The repo owner reviews and approves the submission
-        3. A workflow saves your story to the `family_stories/` folder
-        4. The story becomes searchable in the family RAG system
+        2. It's automatically added to the family archive
+        3. The story becomes searchable via AI queries
+        4. This issue closes automatically when done
 
         ---
 
