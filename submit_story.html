@@ -93,64 +93,6 @@
             line-height: 1.8;
         }
 
-        .form-container {
-            border: 2px solid #e0e0e0;
-            border-radius: 12px;
-            overflow: hidden;
-            margin-bottom: 30px;
-        }
-
-        .form-container iframe {
-            width: 100%;
-            min-height: 800px;
-            border: none;
-        }
-
-        .no-form-message {
-            padding: 40px;
-            text-align: center;
-            background: #f8f9fa;
-        }
-
-        .no-form-message h3 {
-            color: #333;
-            margin-bottom: 15px;
-        }
-
-        .no-form-message p {
-            color: #666;
-            margin-bottom: 20px;
-            line-height: 1.6;
-        }
-
-        .btn {
-            display: inline-block;
-            background: linear-gradient(135deg, #667eea 0%, #764ba2 100%);
-            color: white;
-            padding: 15px 30px;
-            border: none;
-            border-radius: 8px;
-            font-size: 16px;
-            font-weight: 600;
-            cursor: pointer;
-            text-decoration: none;
-            transition: transform 0.2s, box-shadow 0.2s;
-        }
-
-        .btn:hover {
-            transform: translateY(-2px);
-            box-shadow: 0 10px 20px rgba(102, 126, 234, 0.3);
-        }
-
-        .btn-large {
-            padding: 20px 40px;
-            font-size: 18px;
-        }
-
-        .btn-secondary {
-            background: #6c757d;
-        }
-
         .story-tips {
             background: #fff3cd;
             border: 1px solid #ffc107;
@@ -171,11 +113,48 @@
             line-height: 1.8;
         }
 
+        .btn {
+            display: inline-block;
+            background: linear-gradient(135deg, #667eea 0%, #764ba2 100%);
+            color: white;
+            padding: 20px 40px;
+            border: none;
+            border-radius: 12px;
+            font-size: 18px;
+            font-weight: 600;
+            cursor: pointer;
+            text-decoration: none;
+            transition: transform 0.2s, box-shadow 0.2s;
+        }
+
+        .btn:hover {
+            transform: translateY(-2px);
+            box-shadow: 0 10px 20px rgba(102, 126, 234, 0.3);
+        }
+
+        .submit-section {
+            text-align: center;
+            padding: 40px;
+            background: #f8f9fa;
+            border-radius: 12px;
+            margin-bottom: 30px;
+        }
+
+        .submit-section h2 {
+            color: #333;
+            margin-bottom: 15px;
+        }
+
+        .submit-section p {
+            color: #666;
+            margin-bottom: 25px;
+            line-height: 1.6;
+        }
+
         .how-it-works {
             background: #f8f9fa;
             border-radius: 12px;
             padding: 25px;
-            margin-top: 30px;
         }
 
         .how-it-works h3 {
@@ -220,10 +199,6 @@
             line-height: 1.5;
         }
 
-        .center {
-            text-align: center;
-        }
-
         @media (max-width: 768px) {
             .container {
                 padding: 20px;
@@ -250,11 +225,11 @@
 
         <div class="info-box">
             <h3>✨ Your stories help preserve family history!</h3>
-            <p>When you submit a story, it gets:</p>
+            <p>When you submit a story, it automatically:</p>
             <ul>
-                <li><strong>Saved to our family archive</strong> - preserved for future generations</li>
-                <li><strong>Made searchable</strong> - anyone can ask questions and find your story</li>
-                <li><strong>Connected to family members</strong> - linked to the people it mentions</li>
+                <li><strong>Saves to our family archive</strong> - preserved for future generations</li>
+                <li><strong>Becomes searchable</strong> - anyone can ask questions and find your story</li>
+                <li><strong>Links to family members</strong> - connected to the people it mentions</li>
             </ul>
         </div>
 
@@ -269,18 +244,13 @@
             </ul>
         </div>
 
-        <!-- Google Form Embed - Replace FORM_ID with your actual form ID -->
-        <div class="form-container" id="formContainer">
-            <div class="no-form-message" id="noFormMessage">
-                <h3>📝 Story Submission Form</h3>
-                <p>Click the button below to open the story submission form.</p>
-                <p style="font-size: 14px; color: #888; margin-bottom: 25px;">
-                    The form will open in a new tab. Fill in your story details and click Submit!
-                </p>
-                <a href="#" id="formLink" class="btn btn-large" target="_blank" rel="noopener">
-                    📝 Open Story Form
-                </a>
-            </div>
+        <div class="submit-section">
+            <h2>📝 Ready to Share?</h2>
+            <p>Click the button below to open the story submission form.<br>
+            Fill in the details and your story will be automatically added to the archive!</p>
+            <a href="https://github.com/patruff/rufftree/issues/new?template=family-story.yml" class="btn" target="_blank">
+                📝 Submit Your Story
+            </a>
         </div>
 
         <div class="how-it-works">
@@ -294,69 +264,20 @@
                 <div class="step">
                     <div class="step-number">2</div>
                     <h4>Submit</h4>
-                    <p>Click submit - your story is automatically saved</p>
+                    <p>Click submit - a GitHub issue is created automatically</p>
                 </div>
                 <div class="step">
                     <div class="step-number">3</div>
-                    <h4>Processing</h4>
-                    <p>Stories are automatically added to the archive (usually within an hour)</p>
+                    <h4>Auto-Processing</h4>
+                    <p>The system automatically adds your story to the archive</p>
                 </div>
                 <div class="step">
                     <div class="step-number">4</div>
-                    <h4>Searchable!</h4>
-                    <p>Your story becomes searchable and part of the family history</p>
+                    <h4>Done!</h4>
+                    <p>Your story is now searchable and part of the family history</p>
                 </div>
             </div>
         </div>
     </div>
-
-    <script>
-        // Configuration - Set your Google Form URL here
-        // To get this URL: Create a Google Form, click "Send", get the link
-        // The URL should look like: https://docs.google.com/forms/d/e/FORM_ID/viewform
-        const GOOGLE_FORM_URL = '';  // <-- SET THIS TO YOUR GOOGLE FORM URL
-
-        // Alternative: Embed URL (for embedding the form directly)
-        // Get this from: Google Form > Send > Embed > Copy the src URL
-        const GOOGLE_FORM_EMBED_URL = '';  // <-- OR SET THIS TO EMBED DIRECTLY
-
-        document.addEventListener('DOMContentLoaded', function() {
-            const formContainer = document.getElementById('formContainer');
-            const noFormMessage = document.getElementById('noFormMessage');
-            const formLink = document.getElementById('formLink');
-
-            if (GOOGLE_FORM_EMBED_URL) {
-                // Embed the form directly
-                formContainer.innerHTML = `
-                    <iframe
-                        src="${GOOGLE_FORM_EMBED_URL}"
-                        frameborder="0"
-                        marginheight="0"
-                        marginwidth="0"
-                        loading="lazy">
-                        Loading form...
-                    </iframe>
-                `;
-            } else if (GOOGLE_FORM_URL) {
-                // Show button to open form
-                formLink.href = GOOGLE_FORM_URL;
-                noFormMessage.querySelector('p').textContent = 'Click the button below to submit your family story.';
-            } else {
-                // No form configured - show setup instructions
-                noFormMessage.innerHTML = `
-                    <h3>📝 Form Not Yet Configured</h3>
-                    <p style="margin-bottom: 15px;">The story submission form hasn't been set up yet.</p>
-                    <p style="font-size: 14px; color: #666; margin-bottom: 20px;">
-                        <strong>For the site owner:</strong> Create a Google Form with fields for
-                        Title, About (who the story mentions), Story content, and Author name.
-                        Then add the form URL to this page's configuration.
-                    </p>
-                    <p style="font-size: 14px; color: #888;">
-                        In the meantime, you can email your story to the family archivist.
-                    </p>
-                `;
-            }
-        });
-    </script>
 </body>
 </html>

@@ -2,12 +2,12 @@ name: Process Family Story Issue
 
 on:
   issues:
-    types: [labeled]
+    types: [opened]
 
 jobs:
   process-story:
-    # Only run when the 'family-story' label is added
-    if: github.event.label.name == 'family-story'
+    # Only run for issues with 'family-story' label (auto-applied by template)
+    if: contains(github.event.issue.labels.*.name, 'family-story')
     runs-on: ubuntu-latest
     permissions:
       contents: write
@@ -22,207 +22,101 @@ jobs:
         with:
           python-version: '3.11'
 
-      - name: Extract and save story from issue
-        id: process
+      - name: Install dependencies
+        run: pip install -r requirements.txt
+
+      - name: Extract story from issue
+        id: extract
         env:
           ISSUE_BODY: ${{ github.event.issue.body }}
           ISSUE_NUMBER: ${{ github.event.issue.number }}
-          ISSUE_TITLE: ${{ github.event.issue.title }}
         run: |
           python - <<'EOF'
-          import json
           import os
           import re
-          import sys
-          from datetime import datetime
-          from pathlib import Path
 
           issue_body = os.environ.get('ISSUE_BODY', '')
           issue_number = os.environ.get('ISSUE_NUMBER', '')
-          issue_title = os.environ.get('ISSUE_TITLE', '')
 
-          print(f"Processing story issue #{issue_number}: {issue_title}")
-
-          # Load family tree to check for mentioned people
-          with open('family_tree.json', 'r') as f:
-              family_data = json.load(f)
-
-          people = family_data['family']['people']
-
-          # Build name lookup (lowercase for matching)
-          known_names = {}
-          for person_id, person in people.items():
-              name = person.get('name', '').lower()
-              known_names[name] = person_id
-              # Also add first name only for partial matching
-              first_name = name.split()[0] if name else ''
-              if first_name:
-                  if first_name not in known_names:
-                      known_names[first_name] = person_id
-
-          # Extract metadata JSON from the issue body
-          json_match = re.search(r'```json\s*([\s\S]*?)\s*```', issue_body)
-
-          metadata = {}
-          if json_match:
-              try:
-                  metadata = json.loads(json_match.group(1).strip())
-              except json.JSONDecodeError:
-                  print("Warning: Could not parse metadata JSON")
-
-          # Extract story content - look for "Your Story" section
-          story_match = re.search(r'### Your Story\s*\n\n([\s\S]*?)(?:\n\n###|\n\n---|\Z)', issue_body)
-          story_content = story_match.group(1).strip() if story_match else ''
-
-          if not story_content:
-              # Fallback: try to get content after "Story Content" header
-              story_match = re.search(r'### Story Content\s*\n\n([\s\S]*?)(?:\n\n###|\n\n---|\Z)', issue_body)
-              story_content = story_match.group(1).strip() if story_match else ''
-
-          if not story_content:
-              print("Warning: No story content found in structured format, using full body")
-              # Last fallback: use everything after the first major section
-              story_content = issue_body
+          print(f"Processing story issue #{issue_number}")
 
           # Extract fields from issue body (form-style format)
-          title_match = re.search(r'### Story Title\s*\n\n(.+?)(?:\n\n###|\Z)', issue_body)
-          author_match = re.search(r'### Your Name\s*\n\n(.+?)(?:\n\n###|\Z)', issue_body)
-          time_period_match = re.search(r'### Time Period\s*\n\n(.+?)(?:\n\n###|\Z)', issue_body)
-          other_people_match = re.search(r'### Other People Mentioned\s*\n\n(.+?)(?:\n\n###|\Z)', issue_body)
+          def extract_field(pattern, body, default=''):
+              match = re.search(pattern, body, re.DOTALL)
+              if match:
+                  value = match.group(1).strip()
+                  if value and value.lower() != '_no response_':
+                      return value
+              return default
 
-          # Extract checked family members
+          title = extract_field(r'### Story Title\s*\n\n(.+?)(?:\n\n###|\Z)', issue_body, 'Untitled Story')
+          author = extract_field(r'### Your Name\s*\n\n(.+?)(?:\n\n###|\Z)', issue_body, 'Anonymous')
+          story = extract_field(r'### Your Story\s*\n\n([\s\S]*?)(?:\n\n###|\n\n---|\Z)', issue_body, '')
+
+          # Extract mentioned people from checkboxes
           mentions_section = re.search(r'### Family Members in This Story\s*\n\n([\s\S]*?)(?:\n\n###|\Z)', issue_body)
-          mentioned_people = []
+          mentioned = []
           if mentions_section:
               for line in mentions_section.group(1).split('\n'):
                   if '[X]' in line or '[x]' in line:
-                      # Extract name after the checkbox
                       name_match = re.search(r'\[x\]\s*(.+)', line, re.IGNORECASE)
                       if name_match:
-                          mentioned_people.append(name_match.group(1).strip())
+                          name = name_match.group(1).strip()
+                          if name.lower() != 'other (specify in story)':
+                              mentioned.append(name)
 
-          title = metadata.get('title') or (title_match.group(1).strip() if title_match else 'Untitled Story')
-          author = metadata.get('author') or (author_match.group(1).strip() if author_match else 'Anonymous')
-          time_period = metadata.get('timePeriod') or (time_period_match.group(1).strip() if time_period_match else '')
-          other_people = other_people_match.group(1).strip() if other_people_match else ''
-          word_count = metadata.get('wordCount') or len(story_content.split())
+          # Also get "Other People Mentioned"
+          other = extract_field(r'### Other People Mentioned\s*\n\n(.+?)(?:\n\n###|\Z)', issue_body, '')
+          if other:
+              mentioned.extend([p.strip() for p in other.split(',') if p.strip()])
 
-          # Combine mentioned people from checkboxes and other_people field
-          all_mentioned = mentioned_people.copy()
-          if other_people and other_people.lower() not in ['_no response_', 'none', '']:
-              all_mentioned.extend([p.strip() for p in other_people.split(',')])
+          about = ', '.join(mentioned) if mentioned else 'Family'
 
           print(f"Title: {title}")
           print(f"Author: {author}")
-          print(f"Time Period: {time_period}")
-          print(f"Mentioned People: {all_mentioned}")
-          print(f"Word Count: {word_count}")
+          print(f"About: {about}")
+          print(f"Story length: {len(story)} chars")
 
-          # Check which mentioned people are in the tree and which are not
-          in_tree = []
-          not_in_tree = []
-
-          for person_name in all_mentioned:
-              person_lower = person_name.lower().strip()
-              if person_lower in ['other (specify in story)', '_no response_', 'none', '']:
-                  continue
-
-              # Check if person is in tree
-              found = False
-              for known_name in known_names:
-                  if person_lower in known_name or known_name in person_lower:
-                      in_tree.append(person_name)
-                      found = True
-                      break
-
-              if not found:
-                  not_in_tree.append(person_name)
-
-          print(f"People in tree: {in_tree}")
-          print(f"People NOT in tree: {not_in_tree}")
-
-          # Create stories folder if it doesn't exist
-          stories_folder = Path('family_stories')
-          stories_folder.mkdir(exist_ok=True)
-
-          # Generate filename
-          safe_title = re.sub(r'[^a-z0-9]+', '_', title.lower()).strip('_')
-          timestamp = datetime.now().strftime('%Y%m%d')
-          filename = f"{safe_title}_{timestamp}.txt"
-
-          # Create story file content
-          time_line = f"\nTime Period: {time_period}" if time_period else ""
-          people_line = f"\nFamily Members Mentioned: {', '.join(all_mentioned)}" if all_mentioned else ""
-
-          file_content = f"""{title}
-          By {author}
-          Date Submitted: {datetime.now().strftime('%B %d, %Y')}{time_line}{people_line}
-
-          {'=' * 60}
-
-          {story_content}
-
-          {'=' * 60}
-
-          Word Count: {word_count}
-          Source: GitHub Issue #{issue_number}
-          """
-
-          # Write story file
-          story_path = stories_folder / filename
-          with open(story_path, 'w') as f:
-              f.write(file_content)
-
-          print(f"\n✅ Story saved to: {story_path}")
-
-          # Update stories index file
-          index_path = stories_folder / 'index.json'
-          stories_index = []
-          if index_path.exists():
-              with open(index_path, 'r') as f:
-                  stories_index = json.load(f)
-
-          stories_index.append({
-              'filename': filename,
-              'title': title,
-              'author': author,
-              'timePeriod': time_period,
-              'mentionedPeople': all_mentioned,
-              'peopleInTree': in_tree,
-              'peopleNotInTree': not_in_tree,
-              'wordCount': word_count,
-              'issueNumber': int(issue_number),
-              'addedAt': datetime.now().isoformat()
-          })
-
-          with open(index_path, 'w') as f:
-              json.dump(stories_index, f, indent=2)
-
-          print(f"✅ Updated stories index")
-
-          # Set outputs
+          # Write outputs
           with open(os.environ['GITHUB_OUTPUT'], 'a') as f:
-              f.write(f"story_title={title}\n")
-              f.write(f"story_author={author}\n")
-              f.write(f"story_filename={filename}\n")
-              f.write(f"people_in_tree={','.join(in_tree)}\n")
-              f.write(f"people_not_in_tree={','.join(not_in_tree)}\n")
-              f.write(f"has_unknown_people={'true' if not_in_tree else 'false'}\n")
+              # Use heredoc-style for multiline story
+              f.write(f"title={title}\n")
+              f.write(f"author={author}\n")
+              f.write(f"about={about}\n")
+
+          # Write story to temp file (to handle special chars)
+          with open('/tmp/story_content.txt', 'w') as f:
+              f.write(story)
+
+          print("✅ Story extracted successfully")
           EOF
 
-      - name: Commit story
+      - name: Add story to RAG system
+        id: add_story
+        env:
+          GOOGLE_GENAI_API_KEY: ${{ secrets.GOOGLE_GENAI_API_KEY }}
+          GOOGLE_DRIVE_CREDENTIALS: ${{ secrets.GOOGLE_DRIVE_CREDENTIALS }}
+          STORY_TITLE: ${{ steps.extract.outputs.title }}
+          STORY_ABOUT: ${{ steps.extract.outputs.about }}
+          STORY_AUTHOR: ${{ steps.extract.outputs.author }}
         run: |
-          git config --local user.email "github-actions[bot]@users.noreply.github.com"
-          git config --local user.name "github-actions[bot]"
-          git add family_stories/
-          git diff --staged --quiet || git commit -m "Add family story: ${{ steps.process.outputs.story_title }} (closes #${{ github.event.issue.number }})"
-          git push
+          STORY_CONTENT=$(cat /tmp/story_content.txt)
 
-      - name: Update labels
+          python add_story_to_drive.py \
+            --title "$STORY_TITLE" \
+            --about "$STORY_ABOUT" \
+            --author "$STORY_AUTHOR" \
+            --story "$STORY_CONTENT"
+
+      - name: Update labels and close issue
         uses: actions/github-script@v7
         with:
           script: |
-            // Remove pending label and add processed label
+            const title = `${{ steps.extract.outputs.title }}`;
+            const author = `${{ steps.extract.outputs.author }}`;
+            const about = `${{ steps.extract.outputs.about }}`;
+
+            // Remove pending label
             try {
               await github.rest.issues.removeLabel({
                 owner: context.repo.owner,
@@ -234,6 +128,7 @@ jobs:
               console.log('story:pending label not present');
             }
 
+            // Add processed label
             await github.rest.issues.addLabels({
               owner: context.repo.owner,
               repo: context.repo.repo,
@@ -241,91 +136,28 @@ jobs:
               labels: ['story:processed']
             });
 
-      - name: Create issues for unknown people
-        if: steps.process.outputs.has_unknown_people == 'true'
-        uses: actions/github-script@v7
-        with:
-          script: |
-            const unknownPeople = '${{ steps.process.outputs.people_not_in_tree }}'.split(',').filter(p => p.trim());
-            const storyTitle = '${{ steps.process.outputs.story_title }}';
-            const storyIssue = context.issue.number;
-
-            for (const person of unknownPeople) {
-              const trimmedName = person.trim();
-              if (!trimmedName) continue;
-
-              console.log(`Creating 'Who Is' issue for: ${trimmedName}`);
-
-              const issueBody = `## Help Identify This Person
-
-This person was mentioned in a family story but is not currently in the family tree.
-
-### Name as Mentioned
-
-${trimmedName}
-
-### Story/Source Reference
-
-#${storyIssue} - "${storyTitle}"
-
-### Context from Story
-
-This person was mentioned in the story "${storyTitle}". Please provide more information if you know who this person is and how they are related to the family.
-
----
-
-**How to help:**
-1. If you know this person's full name, comment below
-2. Explain their relationship to the family (parent, sibling, cousin, etc.)
-3. Provide any other information you know
-
-Once identified, they can be added to the family tree!`;
-
-              await github.rest.issues.create({
-                owner: context.repo.owner,
-                repo: context.repo.repo,
-                title: `[Who Is] ${trimmedName}`,
-                body: issueBody,
-                labels: ['missing-person', 'needs-info']
-              });
-
-              console.log(`Created issue for: ${trimmedName}`);
-            }
-
-      - name: Close issue with success comment
-        uses: actions/github-script@v7
-        with:
-          script: |
-            const unknownPeople = '${{ steps.process.outputs.people_not_in_tree }}'.split(',').filter(p => p.trim());
-            const inTreePeople = '${{ steps.process.outputs.people_in_tree }}'.split(',').filter(p => p.trim());
-
-            let peopleSection = '';
-            if (inTreePeople.length > 0) {
-              peopleSection += `\n\n**People linked to tree:** ${inTreePeople.join(', ')}`;
-            }
-            if (unknownPeople.length > 0) {
-              peopleSection += `\n\n**Unknown people (issues created):** ${unknownPeople.join(', ')}`;
-            }
-
+            // Post success comment and close
             await github.rest.issues.createComment({
               owner: context.repo.owner,
               repo: context.repo.repo,
               issue_number: context.issue.number,
-              body: `## Story Successfully Added to Archive!
+              body: `## ✅ Story Added Successfully!
 
-| Field | Value |
-|-------|-------|
-| **Title** | ${{ steps.process.outputs.story_title }} |
-| **Author** | ${{ steps.process.outputs.story_author }} |
-| **File** | \`family_stories/${{ steps.process.outputs.story_filename }}\` |
-${peopleSection}
+            | Field | Value |
+            |-------|-------|
+            | **Title** | ${title} |
+            | **Author** | ${author} |
+            | **About** | ${about} |
 
-The story has been saved and will be synced to the family documents archive for RAG queries.
+            ### Where your story was saved:
 
-Thank you for sharing this family memory!
+            1. **Google Docs** - Added to the shared family stories document
+            2. **RAG Search** - Now searchable via AI queries
 
----
-*This issue was automatically processed by the Family Story workflow.*`
+            Thank you for sharing this family memory! 🙏
+
+            ---
+            *This story was automatically processed and is now part of the family archive.*`
             });
 
             await github.rest.issues.update({
