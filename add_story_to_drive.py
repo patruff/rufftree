@@ -2,11 +2,16 @@
 """
 Add Story to Google Drive and RAG System
 
-Creates a Google Doc in Google Drive AND uploads to the Gemini File Search
-store for RAG indexing.
+APPENDS stories to an existing Google Doc in Google Drive AND uploads to the
+Gemini File Search store for RAG indexing.
 
-Uses the Google Docs API to create native Google Docs (not upload .docx files)
-which avoids service account storage quota issues.
+The Google Doc must be:
+1. Created by the user (not the service account)
+2. Shared with the service account with Editor access
+3. Named "stories" in the "rufftree" folder
+
+This approach works because service accounts can EDIT shared documents but
+cannot CREATE new files (zero storage quota for service accounts).
 
 Usage:
     python add_story_to_drive.py --title "Story Title" --about "Patrick Ruff, Jenny Wang" --story "Story content..."
@@ -34,9 +39,10 @@ from test_file_search import get_client, get_or_create_store, upload_document
 
 # Configuration
 DRIVE_FOLDER_NAME = "rufftree"
-# Need drive scope to create files in shared folders
+STORIES_DOC_NAME = "stories"  # Name of the shared Google Doc to append to
+# Need drive scope to find files and docs scope to edit
 SCOPES = [
-    'https://www.googleapis.com/auth/drive',
+    'https://www.googleapis.com/auth/drive.readonly',
     'https://www.googleapis.com/auth/documents'
 ]
 
@@ -71,14 +77,19 @@ def get_google_services():
     return drive_service, docs_service, service_account_email
 
 
-def find_folder(service, folder_name: str, service_account_email: str) -> str:
-    """Find the rufftree folder that was shared with the service account."""
-    query = f"name='{folder_name}' and mimeType='application/vnd.google-apps.folder' and trashed=false"
+def find_stories_doc(drive_service, service_account_email: str) -> tuple:
+    """
+    Find the shared 'stories' Google Doc that the service account can edit.
 
-    results = service.files().list(
+    Returns: (doc_id, web_link)
+    """
+    # Search for Google Docs named "stories" that we have access to
+    query = f"name='{STORIES_DOC_NAME}' and mimeType='application/vnd.google-apps.document' and trashed=false"
+
+    results = drive_service.files().list(
         q=query,
         spaces='drive',
-        fields='files(id, name, owners)',
+        fields='files(id, name, webViewLink, owners)',
         supportsAllDrives=True,
         includeItemsFromAllDrives=True
     ).execute()
@@ -86,101 +97,88 @@ def find_folder(service, folder_name: str, service_account_email: str) -> str:
     files = results.get('files', [])
 
     if not files:
-        print(f"\n❌ ERROR: Folder '{folder_name}' not found!")
+        print(f"\n❌ ERROR: Google Doc '{STORIES_DOC_NAME}' not found!")
         print(f"\n📋 To fix this, you need to:")
         print(f"   1. Go to your Google Drive (drive.google.com)")
-        print(f"   2. Create a folder named '{folder_name}'")
-        print(f"   3. Right-click the folder → Share")
-        print(f"   4. Add this email with 'Editor' access:")
+        print(f"   2. Create a Google Doc named '{STORIES_DOC_NAME}'")
+        print(f"   3. Move it to your '{DRIVE_FOLDER_NAME}' folder")
+        print(f"   4. Right-click the doc → Share")
+        print(f"   5. Add this email with 'Editor' access:")
         print(f"      {service_account_email}")
-        print(f"   5. Click 'Share'")
+        print(f"   6. Click 'Share'")
         print(f"\n   Then run this workflow again.")
-        raise ValueError(f"Folder '{folder_name}' not found. See instructions above.")
+        raise ValueError(f"Google Doc '{STORIES_DOC_NAME}' not found. See instructions above.")
 
-    folder_id = files[0]['id']
-    print(f"📁 Found folder: {folder_name} (ID: {folder_id})")
-    return folder_id
+    doc = files[0]
+    doc_id = doc['id']
+    web_link = doc.get('webViewLink', '')
+
+    print(f"📄 Found stories doc: {STORIES_DOC_NAME} (ID: {doc_id})")
+    if web_link:
+        print(f"   🔗 Link: {web_link}")
+
+    return doc_id, web_link
 
 
 def generate_filename(title: str) -> str:
-    """Generate filename: yyyymmdd_patstory_title"""
+    """Generate filename: yyyymmdd_patstory_title (used for RAG file)"""
     date_str = datetime.now().strftime("%Y%m%d")
     safe_title = "".join(c if c.isalnum() or c in ' -_' else '' for c in title)
     safe_title = safe_title.strip().replace(' ', '_').lower()[:50]
     return f"{date_str}_patstory_{safe_title}"
 
 
-def create_google_doc(drive_service, docs_service, folder_id: str, title: str,
-                      about: str, story: str, author: str) -> tuple:
-    """Create a Google Doc in the specified folder."""
+def append_story_to_doc(docs_service, doc_id: str, title: str,
+                        about: str, story: str, author: str) -> None:
+    """Append a story to the existing shared Google Doc."""
 
-    doc_title = generate_filename(title)
+    # First, get the current document to find where to append
+    doc = docs_service.documents().get(documentId=doc_id).execute()
 
-    # Step 1: Create empty Google Doc in the folder
-    file_metadata = {
-        'name': doc_title,
-        'mimeType': 'application/vnd.google-apps.document',
-        'parents': [folder_id]
-    }
+    # Find the end of the document
+    content = doc.get('body', {}).get('content', [])
+    end_index = 1  # Default to beginning if document is empty
 
-    doc_file = drive_service.files().create(
-        body=file_metadata,
-        fields='id, webViewLink',
-        supportsAllDrives=True
-    ).execute()
+    for element in content:
+        if 'endIndex' in element:
+            end_index = element['endIndex']
 
-    doc_id = doc_file.get('id')
-    web_link = doc_file.get('webViewLink', '')
+    # Account for the newline at the end
+    insert_index = max(1, end_index - 1)
 
-    print(f"   Created Google Doc: {doc_title}")
-    print(f"   Doc ID: {doc_id}")
+    print(f"   📝 Appending story at index {insert_index}...")
 
-    # Step 2: Populate the document with content
+    # Build the story content to append
     date_str = datetime.now().strftime("%B %d, %Y")
     word_count = len(story.split())
 
-    # Build the document content using Docs API
+    # Create separator and story block
+    story_block = f"""
+
+{'═' * 60}
+
+{title}
+{'─' * 40}
+By: {author}
+About: {about}
+Date: {date_str}
+{'─' * 40}
+
+{story}
+
+Word Count: {word_count}
+{'═' * 60}
+"""
+
+    # Insert the story block at the end
     requests = [
-        # Title
         {
             'insertText': {
-                'location': {'index': 1},
-                'text': f"{title}\n\n"
+                'location': {'index': insert_index},
+                'text': story_block
             }
-        },
-        # Metadata
-        {
-            'insertText': {
-                'location': {'index': 1 + len(title) + 2},
-                'text': f"By: {author}\nAbout: {about}\nDate: {date_str}\n\n{'─' * 50}\n\n"
-            }
-        },
+        }
     ]
-
-    # Calculate where to insert story content
-    meta_text = f"By: {author}\nAbout: {about}\nDate: {date_str}\n\n{'─' * 50}\n\n"
-    story_start = 1 + len(title) + 2 + len(meta_text)
-
-    # Add story content
-    requests.append({
-        'insertText': {
-            'location': {'index': story_start},
-            'text': f"{story}\n\n{'─' * 50}\n\nWord Count: {word_count}"
-        }
-    })
-
-    # Apply formatting - make title larger
-    title_end = 1 + len(title)
-    requests.append({
-        'updateParagraphStyle': {
-            'range': {'startIndex': 1, 'endIndex': title_end},
-            'paragraphStyle': {
-                'namedStyleType': 'HEADING_1',
-                'alignment': 'CENTER'
-            },
-            'fields': 'namedStyleType,alignment'
-        }
-    })
 
     # Execute the batch update
     docs_service.documents().batchUpdate(
@@ -188,11 +186,7 @@ def create_google_doc(drive_service, docs_service, folder_id: str, title: str,
         body={'requests': requests}
     ).execute()
 
-    print(f"   ✅ Document content added")
-    if web_link:
-        print(f"   🔗 Link: {web_link}")
-
-    return doc_id, doc_title, web_link
+    print(f"   ✅ Story appended successfully!")
 
 
 def create_docx_for_rag(title: str, about: str, story: str, author: str) -> BytesIO:
@@ -237,7 +231,7 @@ def create_docx_for_rag(title: str, about: str, story: str, author: str) -> Byte
 
 
 def add_story(title: str, about: str, story: str, author: str = "Patrick Ruff"):
-    """Main function to create story in Google Drive AND RAG system."""
+    """Main function to append story to shared Google Doc AND upload to RAG system."""
     print("📖 Adding Story to Google Drive & RAG System")
     print("=" * 60)
     print(f"Title: {title}")
@@ -246,21 +240,23 @@ def add_story(title: str, about: str, story: str, author: str = "Patrick Ruff"):
     print(f"Word Count: {len(story.split())}")
     print("=" * 60)
 
-    # === Part 1: Create Google Doc in Drive ===
-    print("\n📄 STEP 1: Creating Google Doc in Drive...")
+    # === Part 1: Append to existing Google Doc in Drive ===
+    print("\n📄 STEP 1: Appending to shared Google Doc...")
 
     drive_service, docs_service, service_account_email = get_google_services()
-    folder_id = find_folder(drive_service, DRIVE_FOLDER_NAME, service_account_email)
 
-    doc_id, doc_title, web_link = create_google_doc(
-        drive_service, docs_service, folder_id, title, about, story, author
-    )
+    # Find the existing "stories" document (must be shared with service account)
+    doc_id, web_link = find_stories_doc(drive_service, service_account_email)
+
+    # Append the story to the document
+    append_story_to_doc(docs_service, doc_id, title, about, story, author)
 
     # === Part 2: Upload to File Search Store for RAG ===
     print("\n🔍 STEP 2: Adding to RAG File Search store...")
 
     docx_buffer = create_docx_for_rag(title, about, story, author)
-    filename = f"{doc_title}.docx"
+    rag_filename = generate_filename(title)
+    filename = f"{rag_filename}.docx"
 
     with tempfile.TemporaryDirectory() as temp_dir:
         temp_path = Path(temp_dir) / filename
@@ -276,10 +272,10 @@ def add_story(title: str, about: str, story: str, author: str = "Patrick Ruff"):
     print("\n" + "=" * 60)
     print("✅ STORY ADDED SUCCESSFULLY!")
     print("=" * 60)
-    print(f"📄 Google Doc: {doc_title}")
+    print(f"📄 Appended to: {STORIES_DOC_NAME}")
     if web_link:
         print(f"🔗 View: {web_link}")
-    print(f"🔍 RAG: Indexed in File Search store")
+    print(f"🔍 RAG: Indexed as {filename}")
     print("=" * 60)
 
     return doc_id, filename

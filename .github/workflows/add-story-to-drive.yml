@@ -65,5 +65,5 @@ jobs:
           echo "" >> $GITHUB_STEP_SUMMARY
           echo "### Where it was saved" >> $GITHUB_STEP_SUMMARY
           echo "" >> $GITHUB_STEP_SUMMARY
-          echo "1. **Google Drive** - Native Google Doc in the \`rufftree\` folder" >> $GITHUB_STEP_SUMMARY
+          echo "1. **Google Drive** - Appended to the shared \`stories\` document" >> $GITHUB_STEP_SUMMARY
           echo "2. **RAG File Search** - Indexed and immediately searchable" >> $GITHUB_STEP_SUMMARY
