@@ -25,6 +25,7 @@ A Retrieval Augmented Generation (RAG) system for Ruff family documents using Go
   - [Sync Documents from Google Drive](#sync-documents-from-google-drive)
   - [Query Ruff Documents](#query-ruff-documents)
   - [Add Story to RAG](#add-story-to-rag)
+  - [List RAG Documents](#list-rag-documents)
   - [Integrate Generated People](#integrate-generated-people)
   - [Edit Person Information](#edit-person-information)
   - [Generate Person Tree to Drive](#generate-person-tree-to-drive)
@@ -77,10 +78,12 @@ This system is designed so that **family members can participate** without needi
 |--------|-------------|
 | **Process issues** | Review and approve story/person submissions |
 | **Kick off workflows** | Run GitHub Actions to modify data |
+| **Add stories directly** | Use "Add Story to RAG" workflow for quick story entry |
+| **View RAG documents** | Use "List RAG Documents" to see indexed files with dates |
 | **Add documents to Google Drive** | Upload family documents for RAG |
 | **Modify the family tree** | Make direct changes to `family_tree.json` |
 | **Run RAG queries** | Execute queries against the document store |
-| **Sync with Google Drive** | Trigger document synchronization |
+| **Sync with Google Drive** | Trigger document synchronization (new docs only) |
 
 ### The Issue Workflow
 
@@ -143,7 +146,11 @@ gh label import .github/labels.yml
 
 ### Stories
 
-When someone shares a family story:
+There are **two ways** to add stories to the system:
+
+#### Option 1: Family Member Submits via GitHub Issue
+
+When someone shares a family story through the issue template:
 
 1. **Submit**: Family member creates a story issue using the template
 2. **Process**: Repo owner adds the `family-story` label
@@ -153,18 +160,33 @@ When someone shares a family story:
    - Stories index is updated
    - People mentioned are checked against the tree
    - **If unknown people are mentioned**: Separate "Who Is" issues are created
-4. **Sync to RAG**: On next sync, stories become searchable
-5. **Close**: Issue is closed with a success summary
+4. **Close**: Issue is closed with a success summary
+
+#### Option 2: Owner Adds Directly (Recommended for Quick Entry)
+
+When the repo owner wants to quickly add a story:
+
+1. Go to **Actions → "Add Story to RAG"**
+2. Fill in: title, about, story content, author
+3. Click "Run workflow"
+4. Story is **immediately** added to:
+   - **Google Docs** - Appended to shared "stories" document (human-readable archive)
+   - **RAG File Search** - Uploaded as individual .docx file (machine searchable)
+5. **Validation** - Workflow verifies the story was indexed correctly
 
 **Where stories are stored:**
-- `family_stories/*.txt` - Individual story files
-- `family_stories/index.json` - Index of all stories with metadata
 
-**How stories become searchable:**
-1. Stories are saved to the repository
-2. The Google Drive sync includes the `family_stories/` folder
-3. Stories are indexed in the RAG system
-4. Future queries can reference the stories
+| Location | Purpose | Format |
+|----------|---------|--------|
+| `family_stories/*.txt` | Repository archive (from issues) | Plain text |
+| Google Docs "stories" | Human-readable shared document | Google Doc |
+| RAG File Search | AI-searchable index | Individual .docx files |
+
+**How the RAG system organizes stories:**
+- Each story is a separate file: `yyyymmdd_patstory_title.docx`
+- Stories are immediately searchable after upload
+- The shared "stories" Google Doc is **excluded** from sync (prevents duplicate indexing)
+- Use **"List RAG Documents"** workflow to see all indexed stories
 
 ### Adding People to the Tree
 
@@ -1049,7 +1071,7 @@ Automatically deploys the family tree website to GitHub Pages whenever you push 
 
 **File:** `sync-drive-documents.yml`
 
-Automatically syncs documents from your Google Drive "rufftree" folder to the RAG system.
+Automatically syncs **NEW documents only** from your Google Drive "rufftree" folder to the RAG system.
 
 **Triggers:**
 - Scheduled: Every 6 hours
@@ -1062,9 +1084,15 @@ Automatically syncs documents from your Google Drive "rufftree" folder to the RA
 **What it does:**
 - Connects to Google Drive
 - Finds the "rufftree" folder
-- Downloads new/updated documents
-- Uploads them to the File Search store
-- Tracks synced files to avoid duplicates
+- **Only syncs NEW documents** - modified documents are NOT re-uploaded
+- Tracks files by ID to prevent duplicates
+- **Excludes "stories" document** - managed separately by Add Story workflow
+
+**Important Notes:**
+- The "stories" Google Doc is explicitly excluded (it's for human reading, not RAG)
+- Individual stories are uploaded as separate .docx files via the Add Story workflow
+- Modified documents keep the same file ID, so they won't be re-synced
+- This prevents duplicate/conflicting versions in the RAG system
 
 ### Query Ruff Documents
 
@@ -1093,7 +1121,7 @@ Run RAG queries directly from GitHub Actions - useful for testing or quick looku
 
 **File:** `add-story-to-drive.yml`
 
-**(Repo Owner Only)** Quickly add a story directly to the RAG File Search store.
+**(Repo Owner Only)** Quickly add a story directly to the RAG File Search store with automatic validation.
 
 **Triggers:**
 - Manual only: Actions → "Add Story to RAG" → Run workflow
@@ -1106,12 +1134,15 @@ Run RAG queries directly from GitHub Actions - useful for testing or quick looku
 
 **Required Secrets:**
 - `GOOGLE_GENAI_API_KEY` - Gemini API key
+- `GOOGLE_DRIVE_CREDENTIALS` - Service account JSON (for Google Docs append)
 
 **What it does:**
-1. Creates a Word document (.docx) with formatted story content
-2. Names it: `yyyymmdd_patstory_title.docx`
-3. Uploads directly to the Gemini File Search store
-4. **Story is immediately searchable** - no sync required!
+1. **Appends to Google Docs** - Story is added to the shared "stories" document in Google Drive (human-readable archive)
+2. **Uploads to File Search** - Creates a Word document (.docx) named `yyyymmdd_patstory_title.docx` and uploads to RAG
+3. **Validates indexing** - Waits 10 seconds then verifies:
+   - ✅ Document appears in store listing
+   - ✅ Story is searchable via test query
+4. **Reports results** - Shows validation status in workflow summary
 
 **Example:**
 1. Go to Actions → "Add Story to RAG"
@@ -1121,9 +1152,33 @@ Run RAG queries directly from GitHub Actions - useful for testing or quick looku
    - About: `Debbie Ruff, Sarah Boilon`
    - Story: `Every Christmas Eve, Debbie would bake...\n\nThe recipe had been passed down...`
 4. Run workflow
-5. Story is immediately available for RAG queries!
+5. Check summary for validation results!
 
-This is the fastest way for the repo owner to add stories directly to the RAG system - bypasses Google Drive entirely.
+This is the fastest way for the repo owner to add stories directly to the RAG system - bypasses Google Drive sync entirely.
+
+### List RAG Documents
+
+**File:** `list-rag-documents.yml`
+
+**(Repo Owner Only)** View all documents currently indexed in the File Search store.
+
+**Triggers:**
+- Manual only: Actions → "List RAG Documents" → Run workflow
+
+**Inputs:**
+- **show_details** (optional): Show detailed info like size, state, and document ID (default: true)
+
+**What it does:**
+- Lists all indexed documents sorted by upload date (newest first)
+- Shows document name, upload date/time, and size
+- Calculates total storage and estimated token count
+- Creates a summary table in the workflow output
+
+**Use this to:**
+- See what documents are in the RAG system
+- Verify a new story was indexed after upload
+- Check when documents were added
+- Monitor the size of your document index
 
 ### Integrate Generated People
 
@@ -1318,15 +1373,22 @@ python3 edit_person.py "Patrick Ruff" --occupation "Engineer" --phone "555-1234"
 | Script | Description |
 |--------|-------------|
 | `mcp_server.py` | MCP server for Claude Desktop integration |
-| `sync_drive_documents.py` | Sync documents from Google Drive to RAG system |
+| `sync_drive_documents.py` | Sync **new** documents from Google Drive to RAG (excludes "stories" doc) |
+| `add_story_to_drive.py` | Add stories to Google Docs AND RAG File Search |
 | `test_file_search.py` | Test uploads, queries, and list indexed documents |
 | `answer_query.py` | Answer family questions using RAG with citations |
 | `analyze_data_coverage.py` | Analyze RAG coverage for each family member |
 
 **Usage:**
 ```bash
-# Sync documents from Google Drive
+# Sync NEW documents from Google Drive (excludes "stories" doc)
 python3 sync_drive_documents.py
+
+# Add a story directly to Google Docs + RAG
+python3 add_story_to_drive.py --title "Story Title" --about "Person Name" --story "Story content..."
+
+# List all indexed documents in RAG
+python3 test_file_search.py  # Shows documents in output
 
 # Test a RAG query
 export QUERY="When did the Ruff family immigrate?"
