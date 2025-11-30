@@ -21,6 +21,7 @@ A Retrieval Augmented Generation (RAG) system for Ruff family documents using Go
   - [Adding Family Members](#adding-family-members)
   - [Family Data Model](#family-data-model)
   - [Popular Queries](#popular-queries)
+  - [Document Metadata & Filtering](#document-metadata--filtering)
   - [Known Limitations](#known-limitations)
 - [GitHub Workflows](#github-workflows)
   - [Deploy Pages](#deploy-pages)
@@ -1013,35 +1014,65 @@ This section documents interesting or frequently asked questions about the famil
 - Ask about relationships ("Who were Joe's siblings?")
 - Ask about time periods ("What was happening in the 1980s?")
 
+### Document Metadata & Filtering
+
+Stories uploaded through `add_story_to_drive.py` automatically include custom metadata that enables precise filtering:
+
+**Metadata Fields:**
+| Field | Type | Description | Example |
+|-------|------|-------------|---------|
+| `author` | string | Who wrote the story | "Patrick Ruff" |
+| `subject_of_story` | string | Who the story is about (one per subject) | "Joe Ruff" |
+| `content_type` | string | Type of document | "story" |
+
+**Filtering Queries:**
+
+You can pre-filter documents before RAG search using the `metadata_filter` parameter:
+
+```python
+from test_file_search import query_documents
+
+# Only search stories written by Patrick
+query_documents(client, store_name, "What games did Joe play?",
+                metadata_filter="author='Patrick Ruff'")
+
+# Only search stories about Joe
+query_documents(client, store_name, "What are Joe's favorite games?",
+                metadata_filter="subject_of_story='Joe Ruff'")
+
+# Combine filters (AND logic)
+query_documents(client, store_name, "Tell me about Joe",
+                metadata_filter="author='Patrick Ruff' AND subject_of_story='Joe Ruff'")
+```
+
+**Filter Syntax:** Uses [AIP-160](https://google.aip.dev/160) list filter syntax.
+
 ### Known Limitations
 
-#### Attribution in RAG Chunks
+#### Attribution in RAG Chunks (Mitigated)
 
-**Issue:** Google's File Search returns text chunks without preserving authorship context. This can lead to misattribution when multiple people are mentioned in the same document.
+**Issue:** RAG chunks are pure text extracts. When the model retrieves chunks, it may confuse who wrote what vs. who the story is about.
 
 **Example Problem:**
 - Query: "Tell me about Joe and Final Fantasy 7"
-- The RAG system correctly found a story about Joe playing FF7
-- However, it also found a journal entry by Patrick about Final Fantasy Tactics
-- The response incorrectly attributed Patrick's journal entry ("beat the hell out of" Final Fantasy Tactics) to Joe
+- RAG finds a story *about* Joe playing FF7 (correct)
+- RAG also finds a journal entry *by* Patrick about Final Fantasy Tactics
+- Response incorrectly attributes Patrick's words to Joe
 
-**Why This Happens:**
-- RAG chunks are pure text extracts without metadata about who wrote them
-- When stories mention multiple people, the model may confuse author vs. subject
-- Journal entries (written in first person) can be misattributed to subjects mentioned nearby
+**Solution - Metadata Filtering:**
 
-**Current Workarounds:**
-1. **Include author in story text**: Always write "Patrick recalls..." or "According to Joe..." rather than first-person narrative
-2. **Separate documents per person**: Keep stories about different people in separate files
-3. **Use explicit subject markers**: Start each chunk with clear subject identification
+Stories now include `author` and `subject_of_story` metadata. To avoid misattribution:
 
-**Potential Future Solutions:**
-- **GraphRAG / LightRAG**: Knowledge graph systems that explicitly model entities and relationships
-- **Metadata enrichment**: Pre-process documents to inject author/subject tags into each chunk
-- **Custom embedding**: Fine-tune embeddings to preserve authorship context
-- **Hybrid retrieval**: Combine RAG with explicit metadata filtering
+1. **Filter by subject**: `metadata_filter="subject_of_story='Joe Ruff'"` - only searches documents about Joe
+2. **Filter by author**: `metadata_filter="author='Patrick Ruff'"` - only searches Patrick's writings
+3. **Combine both**: Filter to Patrick's stories about Joe specifically
 
-**Note:** Google File Search is "normal" RAG (vector similarity search) - it doesn't inherently understand entity relationships like who wrote what. For complex attribution needs, consider exploring LightRAG or Microsoft's GraphRAG which build knowledge graphs linking entities to their source contexts.
+**Additional Best Practices:**
+- Use third-person narrative: "Patrick recalls..." instead of "I..."
+- Keep stories about different people in separate documents
+- The metadata filter is applied *before* RAG search, so irrelevant documents are excluded entirely
+
+**Note:** For more sophisticated entity tracking, consider GraphRAG or LightRAG which build knowledge graphs linking entities to their source contexts.
 
 ### Upload Documents Manually
 

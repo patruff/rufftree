@@ -76,8 +76,20 @@ def get_or_create_store(client):
         raise
 
 
-def upload_document(client, store_name, file_path):
-    """Upload a document to the file search store with verification."""
+def upload_document(client, store_name, file_path, custom_metadata=None):
+    """
+    Upload a document to the file search store with verification.
+
+    Args:
+        client: Google GenAI client
+        store_name: File search store name
+        file_path: Path to the document to upload
+        custom_metadata: Optional list of metadata dicts, e.g.:
+            [
+                {"key": "author", "string_value": "Patrick Ruff"},
+                {"key": "subject_of_story", "string_value": "Joe Ruff"}
+            ]
+    """
     file_path = Path(file_path).resolve()
 
     if not file_path.exists():
@@ -89,6 +101,8 @@ def upload_document(client, store_name, file_path):
         raise ValueError(f"File must be one of {supported_extensions}, got: {file_path.suffix}")
 
     print(f"\n📤 Uploading {file_path.name}...")
+    if custom_metadata:
+        print(f"   📋 Metadata: {custom_metadata}")
 
     # Check for duplicate before uploading
     print("   Checking for duplicates...")
@@ -102,13 +116,20 @@ def upload_document(client, store_name, file_path):
     except Exception as e:
         print(f"   ⚠️  Could not check for duplicates: {e}")
 
+    # Build upload config
+    upload_config = {
+        'display_name': file_path.name,
+    }
+
+    # Add custom metadata if provided
+    if custom_metadata:
+        upload_config['custom_metadata'] = custom_metadata
+
     # Upload file to the file search store
     operation = client.file_search_stores.upload_to_file_search_store(
         file_search_store_name=store_name,
         file=str(file_path),
-        config={
-            'display_name': file_path.name,
-        }
+        config=upload_config
     )
 
     # Wait for upload to complete
@@ -164,11 +185,25 @@ def upload_document(client, store_name, file_path):
     return operation
 
 
-def query_documents(client, store_name, query, model="gemini-2.5-flash"):
-    """Query the documents using RAG with citations."""
+def query_documents(client, store_name, query, model="gemini-2.5-flash", metadata_filter=None):
+    """
+    Query the documents using RAG with citations.
+
+    Args:
+        client: Google GenAI client
+        store_name: File search store name
+        query: The query string
+        model: Model to use (default: gemini-2.5-flash)
+        metadata_filter: Optional filter string using AIP-160 syntax, e.g.:
+            "author=Patrick Ruff"
+            "subject_of_story=Joe Ruff"
+            "author=Patrick Ruff AND subject_of_story=Joe Ruff"
+    """
     print(f"\n🔍 Query: {query}")
     print(f"   Model: {model}")
     print(f"   Store: {store_name}")
+    if metadata_filter:
+        print(f"   🏷️  Filter: {metadata_filter}")
 
     # Debug: Check documents before query
     print("\n🔍 DEBUG - Checking documents before query:")
@@ -194,14 +229,22 @@ def query_documents(client, store_name, query, model="gemini-2.5-flash"):
     # Use the file search store as a tool in generation call
     print("\n🔍 DEBUG - Making generate_content call...")
     try:
+        # Build file_search config
+        file_search_config = {
+            'file_search_store_names': [store_name]
+        }
+
+        # Add metadata filter if provided
+        if metadata_filter:
+            file_search_config['metadata_filter'] = metadata_filter
+            print(f"   🏷️  Applying metadata filter: {metadata_filter}")
+
         response = client.models.generate_content(
             model=model,
             contents=query,
             config={
                 'tools': [{
-                    'file_search': {
-                        'file_search_store_names': [store_name]
-                    }
+                    'file_search': file_search_config
                 }]
             }
         )

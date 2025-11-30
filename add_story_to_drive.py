@@ -266,7 +266,21 @@ def add_story(title: str, about: str, story: str, author: str = "Patrick Ruff"):
         print("   Connecting to Gemini File Search...")
         client = get_client()
         store_name = get_or_create_store(client)
-        upload_document(client, store_name, str(temp_path))
+
+        # Build custom metadata for RAG filtering
+        # This allows filtering stories by author or subject during queries
+        custom_metadata = [
+            {"key": "author", "string_value": author},
+            {"key": "content_type", "string_value": "story"}
+        ]
+
+        # Add each subject as metadata (comma-separated list becomes multiple entries)
+        subjects = [s.strip() for s in about.split(',') if s.strip()]
+        for subject in subjects:
+            custom_metadata.append({"key": "subject_of_story", "string_value": subject})
+
+        print(f"   📋 Adding metadata: author={author}, subjects={subjects}")
+        upload_document(client, store_name, str(temp_path), custom_metadata=custom_metadata)
 
     # === Summary ===
     print("\n" + "=" * 60)
