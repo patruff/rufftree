@@ -1,0 +1,21 @@
+{
+  "_description": "Metadata configuration for documents uploaded to RAG File Search. This allows pre-defining author, subjects, and content types for documents synced from Google Drive.",
+  "_usage": "Documents listed here will have their metadata applied during sync or re-upload. Use the document filename (case-insensitive) as the key.",
+  "_note": "For patrag.pdf, we set Patrick Ruff as author since it contains his website posts and journal entries. The subject_of_story field can be left empty for journal/diary content (author is writing about themselves).",
+
+  "documents": {
+    "patrag.pdf": {
+      "author": "Patrick Ruff",
+      "content_type": "journal",
+      "description": "Patrick Ruff's website posts and personal journal entries"
+    }
+  },
+
+  "_metadata_fields": {
+    "author": "Who wrote the document (string)",
+    "subject_of_story": "Who the document is about - use for stories about specific people (string or array)",
+    "content_type": "Type of document: journal, story, record, photo, etc. (string)",
+    "year": "Year the document was created (numeric)",
+    "description": "Human-readable description (not sent to RAG, just for reference)"
+  }
+}

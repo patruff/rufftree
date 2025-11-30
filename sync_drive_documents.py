@@ -29,6 +29,7 @@ from test_file_search import get_client, get_or_create_store, upload_document, l
 # Configuration
 DRIVE_FOLDER_NAME = "rufftree"
 STATE_FILE = Path.home() / ".rufftree_mcp" / "synced_files.json"
+METADATA_CONFIG_FILE = Path(__file__).parent / "document_metadata.json"
 SCOPES = ['https://www.googleapis.com/auth/drive.readonly']
 
 # Documents to exclude from sync (managed separately)
@@ -48,6 +49,67 @@ SUPPORTED_MIME_TYPES = {
     # Google Docs will be exported as PDF
     'application/vnd.google-apps.document': '.pdf',
 }
+
+
+def load_metadata_config() -> Dict:
+    """Load document metadata configuration from JSON file."""
+    if not METADATA_CONFIG_FILE.exists():
+        print(f"ℹ️  No metadata config found at {METADATA_CONFIG_FILE}")
+        return {"documents": {}}
+
+    try:
+        with open(METADATA_CONFIG_FILE, 'r') as f:
+            config = json.load(f)
+        doc_count = len(config.get('documents', {}))
+        print(f"📋 Loaded metadata config: {doc_count} document(s) configured")
+        return config
+    except Exception as e:
+        print(f"⚠️  Could not load metadata config: {e}")
+        return {"documents": {}}
+
+
+def get_document_metadata(config: Dict, filename: str) -> List[Dict]:
+    """
+    Get custom metadata for a document based on its filename.
+
+    Returns a list of metadata dicts suitable for upload_document(), e.g.:
+        [{"key": "author", "string_value": "Patrick Ruff"}]
+    """
+    documents = config.get('documents', {})
+
+    # Case-insensitive lookup
+    filename_lower = filename.lower()
+    doc_config = None
+
+    for doc_name, doc_meta in documents.items():
+        if doc_name.lower() == filename_lower:
+            doc_config = doc_meta
+            break
+
+    if not doc_config:
+        return None
+
+    # Build metadata list for File Search API
+    custom_metadata = []
+
+    if 'author' in doc_config:
+        custom_metadata.append({"key": "author", "string_value": doc_config['author']})
+
+    if 'content_type' in doc_config:
+        custom_metadata.append({"key": "content_type", "string_value": doc_config['content_type']})
+
+    # Handle subject_of_story (can be string or array)
+    if 'subject_of_story' in doc_config:
+        subjects = doc_config['subject_of_story']
+        if isinstance(subjects, str):
+            subjects = [subjects]
+        for subject in subjects:
+            custom_metadata.append({"key": "subject_of_story", "string_value": subject})
+
+    if 'year' in doc_config:
+        custom_metadata.append({"key": "year", "numeric_value": doc_config['year']})
+
+    return custom_metadata if custom_metadata else None
 
 
 def get_drive_service():
@@ -212,6 +274,10 @@ def sync_documents():
     print("🔄 Starting Google Drive → File Search sync...")
     print("=" * 80)
 
+    # Load metadata configuration
+    print("\n📋 Loading metadata configuration...")
+    metadata_config = load_metadata_config()
+
     # Initialize Google Drive service
     print("\n📡 Connecting to Google Drive...")
     drive_service = get_drive_service()
@@ -324,9 +390,17 @@ def sync_documents():
             # Download from Drive (or export if Google Doc)
             temp_path = download_file(drive_service, file_id, file_name, mime_type, temp_dir)
 
-            # Upload to File Search
+            # Get metadata for this document (if configured)
+            custom_metadata = get_document_metadata(metadata_config, file_name)
+            # Also check the temp path name (for Google Docs exported as PDF)
+            if not custom_metadata:
+                custom_metadata = get_document_metadata(metadata_config, temp_path.name)
+
+            # Upload to File Search with metadata
             print(f"  📤 Uploading to File Search...")
-            upload_document(fs_client, store_name, str(temp_path))
+            if custom_metadata:
+                print(f"  📋 Applying metadata: {custom_metadata}")
+            upload_document(fs_client, store_name, str(temp_path), custom_metadata=custom_metadata)
 
             # Mark as synced
             synced_files[file_id] = {

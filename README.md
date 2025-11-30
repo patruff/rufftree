@@ -1016,36 +1016,105 @@ This section documents interesting or frequently asked questions about the famil
 
 ### Document Metadata & Filtering
 
-Stories uploaded through `add_story_to_drive.py` automatically include custom metadata that enables precise filtering:
+Documents can include custom metadata that enables precise filtering during RAG queries. This solves attribution problems by allowing you to filter by author or subject before the semantic search even runs.
 
 **Metadata Fields:**
 | Field | Type | Description | Example |
 |-------|------|-------------|---------|
-| `author` | string | Who wrote the story | "Patrick Ruff" |
-| `subject_of_story` | string | Who the story is about (one per subject) | "Joe Ruff" |
-| `content_type` | string | Type of document | "story" |
+| `author` | string | Who wrote the document | "Patrick Ruff" |
+| `subject_of_story` | string | Who the document is about (one per subject) | "Joe Ruff" |
+| `content_type` | string | Type of document | "story", "journal", "record" |
+| `year` | numeric | Year the document was created | 2024 |
 
-**Filtering Queries:**
+#### Automatic Metadata (Stories)
 
-You can pre-filter documents before RAG search using the `metadata_filter` parameter:
+Stories uploaded through `add_story_to_drive.py` automatically include metadata:
+- `author` - from the --author flag (default: Patrick Ruff)
+- `subject_of_story` - from the --about flag (one entry per person mentioned)
+- `content_type` - set to "story"
+
+#### Configuring Metadata for Existing Documents
+
+For documents synced from Google Drive (like `patrag.pdf`), configure metadata in `document_metadata.json`:
+
+```json
+{
+  "documents": {
+    "patrag.pdf": {
+      "author": "Patrick Ruff",
+      "content_type": "journal",
+      "description": "Patrick's website posts and personal journal entries"
+    },
+    "family_history.pdf": {
+      "author": "Debbie Ruff",
+      "subject_of_story": ["Ruff Family", "Miller Family"],
+      "content_type": "record"
+    }
+  }
+}
+```
+
+When `sync_drive_documents.py` runs, it automatically applies this metadata to matching documents.
+
+#### Re-uploading Documents with Metadata
+
+For documents already in the File Search store without metadata, use the re-upload utility:
+
+```bash
+# Re-upload patrag.pdf using metadata from document_metadata.json
+python reupload_with_metadata.py patrag.pdf
+
+# Re-upload with explicit metadata
+python reupload_with_metadata.py patrag.pdf --author "Patrick Ruff" --content-type journal
+
+# Dry run (see what would happen)
+python reupload_with_metadata.py patrag.pdf --dry-run
+
+# List all documents in store
+python reupload_with_metadata.py --list
+```
+
+This deletes the existing document and re-uploads it from Google Drive with the specified metadata.
+
+#### Filtering Queries
+
+Pre-filter documents before RAG search using the `metadata_filter` parameter:
 
 ```python
 from test_file_search import query_documents
 
-# Only search stories written by Patrick
-query_documents(client, store_name, "What games did Joe play?",
+# Only search Patrick's writings (excludes stories ABOUT Patrick written by others)
+query_documents(client, store_name, "What games did I play?",
                 metadata_filter="author='Patrick Ruff'")
 
-# Only search stories about Joe
+# Only search stories about Joe (excludes Patrick's journal entries)
 query_documents(client, store_name, "What are Joe's favorite games?",
                 metadata_filter="subject_of_story='Joe Ruff'")
 
 # Combine filters (AND logic)
 query_documents(client, store_name, "Tell me about Joe",
                 metadata_filter="author='Patrick Ruff' AND subject_of_story='Joe Ruff'")
+
+# Filter by content type
+query_documents(client, store_name, "What did Patrick write about gaming?",
+                metadata_filter="content_type='journal'")
 ```
 
 **Filter Syntax:** Uses [AIP-160](https://google.aip.dev/160) list filter syntax.
+
+#### Example: Solving the FF Tactics Attribution Problem
+
+**Problem:** Query "Tell me about Joe and Final Fantasy" incorrectly attributed Patrick's journal entry about FF Tactics to Joe.
+
+**Solution:** `patrag.pdf` is now configured with `author: "Patrick Ruff"` and `content_type: "journal"`. When querying:
+
+```python
+# To search only stories ABOUT Joe (excludes Patrick's unrelated journal entries)
+query_documents(client, store_name, "Tell me about Joe and Final Fantasy",
+                metadata_filter="subject_of_story='Joe Ruff'")
+```
+
+The journal entry about FF Tactics is excluded because it has no `subject_of_story` metadata - it's Patrick's personal journal, not a story about someone else.
 
 ### Known Limitations
 
@@ -1449,25 +1518,30 @@ python3 edit_person.py "Patrick Ruff" --occupation "Engineer" --phone "555-1234"
 | Script | Description |
 |--------|-------------|
 | `mcp_server.py` | MCP server for Claude Desktop integration |
-| `sync_drive_documents.py` | Sync **new** documents from Google Drive to RAG (excludes "stories" doc) |
-| `add_story_to_drive.py` | Add stories to Google Docs AND RAG File Search |
-| `test_file_search.py` | Test uploads, queries, and list indexed documents |
+| `sync_drive_documents.py` | Sync **new** documents from Google Drive to RAG with metadata |
+| `add_story_to_drive.py` | Add stories to Google Docs AND RAG File Search with metadata |
+| `reupload_with_metadata.py` | Re-upload existing documents with new metadata |
+| `test_file_search.py` | Test uploads, queries (with metadata filter), and list documents |
 | `answer_query.py` | Answer family questions using RAG with citations |
 | `analyze_data_coverage.py` | Analyze RAG coverage for each family member |
+| `document_metadata.json` | Configuration file for document metadata (author, subject, etc.) |
 
 **Usage:**
 ```bash
-# Sync NEW documents from Google Drive (excludes "stories" doc)
+# Sync NEW documents from Google Drive with metadata
 python3 sync_drive_documents.py
 
-# Add a story directly to Google Docs + RAG
+# Add a story directly to Google Docs + RAG (auto-adds metadata)
 python3 add_story_to_drive.py --title "Story Title" --about "Person Name" --story "Story content..."
+
+# Re-upload a document with metadata (for existing docs)
+python3 reupload_with_metadata.py patrag.pdf
 
 # List all indexed documents in RAG
 python3 test_file_search.py  # Shows documents in output
 
-# Test a RAG query
-export QUERY="When did the Ruff family immigrate?"
+# Test a RAG query with metadata filter
+export QUERY="What did Patrick write about gaming?"
 python3 test_file_search.py
 
 # Answer a question and save to stored_queries.json
