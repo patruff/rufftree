@@ -230,7 +230,8 @@ def create_docx_for_rag(title: str, about: str, story: str, author: str) -> Byte
     return docx_buffer
 
 
-def add_story(title: str, about: str, story: str, author: str = "Patrick Ruff"):
+def add_story(title: str, about: str, story: str, author: str = "Patrick Ruff",
+              decade: str = None, specific_date: str = None):
     """Main function to append story to shared Google Doc AND upload to RAG system."""
     print("📖 Adding Story to Google Drive & RAG System")
     print("=" * 60)
@@ -279,7 +280,22 @@ def add_story(title: str, about: str, story: str, author: str = "Patrick Ruff"):
         for subject in subjects:
             custom_metadata.append({"key": "subject_of_story", "string_value": subject})
 
-        print(f"   📋 Adding metadata: author={author}, subjects={subjects}")
+        # Add decade metadata if provided
+        if decade:
+            custom_metadata.append({"key": "decade", "string_value": decade})
+            # Try to extract a representative year from decade
+            import re
+            year_match = re.search(r'(\d{4})', decade)
+            if year_match:
+                year = int(year_match.group(1))
+                custom_metadata.append({"key": "year", "numeric_value": year})
+
+        # Add specific date if provided
+        if specific_date:
+            custom_metadata.append({"key": "specific_date", "string_value": specific_date})
+
+        print(f"   📋 Adding metadata: author={author}, subjects={subjects}"
+              + (f", decade={decade}" if decade else ""))
         upload_document(client, store_name, str(temp_path), custom_metadata=custom_metadata)
 
     # === Summary ===
@@ -301,9 +317,14 @@ def main():
     parser.add_argument('--about', '-a', help='Who the story is about (comma-separated names)')
     parser.add_argument('--story', '-s', help='Story content')
     parser.add_argument('--author', default='Patrick Ruff', help='Story author (default: Patrick Ruff)')
+    parser.add_argument('--decade', help='Decade when story took place (e.g., "1980s (1980-1989)")')
+    parser.add_argument('--specific-date', dest='specific_date', help='Specific date/year (e.g., "Summer 1985")')
     parser.add_argument('--interactive', '-i', action='store_true', help='Interactive mode')
 
     args = parser.parse_args()
+
+    decade = None
+    specific_date = None
 
     if args.interactive:
         print("📖 Add Family Story")
@@ -311,6 +332,8 @@ def main():
         title = input("\nStory Title: ").strip()
         about = input("Who is this story about? (comma-separated): ").strip()
         author = input("Your name (press Enter for 'Patrick Ruff'): ").strip() or "Patrick Ruff"
+        decade = input("Decade (e.g., '1980s', press Enter to skip): ").strip() or None
+        specific_date = input("Specific date/year (e.g., 'Summer 1985', press Enter to skip): ").strip() or None
         print("\nEnter your story (end with two empty lines):")
         lines = []
         empty_count = 0
@@ -336,13 +359,15 @@ def main():
         about = args.about
         story = args.story
         author = args.author
+        decade = args.decade
+        specific_date = args.specific_date
 
     if not title or not about or not story:
         print("❌ Error: Title, about, and story content are required")
         sys.exit(1)
 
     try:
-        add_story(title, about, story, author)
+        add_story(title, about, story, author, decade=decade, specific_date=specific_date)
     except Exception as e:
         print(f"\n❌ Error: {e}")
         import traceback

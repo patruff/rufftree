@@ -50,11 +50,22 @@ jobs:
               return default
 
           title = extract_field(r'### Story Title\s*\n\n(.+?)(?:\n\n###|\Z)', issue_body, 'Untitled Story')
-          author = extract_field(r'### Your Name\s*\n\n(.+?)(?:\n\n###|\Z)', issue_body, 'Anonymous')
+          author = extract_field(r'### Your Name \(Author\)\s*\n\n(.+?)(?:\n\n###|\Z)', issue_body, '')
+          # Fallback to old field name for backwards compatibility
+          if not author:
+              author = extract_field(r'### Your Name\s*\n\n(.+?)(?:\n\n###|\Z)', issue_body, 'Anonymous')
           story = extract_field(r'### Your Story\s*\n\n([\s\S]*?)(?:\n\n###|\n\n---|\Z)', issue_body, '')
 
+          # Extract decade from dropdown
+          decade = extract_field(r'### When Did This Story Take Place\?\s*\n\n(.+?)(?:\n\n###|\Z)', issue_body, '')
+          # Also check for specific date
+          specific_date = extract_field(r'### Specific Date or Year \(Optional\)\s*\n\n(.+?)(?:\n\n###|\Z)', issue_body, '')
+
           # Extract mentioned people from checkboxes
-          mentions_section = re.search(r'### Family Members in This Story\s*\n\n([\s\S]*?)(?:\n\n###|\Z)', issue_body)
+          mentions_section = re.search(r'### Who Is This Story About\?\s*\n\n([\s\S]*?)(?:\n\n###|\Z)', issue_body)
+          # Fallback to old field name
+          if not mentions_section:
+              mentions_section = re.search(r'### Family Members in This Story\s*\n\n([\s\S]*?)(?:\n\n###|\Z)', issue_body)
           mentioned = []
           if mentions_section:
               for line in mentions_section.group(1).split('\n'):
@@ -62,11 +73,13 @@ jobs:
                       name_match = re.search(r'\[x\]\s*(.+)', line, re.IGNORECASE)
                       if name_match:
                           name = name_match.group(1).strip()
-                          if name.lower() != 'other (specify in story)':
+                          if name.lower() not in ['other (specify in story)', 'other (specify below)']:
                               mentioned.append(name)
 
-          # Also get "Other People Mentioned"
-          other = extract_field(r'### Other People Mentioned\s*\n\n(.+?)(?:\n\n###|\Z)', issue_body, '')
+          # Also get "Other People" field
+          other = extract_field(r'### Other People This Story Is About\s*\n\n(.+?)(?:\n\n###|\Z)', issue_body, '')
+          if not other:
+              other = extract_field(r'### Other People Mentioned\s*\n\n(.+?)(?:\n\n###|\Z)', issue_body, '')
           if other:
               mentioned.extend([p.strip() for p in other.split(',') if p.strip()])
 
@@ -75,14 +88,17 @@ jobs:
           print(f"Title: {title}")
           print(f"Author: {author}")
           print(f"About: {about}")
+          print(f"Decade: {decade}")
+          print(f"Specific date: {specific_date}")
           print(f"Story length: {len(story)} chars")
 
           # Write outputs
           with open(os.environ['GITHUB_OUTPUT'], 'a') as f:
-              # Use heredoc-style for multiline story
               f.write(f"title={title}\n")
               f.write(f"author={author}\n")
               f.write(f"about={about}\n")
+              f.write(f"decade={decade}\n")
+              f.write(f"specific_date={specific_date}\n")
 
           # Write story to temp file (to handle special chars)
           with open('/tmp/story_content.txt', 'w') as f:
@@ -99,14 +115,25 @@ jobs:
           STORY_TITLE: ${{ steps.extract.outputs.title }}
           STORY_ABOUT: ${{ steps.extract.outputs.about }}
           STORY_AUTHOR: ${{ steps.extract.outputs.author }}
+          STORY_DECADE: ${{ steps.extract.outputs.decade }}
+          STORY_SPECIFIC_DATE: ${{ steps.extract.outputs.specific_date }}
         run: |
           STORY_CONTENT=$(cat /tmp/story_content.txt)
 
-          python add_story_to_drive.py \
-            --title "$STORY_TITLE" \
-            --about "$STORY_ABOUT" \
-            --author "$STORY_AUTHOR" \
-            --story "$STORY_CONTENT"
+          # Build command with optional decade flag
+          CMD="python add_story_to_drive.py --title \"$STORY_TITLE\" --about \"$STORY_ABOUT\" --author \"$STORY_AUTHOR\""
+
+          if [ -n "$STORY_DECADE" ]; then
+            CMD="$CMD --decade \"$STORY_DECADE\""
+          fi
+
+          if [ -n "$STORY_SPECIFIC_DATE" ]; then
+            CMD="$CMD --specific-date \"$STORY_SPECIFIC_DATE\""
+          fi
+
+          CMD="$CMD --story \"$STORY_CONTENT\""
+
+          eval $CMD
 
       - name: Update labels and close issue
         uses: actions/github-script@v7
@@ -115,6 +142,8 @@ jobs:
             const title = `${{ steps.extract.outputs.title }}`;
             const author = `${{ steps.extract.outputs.author }}`;
             const about = `${{ steps.extract.outputs.about }}`;
+            const decade = `${{ steps.extract.outputs.decade }}`;
+            const specificDate = `${{ steps.extract.outputs.specific_date }}`;
 
             // Remove pending label
             try {
@@ -136,6 +165,12 @@ jobs:
               labels: ['story:processed']
             });
 
+            // Build time period display
+            let timePeriod = decade || 'Not specified';
+            if (specificDate) {
+              timePeriod = specificDate + (decade ? ` (${decade})` : '');
+            }
+
             // Post success comment and close
             await github.rest.issues.createComment({
               owner: context.repo.owner,
@@ -148,11 +183,18 @@ jobs:
             | **Title** | ${title} |
             | **Author** | ${author} |
             | **About** | ${about} |
+            | **Time Period** | ${timePeriod} |
+
+            ### Metadata Applied:
+            - \`author\`: ${author}
+            - \`subject_of_story\`: ${about}
+            - \`content_type\`: story
+            ${decade ? `- \`decade\`: ${decade}` : ''}
 
             ### Where your story was saved:
 
             1. **Google Docs** - Added to the shared family stories document
-            2. **RAG Search** - Now searchable via AI queries
+            2. **RAG Search** - Now searchable via AI queries with metadata filtering
 
             Thank you for sharing this family memory! 🙏
 
