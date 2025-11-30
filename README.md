@@ -20,6 +20,8 @@ A Retrieval Augmented Generation (RAG) system for Ruff family documents using Go
   - [View the Family Tree](#view-the-family-tree)
   - [Adding Family Members](#adding-family-members)
   - [Family Data Model](#family-data-model)
+  - [Popular Queries](#popular-queries)
+  - [Known Limitations](#known-limitations)
 - [GitHub Workflows](#github-workflows)
   - [Deploy Pages](#deploy-pages)
   - [Sync Documents from Google Drive](#sync-documents-from-google-drive)
@@ -994,6 +996,52 @@ Family member sees answer on queries.html
   ]
 }
 ```
+
+### Popular Queries
+
+This section documents interesting or frequently asked questions about the family. These serve as examples of what you can ask the RAG system.
+
+| Query | Result | Notes |
+|-------|--------|-------|
+| "Tell me about Joe and Final Fantasy 7" | Found that Joe enjoyed playing Final Fantasy 7, even playing for around 200 hours | Successfully found relevant story chunks from `20251128_patstory_joe_final_fantasy_7.docx` |
+| "When did the Ruff family immigrate to America?" | Found immigration records from early 1900s | Good example of historical family research |
+| "What occupations were common in the Ruff family?" | Found records of carpentry, teaching, small business | Shows how RAG aggregates from multiple documents |
+
+**Tips for Good Queries:**
+- Ask about specific people by name
+- Ask about events, traditions, or memories
+- Ask about relationships ("Who were Joe's siblings?")
+- Ask about time periods ("What was happening in the 1980s?")
+
+### Known Limitations
+
+#### Attribution in RAG Chunks
+
+**Issue:** Google's File Search returns text chunks without preserving authorship context. This can lead to misattribution when multiple people are mentioned in the same document.
+
+**Example Problem:**
+- Query: "Tell me about Joe and Final Fantasy 7"
+- The RAG system correctly found a story about Joe playing FF7
+- However, it also found a journal entry by Patrick about Final Fantasy Tactics
+- The response incorrectly attributed Patrick's journal entry ("beat the hell out of" Final Fantasy Tactics) to Joe
+
+**Why This Happens:**
+- RAG chunks are pure text extracts without metadata about who wrote them
+- When stories mention multiple people, the model may confuse author vs. subject
+- Journal entries (written in first person) can be misattributed to subjects mentioned nearby
+
+**Current Workarounds:**
+1. **Include author in story text**: Always write "Patrick recalls..." or "According to Joe..." rather than first-person narrative
+2. **Separate documents per person**: Keep stories about different people in separate files
+3. **Use explicit subject markers**: Start each chunk with clear subject identification
+
+**Potential Future Solutions:**
+- **GraphRAG / LightRAG**: Knowledge graph systems that explicitly model entities and relationships
+- **Metadata enrichment**: Pre-process documents to inject author/subject tags into each chunk
+- **Custom embedding**: Fine-tune embeddings to preserve authorship context
+- **Hybrid retrieval**: Combine RAG with explicit metadata filtering
+
+**Note:** Google File Search is "normal" RAG (vector similarity search) - it doesn't inherently understand entity relationships like who wrote what. For complex attribution needs, consider exploring LightRAG or Microsoft's GraphRAG which build knowledge graphs linking entities to their source contexts.
 
 ### Upload Documents Manually
 
