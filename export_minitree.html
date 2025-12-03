@@ -1,0 +1,712 @@
+<!DOCTYPE html>
+<html lang="en">
+<head>
+    <meta charset="UTF-8">
+    <meta name="viewport" content="width=device-width, initial-scale=1.0">
+    <title>Export Minitree - Ruff Family Tree</title>
+    <style>
+        * {
+            margin: 0;
+            padding: 0;
+            box-sizing: border-box;
+        }
+
+        body {
+            font-family: 'Segoe UI', Tahoma, Geneva, Verdana, sans-serif;
+            background: linear-gradient(135deg, #667eea 0%, #764ba2 100%);
+            min-height: 100vh;
+            padding: 20px;
+        }
+
+        .container {
+            max-width: 900px;
+            margin: 0 auto;
+            background: white;
+            border-radius: 20px;
+            box-shadow: 0 20px 60px rgba(0, 0, 0, 0.3);
+            overflow: hidden;
+        }
+
+        .header {
+            background: linear-gradient(135deg, #667eea 0%, #764ba2 100%);
+            color: white;
+            padding: 30px;
+            text-align: center;
+        }
+
+        .header h1 {
+            font-size: 2.5em;
+            margin-bottom: 10px;
+        }
+
+        .header p {
+            font-size: 1.1em;
+            opacity: 0.9;
+        }
+
+        nav {
+            background: #5a67d8;
+            padding: 15px;
+            display: flex;
+            justify-content: center;
+            gap: 20px;
+            flex-wrap: wrap;
+        }
+
+        nav a {
+            color: white;
+            text-decoration: none;
+            padding: 8px 16px;
+            border-radius: 5px;
+            transition: background 0.3s;
+        }
+
+        nav a:hover {
+            background: rgba(255, 255, 255, 0.2);
+        }
+
+        nav a.active {
+            background: rgba(255, 255, 255, 0.3);
+            font-weight: bold;
+        }
+
+        .content {
+            padding: 40px;
+        }
+
+        .instructions {
+            background: #edf2f7;
+            padding: 20px;
+            border-radius: 8px;
+            margin-bottom: 30px;
+            border-left: 4px solid #667eea;
+        }
+
+        .instructions h3 {
+            color: #667eea;
+            margin-bottom: 10px;
+        }
+
+        .instructions ol {
+            margin-left: 20px;
+            color: #4a5568;
+            line-height: 1.8;
+        }
+
+        .form-section {
+            background: #f7fafc;
+            padding: 25px;
+            border-radius: 8px;
+            margin-bottom: 25px;
+            border: 1px solid #e2e8f0;
+        }
+
+        .form-section h3 {
+            color: #667eea;
+            margin-bottom: 15px;
+            font-size: 1.3em;
+        }
+
+        .field-group {
+            margin-bottom: 20px;
+        }
+
+        .field-group label {
+            display: block;
+            margin-bottom: 8px;
+            font-weight: 600;
+            color: #333;
+        }
+
+        .field-group select {
+            width: 100%;
+            padding: 12px;
+            border: 2px solid #e2e8f0;
+            border-radius: 8px;
+            font-size: 1em;
+            transition: border-color 0.3s;
+            background: white;
+        }
+
+        .field-group select:focus {
+            outline: none;
+            border-color: #667eea;
+        }
+
+        .field-description {
+            margin-top: 8px;
+            font-size: 0.9em;
+            color: #718096;
+            font-style: italic;
+        }
+
+        .preview-section {
+            background: white;
+            padding: 20px;
+            border-radius: 8px;
+            border: 2px solid #667eea;
+            margin-bottom: 25px;
+        }
+
+        .preview-section h3 {
+            color: #667eea;
+            margin-bottom: 15px;
+        }
+
+        .preview-stats {
+            display: grid;
+            grid-template-columns: repeat(auto-fit, minmax(150px, 1fr));
+            gap: 15px;
+            margin-bottom: 15px;
+        }
+
+        .stat-box {
+            background: linear-gradient(135deg, #667eea 0%, #764ba2 100%);
+            color: white;
+            padding: 15px;
+            border-radius: 8px;
+            text-align: center;
+        }
+
+        .stat-box .number {
+            font-size: 2em;
+            font-weight: bold;
+        }
+
+        .stat-box .label {
+            font-size: 0.9em;
+            opacity: 0.9;
+        }
+
+        .preview-table {
+            overflow-x: auto;
+            max-height: 300px;
+            border: 1px solid #e2e8f0;
+            border-radius: 8px;
+        }
+
+        table {
+            width: 100%;
+            border-collapse: collapse;
+        }
+
+        th {
+            background: #667eea;
+            color: white;
+            padding: 12px;
+            text-align: left;
+            position: sticky;
+            top: 0;
+            z-index: 10;
+        }
+
+        td {
+            padding: 10px 12px;
+            border-bottom: 1px solid #e2e8f0;
+        }
+
+        tr:hover {
+            background: #f7fafc;
+        }
+
+        .button-group {
+            display: flex;
+            gap: 15px;
+        }
+
+        button {
+            flex: 1;
+            padding: 15px;
+            border: none;
+            border-radius: 8px;
+            font-size: 1.1em;
+            font-weight: 600;
+            cursor: pointer;
+            transition: transform 0.2s, box-shadow 0.2s;
+        }
+
+        button:hover {
+            transform: translateY(-2px);
+            box-shadow: 0 4px 12px rgba(0, 0, 0, 0.15);
+        }
+
+        button:active {
+            transform: translateY(0);
+        }
+
+        .btn-export {
+            background: linear-gradient(135deg, #667eea 0%, #764ba2 100%);
+            color: white;
+        }
+
+        .btn-preview {
+            background: #4299e1;
+            color: white;
+        }
+
+        .success-message {
+            background: #c6f6d5;
+            color: #22543d;
+            padding: 15px;
+            border-radius: 8px;
+            margin-bottom: 20px;
+            display: none;
+            border: 2px solid #48bb78;
+        }
+
+        .success-message.active {
+            display: block;
+        }
+
+        .error-message {
+            background: #fed7d7;
+            color: #742a2a;
+            padding: 15px;
+            border-radius: 8px;
+            margin-bottom: 20px;
+            display: none;
+            border: 2px solid #fc8181;
+        }
+
+        .error-message.active {
+            display: block;
+        }
+
+        @media (max-width: 768px) {
+            .button-group {
+                flex-direction: column;
+            }
+
+            .preview-stats {
+                grid-template-columns: 1fr;
+            }
+        }
+    </style>
+</head>
+<body>
+    <div class="container">
+        <div class="header">
+            <h1>📊 Export Minitree</h1>
+            <p>Export customized CSV data from the Ruff Family Tree</p>
+        </div>
+
+        <nav>
+            <a href="index.html">Tree View</a>
+            <a href="graph.html">Graph View</a>
+            <a href="queries.html">Ask Questions</a>
+            <a href="submit_story.html">Submit Story</a>
+            <a href="person_generator.html">Full Form</a>
+            <a href="easy_add.html">Easy Add</a>
+            <a href="export_minitree.html" class="active">Export CSV</a>
+        </nav>
+
+        <div class="content">
+            <div class="instructions">
+                <h3>📋 How to Use</h3>
+                <ol>
+                    <li>Select the additional field you want to include in your export</li>
+                    <li>Click "Preview Data" to see what will be exported</li>
+                    <li>Click "Download CSV" to save the file to your computer</li>
+                    <li>Open the CSV in Excel, Google Sheets, or any spreadsheet application</li>
+                </ol>
+            </div>
+
+            <div class="success-message" id="successMessage">
+                ✓ CSV exported successfully! Check your downloads folder.
+            </div>
+
+            <div class="error-message" id="errorMessage">
+                ✗ <span id="errorText"></span>
+            </div>
+
+            <div class="form-section">
+                <h3>⚙️ Export Settings</h3>
+
+                <div class="field-group">
+                    <label for="additionalField">Select Additional Field</label>
+                    <select id="additionalField">
+                        <optgroup label="Basic Information">
+                            <option value="deceased">Deceased (True/False)</option>
+                            <option value="dob">Date of Birth</option>
+                            <option value="age">Age (calculated)</option>
+                            <option value="generation">Generation</option>
+                        </optgroup>
+                        <optgroup label="Personal Details">
+                            <option value="occupation">Occupation</option>
+                            <option value="phone">Phone Number</option>
+                            <option value="email">Email Address</option>
+                        </optgroup>
+                        <optgroup label="Location">
+                            <option value="home_city">Home City</option>
+                            <option value="home_state">Home State</option>
+                            <option value="current_city">Current City</option>
+                            <option value="current_state">Current State</option>
+                        </optgroup>
+                        <optgroup label="Health Information">
+                            <option value="health_condition">Health Conditions</option>
+                            <option value="causeOfDeath">Cause of Death</option>
+                            <option value="diabetes_risk">Diabetes Risk</option>
+                            <option value="heart_disease_risk">Heart Disease Risk</option>
+                            <option value="cancer_risk">Cancer Risk</option>
+                            <option value="alzheimers_risk">Alzheimer's Risk</option>
+                        </optgroup>
+                        <optgroup label="Ethnicity">
+                            <option value="ethnicity_primary">Primary Ethnicity</option>
+                            <option value="ethnicity_all">All Ethnicities</option>
+                        </optgroup>
+                        <optgroup label="Family">
+                            <option value="from_pat">Distance from Patrick</option>
+                            <option value="num_children">Number of Children</option>
+                            <option value="num_siblings">Number of Siblings</option>
+                        </optgroup>
+                        <optgroup label="Other">
+                            <option value="completion_percentage">Profile Completion %</option>
+                        </optgroup>
+                    </select>
+                    <div class="field-description">
+                        The CSV will include: First Name, Last Name, Gender, and your selected field
+                    </div>
+                </div>
+            </div>
+
+            <div class="preview-section" id="previewSection" style="display: none;">
+                <h3>👀 Data Preview</h3>
+
+                <div class="preview-stats">
+                    <div class="stat-box">
+                        <div class="number" id="totalPeople">0</div>
+                        <div class="label">Total People</div>
+                    </div>
+                    <div class="stat-box">
+                        <div class="number" id="maleCount">0</div>
+                        <div class="label">Male</div>
+                    </div>
+                    <div class="stat-box">
+                        <div class="number" id="femaleCount">0</div>
+                        <div class="label">Female</div>
+                    </div>
+                    <div class="stat-box">
+                        <div class="number" id="fieldPopulated">0</div>
+                        <div class="label">Field Populated</div>
+                    </div>
+                </div>
+
+                <div class="preview-table">
+                    <table id="previewTable">
+                        <thead>
+                            <tr>
+                                <th>First Name</th>
+                                <th>Last Name</th>
+                                <th>Gender</th>
+                                <th id="additionalFieldHeader">Additional Field</th>
+                            </tr>
+                        </thead>
+                        <tbody id="previewBody">
+                        </tbody>
+                    </table>
+                </div>
+            </div>
+
+            <div class="button-group">
+                <button class="btn-preview" onclick="previewData()">👁️ Preview Data</button>
+                <button class="btn-export" onclick="exportCSV()">💾 Download CSV</button>
+            </div>
+        </div>
+    </div>
+
+    <script>
+        let familyData = null;
+        let processedData = [];
+
+        // Load family tree data
+        async function loadFamilyData() {
+            try {
+                const response = await fetch('family_tree.json');
+                const data = await response.json();
+                familyData = data.family.people;
+                console.log('Family data loaded:', Object.keys(familyData).length, 'people');
+            } catch (error) {
+                console.error('Error loading family data:', error);
+                showError('Could not load family tree data. Please ensure family_tree.json is available.');
+            }
+        }
+
+        // Parse name into first and last
+        function parseName(fullName) {
+            const parts = fullName.trim().split(' ');
+            if (parts.length === 0) return { first: '', last: '' };
+            if (parts.length === 1) return { first: parts[0], last: '' };
+
+            const firstName = parts[0];
+            const lastName = parts[parts.length - 1];
+            return { first: firstName, last: lastName };
+        }
+
+        // Infer gender from name (simple heuristic)
+        function inferGender(firstName, personData) {
+            // Check if gender is explicitly set
+            if (personData.gender) {
+                return personData.gender === 'male' ? 'M' : 'F';
+            }
+
+            // Simple name-based inference
+            const maleName = /^(Patrick|Phil|Joe|Benjamin|James|John|William|David|Michael|Robert|Richard|Thomas|Charles|Daniel|Matthew|Anthony|Mark|Donald|Steven|Paul|Andrew|Joshua|Kenneth|Kevin|Brian|George|Edward|Ronald|Timothy|Jason|Jeffrey|Ryan|Jacob|Gary|Nicholas|Eric|Stephen|Jonathan|Larry|Justin|Scott|Brandon|Benjamin|Samuel|Frank|Gregory|Raymond|Jack|Dennis|Jerry|Tyler|Aaron|Jose|Adam|Henry|Nathan|Douglas|Zachary|Peter|Kyle|Walter|Ethan|Jeremy|Harold|Keith|Christian|Roger|Noah|Gerald|Carl|Terry|Sean|Austin|Arthur|Lawrence|Jesse|Dylan|Jordan|Bryan|Billy|Bruce|Albert|Willie|Gabriel|Logan|Alan|Juan|Ralph|Roy|Eugene|Randy|Vincent|Russell|Elijah|Louis|Bobby|Philip|Johnny)$/i;
+            const femaleName = /^(Sarah|Jenny|Katie|Kaylin|Mary|Patricia|Jennifer|Linda|Barbara|Elizabeth|Susan|Jessica|Sarah|Karen|Nancy|Lisa|Betty|Margaret|Sandra|Ashley|Dorothy|Kimberly|Emily|Donna|Michelle|Carol|Amanda|Melissa|Deborah|Stephanie|Rebecca|Laura|Sharon|Cynthia|Kathleen|Amy|Shirley|Angela|Helen|Anna|Brenda|Pamela|Nicole|Emma|Samantha|Katherine|Christine|Debra|Rachel|Catherine|Carolyn|Janet|Ruth|Maria|Heather|Diane|Virginia|Julie|Joyce|Victoria|Kelly|Lauren|Christina|Joan|Evelyn|Judith|Megan|Cheryl|Andrea|Hannah|Jacqueline|Martha|Gloria|Teresa|Ann|Sara|Madison|Frances|Kathryn|Janice|Jean|Alice|Abigail|Sophia|Judy|Doris|Grace|Denise|Amber|Brittany|Danielle|Rose|Diana|Natalie|Theresa|Beverly|Charlotte|Kayla|Irene|Faith|Marilyn|Isabella)$/i;
+
+            if (maleName.test(firstName)) return 'M';
+            if (femaleName.test(firstName)) return 'F';
+
+            return 'Unknown';
+        }
+
+        // Calculate age
+        function calculateAge(dob, dod) {
+            if (!dob || dob === 'unknown') return 'Unknown';
+
+            const birthYear = parseInt(dob);
+            if (isNaN(birthYear)) return 'Unknown';
+
+            if (dod && dod !== 'alive') {
+                const deathYear = parseInt(dod);
+                if (!isNaN(deathYear)) {
+                    return deathYear - birthYear;
+                }
+            }
+
+            const currentYear = new Date().getFullYear();
+            return currentYear - birthYear;
+        }
+
+        // Get field value
+        function getFieldValue(person, fieldName) {
+            const { first, last } = parseName(person.name);
+
+            switch (fieldName) {
+                case 'deceased':
+                    return person.dod && person.dod !== 'alive' ? 'True' : 'False';
+
+                case 'dob':
+                    return person.dob || 'Unknown';
+
+                case 'age':
+                    return calculateAge(person.dob, person.dod);
+
+                case 'generation':
+                    return person.generation || 'Unknown';
+
+                case 'occupation':
+                    return person.occupation || '';
+
+                case 'phone':
+                    return person.phone || '';
+
+                case 'email':
+                    return person.email || '';
+
+                case 'home_city':
+                    return person.home_city || '';
+
+                case 'home_state':
+                    return person.home_state || '';
+
+                case 'current_city':
+                    return person.current_city || '';
+
+                case 'current_state':
+                    return person.current_state || '';
+
+                case 'health_condition':
+                    if (Array.isArray(person.health_condition)) {
+                        return person.health_condition.join(', ');
+                    }
+                    return person.health_condition || '';
+
+                case 'causeOfDeath':
+                    return person.causeOfDeath || '';
+
+                case 'diabetes_risk':
+                case 'heart_disease_risk':
+                case 'cancer_risk':
+                case 'alzheimers_risk':
+                    const condition = fieldName.replace('_risk', '').replace('_', '-');
+                    if (person.heritable_risk && person.heritable_risk[condition]) {
+                        return person.heritable_risk[condition];
+                    }
+                    return '';
+
+                case 'ethnicity_primary':
+                    if (person.ethnicity) {
+                        const entries = Object.entries(person.ethnicity);
+                        if (entries.length > 0) {
+                            entries.sort((a, b) => b[1] - a[1]);
+                            return `${entries[0][0]} (${entries[0][1]}%)`;
+                        }
+                    }
+                    return '';
+
+                case 'ethnicity_all':
+                    if (person.ethnicity) {
+                        return Object.entries(person.ethnicity)
+                            .map(([name, pct]) => `${name} ${pct}%`)
+                            .join(', ');
+                    }
+                    return '';
+
+                case 'from_pat':
+                    return person.from_pat !== undefined ? person.from_pat : '';
+
+                case 'num_children':
+                    return person.childrenIds ? person.childrenIds.length : 0;
+
+                case 'num_siblings':
+                    return person.siblingIds ? person.siblingIds.length : 0;
+
+                case 'completion_percentage':
+                    return person.completion_percentage || 0;
+
+                default:
+                    return '';
+            }
+        }
+
+        // Process data for export
+        function processData() {
+            if (!familyData) {
+                showError('Family data not loaded yet. Please wait...');
+                return [];
+            }
+
+            const selectedField = document.getElementById('additionalField').value;
+            const data = [];
+
+            Object.values(familyData).forEach(person => {
+                const { first, last } = parseName(person.name);
+                const gender = inferGender(first, person);
+                const fieldValue = getFieldValue(person, selectedField);
+
+                data.push({
+                    firstName: first,
+                    lastName: last,
+                    gender: gender,
+                    additionalField: fieldValue
+                });
+            });
+
+            return data;
+        }
+
+        // Preview data
+        function previewData() {
+            processedData = processData();
+            if (processedData.length === 0) return;
+
+            const selectedField = document.getElementById('additionalField');
+            const fieldLabel = selectedField.options[selectedField.selectedIndex].text;
+
+            // Update header
+            document.getElementById('additionalFieldHeader').textContent = fieldLabel;
+
+            // Calculate stats
+            const maleCount = processedData.filter(p => p.gender === 'M').length;
+            const femaleCount = processedData.filter(p => p.gender === 'F').length;
+            const fieldPopulated = processedData.filter(p => p.additionalField !== '' && p.additionalField !== 'Unknown').length;
+
+            document.getElementById('totalPeople').textContent = processedData.length;
+            document.getElementById('maleCount').textContent = maleCount;
+            document.getElementById('femaleCount').textContent = femaleCount;
+            document.getElementById('fieldPopulated').textContent = fieldPopulated;
+
+            // Populate preview table (first 50 rows)
+            const tbody = document.getElementById('previewBody');
+            tbody.innerHTML = '';
+
+            const previewCount = Math.min(50, processedData.length);
+            for (let i = 0; i < previewCount; i++) {
+                const row = processedData[i];
+                const tr = document.createElement('tr');
+                tr.innerHTML = `
+                    <td>${row.firstName}</td>
+                    <td>${row.lastName}</td>
+                    <td>${row.gender}</td>
+                    <td>${row.additionalField}</td>
+                `;
+                tbody.appendChild(tr);
+            }
+
+            if (processedData.length > 50) {
+                const tr = document.createElement('tr');
+                tr.innerHTML = `
+                    <td colspan="4" style="text-align: center; font-style: italic; color: #718096;">
+                        ... and ${processedData.length - 50} more rows (download CSV to see all)
+                    </td>
+                `;
+                tbody.appendChild(tr);
+            }
+
+            // Show preview section
+            document.getElementById('previewSection').style.display = 'block';
+        }
+
+        // Export to CSV
+        function exportCSV() {
+            if (processedData.length === 0) {
+                processedData = processData();
+            }
+
+            if (processedData.length === 0) {
+                showError('No data to export. Please try again.');
+                return;
+            }
+
+            const selectedField = document.getElementById('additionalField');
+            const fieldLabel = selectedField.options[selectedField.selectedIndex].text;
+
+            // Build CSV content
+            let csv = 'First Name,Last Name,Gender,' + fieldLabel + '\n';
+
+            processedData.forEach(row => {
+                // Escape values that contain commas
+                const escapeCsv = (value) => {
+                    const str = String(value);
+                    if (str.includes(',') || str.includes('"') || str.includes('\n')) {
+                        return '"' + str.replace(/"/g, '""') + '"';
+                    }
+                    return str;
+                };
+
+                csv += `${escapeCsv(row.firstName)},${escapeCsv(row.lastName)},${escapeCsv(row.gender)},${escapeCsv(row.additionalField)}\n`;
+            });
+
+            // Download CSV
+            const blob = new Blob([csv], { type: 'text/csv;charset=utf-8;' });
+            const url = URL.createObjectURL(blob);
+            const link = document.createElement('a');
+            link.href = url;
+            link.download = `ruff_family_tree_${selectedField.value}_${new Date().toISOString().split('T')[0]}.csv`;
+            document.body.appendChild(link);
+            link.click();
+            document.body.removeChild(link);
+            URL.revokeObjectURL(url);
+
+            showSuccess();
+        }
+
+        function showError(message) {
+            const errorDiv = document.getElementById('errorMessage');
+            const errorText = document.getElementById('errorText');
+            errorText.textContent = message;
+            errorDiv.classList.add('active');
+            setTimeout(() => errorDiv.classList.remove('active'), 5000);
+        }
+
+        function showSuccess() {
+            const successDiv = document.getElementById('successMessage');
+            successDiv.classList.add('active');
+            setTimeout(() => successDiv.classList.remove('active'), 5000);
+        }
+
+        // Initialize
+        loadFamilyData();
+    </script>
+</body>
+</html>
