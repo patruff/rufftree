@@ -2,6 +2,18 @@
 
 A Retrieval Augmented Generation (RAG) system for Ruff family documents using Google's Gemini File Search API. This system automatically syncs documents from a Google Drive folder and provides AI-powered search and question answering capabilities.
 
+## 🆕 Recent Additions
+
+### Recently Added People
+- **Michael Fischer** - Nurse from Townsend, DE. Son of Anne Ruff. _(Issue #30)_
+- _(Add the next person here when they're integrated)_
+
+### Recent Family Stories
+- **Ocean's First Movie** - Patrick's story about Ocean watching her first movie in theaters, complete with popcorn and a 7/10 rating from dad. December 4, 2025. _(Issue #28)_
+- _(Add the next story here when it's processed)_
+
+> 💡 **Note**: This section is manually updated. Keep it current by editing the README after new people or stories are successfully integrated.
+
 ## Table of Contents
 
 - [View the Family Tree Online](#-view-the-family-tree-online)
