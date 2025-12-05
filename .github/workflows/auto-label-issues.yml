@@ -41,6 +41,26 @@ jobs:
                 body: `🤖 **Automatic Processing Started**\n\nYour story has been detected and will be processed automatically. The automation will:\n\n1. Extract your story content and metadata\n2. Add it to the family Google Docs archive\n3. Index it in the AI search system with proper attribution\n4. Close this issue when complete\n\nYou'll receive another comment when processing is finished. Thank you for sharing! 📖`
               });
 
+            } else if (issueTitle.startsWith('Add Person:')) {
+              console.log('Detected person issue - adding labels');
+
+              await github.rest.issues.addLabels({
+                owner: context.repo.owner,
+                repo: context.repo.repo,
+                issue_number: issueNumber,
+                labels: ['add-person', 'person:pending']
+              });
+
+              console.log('✅ Added labels: add-person, person:pending');
+
+              // Add a comment to inform the user
+              await github.rest.issues.createComment({
+                owner: context.repo.owner,
+                repo: context.repo.repo,
+                issue_number: issueNumber,
+                body: `🤖 **Automatic Processing Started**\n\nYour person has been detected and will be integrated into the family tree automatically. The automation will:\n\n1. Extract the person data from this issue\n2. Integrate them into the family tree JSON\n3. Set up relationships with existing family members\n4. Run generation and ethnicity calculations\n5. Close this issue when complete\n\nYou'll receive another comment when processing is finished. Thank you for adding to the family tree! 👨‍👩‍👧‍👦`
+              });
+
             } else {
-              console.log('Not a story issue - skipping auto-label');
+              console.log('Not a story or person issue - skipping auto-label');
             }
