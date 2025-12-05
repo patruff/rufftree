@@ -135,6 +135,89 @@ jobs:
 
           eval $CMD
 
+      - name: Update README with latest story
+        env:
+          GOOGLE_GENAI_API_KEY: ${{ secrets.GOOGLE_GENAI_API_KEY }}
+          STORY_TITLE: ${{ steps.extract.outputs.title }}
+          STORY_ABOUT: ${{ steps.extract.outputs.about }}
+          STORY_SPECIFIC_DATE: ${{ steps.extract.outputs.specific_date }}
+          ISSUE_NUMBER: ${{ github.event.issue.number }}
+        run: |
+          python - <<'EOF'
+          import json
+          import os
+          import re
+          from datetime import datetime
+
+          story_title = os.environ.get('STORY_TITLE', '')
+          story_about = os.environ.get('STORY_ABOUT', '')
+          story_date = os.environ.get('STORY_SPECIFIC_DATE', '')
+          issue_number = os.environ.get('ISSUE_NUMBER', '')
+
+          # Count stories in RAG by querying the File Search store
+          try:
+              from test_file_search import get_client, get_or_create_store
+
+              client = get_client()
+              store_name = get_or_create_store(client)
+
+              # List all documents and count stories (patstory_ files)
+              docs = list(client.file_search_stores.documents.list(parent=store_name))
+              story_count = sum(1 for doc in docs if 'patstory_' in getattr(doc, 'display_name', '').lower())
+
+              print(f"Found {story_count} stories in RAG system")
+          except Exception as e:
+              print(f"Warning: Could not count stories in RAG: {e}")
+              story_count = "Unknown"
+
+          # Format the date nicely
+          date_str = story_date if story_date else datetime.now().strftime("%B %d, %Y")
+
+          # Read current README
+          with open('README.md', 'r') as f:
+              readme = f.read()
+
+          # Find the Recent Additions section and update it
+          pattern = r'(### Recent Family Stories\s+)(.*?)(\n\n> )'
+
+          def update_stories_section(match):
+              header = match.group(1)
+              old_content = match.group(2)
+              note_marker = match.group(3)
+
+              # Extract existing stories (to keep the second one)
+              story_lines = [line for line in old_content.strip().split('\n') if line.strip() and not line.startswith('> ')]
+
+              # Create new entry with truncated title if too long
+              display_title = story_title[:50] + "..." if len(story_title) > 50 else story_title
+              new_entry = f"- **{display_title}** - {story_about}. {date_str}. _(Issue #{issue_number})_"
+
+              # Keep only the most recent previous story (if exists and isn't a placeholder)
+              second_story = ""
+              if story_lines and not story_lines[0].startswith('- _(Add the next'):
+                  if len(story_lines) > 0 and '(' in story_lines[0]:
+                      second_story = "\n" + story_lines[0]
+
+              new_section = f"{header}{new_entry}{second_story}\n\n> **Total Stories in RAG:** {story_count}\n> "
+              return new_section
+
+          readme = re.sub(pattern, update_stories_section, readme, flags=re.DOTALL)
+
+          # Write updated README
+          with open('README.md', 'w') as f:
+              f.write(readme)
+
+          print(f"✅ Updated README: Added '{story_title}' (Total: {story_count} stories)")
+          EOF
+
+      - name: Commit README update
+        run: |
+          git config --local user.email "github-actions[bot]@users.noreply.github.com"
+          git config --local user.name "github-actions[bot]"
+          git add README.md
+          git diff --staged --quiet || git commit -m "Update README with story '${{ steps.extract.outputs.title }}'"
+          git push
+
       - name: Update labels and close issue
         uses: actions/github-script@v7
         with:

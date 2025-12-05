@@ -276,11 +276,75 @@ jobs:
             echo "✅ Updated completion percentages"
           fi
 
+      - name: Update README with latest person
+        env:
+          PERSON_NAME: ${{ steps.integrate.outputs.person_name }}
+          PERSON_ID: ${{ steps.integrate.outputs.person_id }}
+          ISSUE_NUMBER: ${{ github.event.issue.number }}
+        run: |
+          python - <<'EOF'
+          import json
+          import os
+          import re
+
+          person_name = os.environ.get('PERSON_NAME', '')
+          person_id = os.environ.get('PERSON_ID', '')
+          issue_number = os.environ.get('ISSUE_NUMBER', '')
+
+          # Load family tree to count people
+          with open('family_tree.json', 'r') as f:
+              family_data = json.load(f)
+
+          total_people = len(family_data['family']['people'])
+
+          # Get person details
+          person = family_data['family']['people'].get(person_id, {})
+          occupation = person.get('occupation', 'Occupation unknown')
+          home_city = person.get('home_city', '')
+          home_state = person.get('home_state', '')
+          location = f"{home_city}, {home_state}" if home_city and home_state else home_city or home_state or "Location unknown"
+
+          # Read current README
+          with open('README.md', 'r') as f:
+              readme = f.read()
+
+          # Find the Recent Additions section and update it
+          pattern = r'(## 🆕 Recent Additions\s+### Recently Added People\s+)(.*?)(\n### Recent Family Stories)'
+
+          def update_people_section(match):
+              header = match.group(1)
+              old_content = match.group(2)
+              stories_header = match.group(3)
+
+              # Extract existing people (to keep the second one)
+              people_lines = [line for line in old_content.strip().split('\n') if line.strip() and not line.startswith('>')]
+
+              # Create new entry
+              new_entry = f"- **{person_name}** - {occupation} from {location}. _(Issue #{issue_number})_"
+
+              # Keep only the most recent previous person (if exists and isn't a placeholder)
+              second_person = ""
+              if people_lines and not people_lines[0].startswith('- _(Add the next'):
+                  if len(people_lines) > 0 and '(' in people_lines[0]:
+                      second_person = "\n" + people_lines[0]
+
+              new_section = f"{header}{new_entry}{second_person}\n\n> **Total People in Family Tree:** {total_people}\n{stories_header}"
+              return new_section
+
+          readme = re.sub(pattern, update_people_section, readme, flags=re.DOTALL)
+
+          # Write updated README
+          with open('README.md', 'w') as f:
+              f.write(readme)
+
+          print(f"✅ Updated README: Added {person_name} (Total: {total_people} people)")
+          EOF
+
       - name: Commit changes
         run: |
           git config --local user.email "github-actions[bot]@users.noreply.github.com"
           git config --local user.name "github-actions[bot]"
-          git add family_tree.json
+          git add family_tree.json README.md
           git diff --staged --quiet || git commit -m "Add ${{ steps.integrate.outputs.person_name }} to family tree (closes #${{ github.event.issue.number }})"
           git push
 
