@@ -5,14 +5,17 @@ A Retrieval Augmented Generation (RAG) system for Ruff family documents using Go
 ## 🆕 Recent Additions
 
 ### Recently Added People
-- **Michael Fischer** - Nurse from Townsend, DE. Son of Anne Ruff. _(Issue #30)_
-- _(Add the next person here when they're integrated)_
+- **Michael Fischer** - Nurse from Townsend, DE. _(Issue #30)_
+- _(Next person will appear here automatically)_
+
+> **Total People in Family Tree:** _Pending automation_
 
 ### Recent Family Stories
-- **Ocean's First Movie** - Patrick's story about Ocean watching her first movie in theaters, complete with popcorn and a 7/10 rating from dad. December 4, 2025. _(Issue #28)_
-- _(Add the next story here when it's processed)_
+- **Ocean's First Movie** - Patrick's story about Ocean watching her first movie in theaters. December 4, 2025. _(Issue #28)_
+- _(Next story will appear here automatically)_
 
-> 💡 **Note**: This section is manually updated. Keep it current by editing the README after new people or stories are successfully integrated.
+> **Total Stories in RAG:** _Pending automation_
+> 💡 **Note**: This section automatically updates when new people or stories are added through the website.
 
 ## Table of Contents
 
