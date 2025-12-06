@@ -747,6 +747,16 @@
                 </div>
 
                 <div class="form-group full-width">
+                    <label for="spouse">Spouse (married to)</label>
+                    <select id="spouse">
+                        <option value="">-- Select Spouse --</option>
+                    </select>
+                    <div style="margin-top: 5px; font-size: 12px; color: #666;">
+                        Select the person this individual is married to.
+                    </div>
+                </div>
+
+                <div class="form-group full-width">
                     <label for="addAsChildOf">Add as Child of (existing person)</label>
                     <select id="addAsChildOf">
                         <option value="">-- Not adding as child --</option>
@@ -888,6 +898,7 @@
             const people = familyTreeData.family.people;
             const parent1Select = document.getElementById('parent1');
             const parent2Select = document.getElementById('parent2');
+            const spouseSelect = document.getElementById('spouse');
             const addAsChildSelect = document.getElementById('addAsChildOf');
 
             // Sort people by name for easier selection
@@ -898,6 +909,7 @@
             // Clear existing options (except the first default option)
             parent1Select.innerHTML = '<option value="">-- Select Parent 1 --</option>';
             parent2Select.innerHTML = '<option value="">-- Select Parent 2 --</option>';
+            spouseSelect.innerHTML = '<option value="">-- Select Spouse --</option>';
             addAsChildSelect.innerHTML = '<option value="">-- Not adding as child --</option>';
 
             sortedPeople.forEach(person => {
@@ -916,6 +928,12 @@
                 parent2Option.value = person.id;
                 parent2Option.textContent = optionText;
                 parent2Select.appendChild(parent2Option);
+
+                // Add to spouse dropdown
+                const spouseOption = document.createElement('option');
+                spouseOption.value = person.id;
+                spouseOption.textContent = optionText;
+                spouseSelect.appendChild(spouseOption);
 
                 // Add to "add as child of" dropdown
                 const childOption = document.createElement('option');
@@ -1406,8 +1424,11 @@ ${jsonString}
             // Get "add as child of" selection
             const addAsChildOf = document.getElementById('addAsChildOf').value;
 
+            // Get spouse selection
+            const spouseId = document.getElementById('spouse').value;
+
             // Set up relationships
-            person.spouseId = null;
+            person.spouseId = spouseId || null;
             person.parentIds = parentIds;
             person.siblingIds = [];
             person.childrenIds = [];

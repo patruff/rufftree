@@ -364,6 +364,17 @@
                 </div>
 
                 <div class="relationship-group">
+                    <h3>💍 Spouse <span class="optional">(optional)</span></h3>
+                    <div class="form-group">
+                        <div class="autocomplete-container">
+                            <input type="text" id="spouseInput" placeholder="Type to search for spouse..." autocomplete="off">
+                            <div class="autocomplete-list" id="spouseList"></div>
+                        </div>
+                        <div class="selected-people" id="selectedSpouse"></div>
+                    </div>
+                </div>
+
+                <div class="relationship-group">
                     <h3>👶 Children <span class="optional">(optional)</span></h3>
                     <div class="form-group">
                         <div class="autocomplete-container">
@@ -385,6 +396,7 @@
     <script>
         let familyData = null;
         let selectedParents = [];
+        let selectedSpouse = null;
         let selectedChildren = [];
 
         // Load family tree data
@@ -448,6 +460,75 @@
             });
         }
 
+        // Autocomplete for spouse (single selection)
+        function setupSpouseAutocomplete() {
+            const input = document.getElementById('spouseInput');
+            const list = document.getElementById('spouseList');
+
+            input.addEventListener('input', function() {
+                const searchTerm = this.value.toLowerCase().trim();
+                list.innerHTML = '';
+
+                if (!searchTerm || !familyData) {
+                    list.classList.remove('active');
+                    return;
+                }
+
+                const matches = Object.values(familyData)
+                    .filter(person => {
+                        const fullName = person.name.toLowerCase();
+                        const alreadySelected = selectedSpouse && selectedSpouse.id === person.id;
+                        return fullName.includes(searchTerm) && !alreadySelected;
+                    })
+                    .slice(0, 10);
+
+                if (matches.length > 0) {
+                    matches.forEach(person => {
+                        const item = document.createElement('div');
+                        item.className = 'autocomplete-item';
+                        item.textContent = `${person.name} ${person.dob && person.dob !== 'unknown' ? `(b. ${person.dob})` : ''}`;
+                        item.addEventListener('click', () => {
+                            selectedSpouse = person;
+                            renderSelectedSpouse();
+                            input.value = '';
+                            list.classList.remove('active');
+                        });
+                        list.appendChild(item);
+                    });
+                    list.classList.add('active');
+                } else {
+                    list.classList.remove('active');
+                }
+            });
+
+            // Close autocomplete when clicking outside
+            document.addEventListener('click', function(e) {
+                if (!input.contains(e.target) && !list.contains(e.target)) {
+                    list.classList.remove('active');
+                }
+            });
+        }
+
+        function renderSelectedSpouse() {
+            const container = document.getElementById('selectedSpouse');
+            container.innerHTML = '';
+
+            if (selectedSpouse) {
+                const tag = document.createElement('div');
+                tag.className = 'person-tag';
+                tag.innerHTML = `
+                    <span>${selectedSpouse.name}</span>
+                    <button type="button" onclick="removeSpouse()">×</button>
+                `;
+                container.appendChild(tag);
+            }
+        }
+
+        function removeSpouse() {
+            selectedSpouse = null;
+            renderSelectedSpouse();
+        }
+
         function addSelectedPerson(person, selectedArray, containerId) {
             if (!selectedArray.some(p => p.id === person.id)) {
                 selectedArray.push(person);
@@ -499,8 +580,10 @@
         function resetForm() {
             document.getElementById('easyAddForm').reset();
             selectedParents = [];
+            selectedSpouse = null;
             selectedChildren = [];
             renderSelectedPeople(selectedParents, 'selectedParents');
+            renderSelectedSpouse();
             renderSelectedPeople(selectedChildren, 'selectedChildren');
         }
 
@@ -532,7 +615,7 @@
                 parentIds: selectedParents.map(p => p.id),
                 childrenIds: selectedChildren.map(p => p.id),
                 siblingIds: [],
-                spouseId: null
+                spouseId: selectedSpouse ? selectedSpouse.id : null
             };
 
             // Create JSON blob and download
@@ -554,10 +637,12 @@
         // Initialize
         loadFamilyData();
         setupAutocomplete('parentInput', 'parentList', selectedParents, 'selectedParents');
+        setupSpouseAutocomplete();
         setupAutocomplete('childInput', 'childList', selectedChildren, 'selectedChildren');
 
         // Make functions globally accessible for onclick handlers
         window.removeSelectedPerson = removeSelectedPerson;
+        window.removeSpouse = removeSpouse;
         window.resetForm = resetForm;
         window.findPersonById = findPersonById;
     </script>
