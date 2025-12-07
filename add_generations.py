@@ -64,17 +64,29 @@ def main():
     # Print summary
     print("Generation distribution:")
     gen_counts = {}
-    for person in people.values():
-        gen = person['generation']
-        gen_counts[gen] = gen_counts.get(gen, 0) + 1
+    people_without_generation = 0
 
-    for gen, count in sorted(gen_counts.items(), key=lambda x: people[list(people.keys())[0]]['from_pat'] if list(people.values())[0]['generation'] == x[0] else 0):
-        # Sort by from_pat value
-        sample_person = next(p for p in people.values() if p['generation'] == gen)
-        from_pat = sample_person['from_pat']
+    for person in people.values():
+        if 'generation' in person:
+            gen = person['generation']
+            gen_counts[gen] = gen_counts.get(gen, 0) + 1
+        else:
+            people_without_generation += 1
+
+    # Sort generations by from_pat value
+    gen_order = []
+    for gen in gen_counts.keys():
+        sample_person = next(p for p in people.values() if p.get('generation') == gen)
+        gen_order.append((gen, sample_person['from_pat']))
+
+    for gen, from_pat in sorted(gen_order, key=lambda x: x[1]):
+        count = gen_counts[gen]
         print(f"  {gen} (from_pat: {from_pat:+d}): {count} people")
 
-    print(f"\nTotal: {len(people)} people updated")
+    if people_without_generation > 0:
+        print(f"  Unknown (no birth year): {people_without_generation} people")
+
+    print(f"\nTotal: {len(people)} people processed")
 
 if __name__ == '__main__':
     main()
