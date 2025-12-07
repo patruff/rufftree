@@ -1,0 +1,599 @@
+name: Process Person Test
+
+on:
+  workflow_dispatch:
+    inputs:
+      issue_number:
+        description: 'Issue number to process (leave empty to find first open add-person issue)'
+        required: false
+        type: string
+
+jobs:
+  test-process:
+    runs-on: ubuntu-latest
+    permissions:
+      contents: write
+      issues: write
+
+    steps:
+      - name: Debug - Environment Info
+        run: |
+          echo "════════════════════════════════════════════════════════"
+          echo "🔍 ENVIRONMENT DEBUG INFO"
+          echo "════════════════════════════════════════════════════════"
+          echo "Working directory: $(pwd)"
+          echo "User: $(whoami)"
+          echo "Home: $HOME"
+          echo ""
+          echo "📁 Current directory contents:"
+          ls -la
+          echo ""
+          echo "🐍 Python version:"
+          python3 --version
+          echo ""
+          echo "📦 Available disk space:"
+          df -h .
+          echo "════════════════════════════════════════════════════════"
+
+      - name: Checkout repository
+        uses: actions/checkout@v4
+
+      - name: Debug - After Checkout
+        run: |
+          echo "════════════════════════════════════════════════════════"
+          echo "🔍 AFTER CHECKOUT"
+          echo "════════════════════════════════════════════════════════"
+          echo "Working directory: $(pwd)"
+          echo ""
+          echo "📁 Repository contents:"
+          ls -la
+          echo ""
+          echo "📄 Check if family_tree.json exists:"
+          if [ -f "family_tree.json" ]; then
+            echo "✅ family_tree.json EXISTS"
+            echo "   Size: $(wc -c < family_tree.json) bytes"
+            echo "   First 5 lines:"
+            head -5 family_tree.json
+          else
+            echo "❌ family_tree.json NOT FOUND"
+            echo "   Files in current directory:"
+            find . -name "*.json" | head -10
+          fi
+          echo ""
+          echo "📄 Check if README.md exists:"
+          if [ -f "README.md" ]; then
+            echo "✅ README.md EXISTS"
+            echo "   Size: $(wc -c < README.md) bytes"
+          else
+            echo "❌ README.md NOT FOUND"
+          fi
+          echo "════════════════════════════════════════════════════════"
+
+      - name: Set up Python
+        uses: actions/setup-python@v4
+        with:
+          python-version: '3.11'
+
+      - name: Install GitHub CLI
+        run: |
+          echo "📦 Installing GitHub CLI..."
+          type -p curl >/dev/null || (sudo apt update && sudo apt install curl -y)
+          curl -fsSL https://cli.github.com/packages/githubcli-archive-keyring.gpg | sudo dd of=/usr/share/keyrings/githubcli-archive-keyring.gpg \
+          && sudo chmod go+r /usr/share/keyrings/githubcli-archive-keyring.gpg \
+          && echo "deb [arch=$(dpkg --print-architecture) signed-by=/usr/share/keyrings/githubcli-archive-keyring.gpg] https://cli.github.com/packages stable main" | sudo tee /etc/apt/sources.list.d/github-cli.list > /dev/null \
+          && sudo apt update \
+          && sudo apt install gh -y
+          echo "✅ GitHub CLI installed"
+          gh --version
+
+      - name: Find issue to process
+        id: find_issue
+        env:
+          GH_TOKEN: ${{ github.token }}
+          ISSUE_NUMBER: ${{ github.event.inputs.issue_number }}
+        run: |
+          echo "════════════════════════════════════════════════════════"
+          echo "🔍 FINDING ISSUE TO PROCESS"
+          echo "════════════════════════════════════════════════════════"
+
+          if [ -n "$ISSUE_NUMBER" ]; then
+            echo "📌 Using manually specified issue #$ISSUE_NUMBER"
+            ISSUE_JSON=$(gh issue view $ISSUE_NUMBER --json number,title,body,labels)
+            echo "$ISSUE_JSON" > /tmp/issue.json
+            echo "issue_number=$ISSUE_NUMBER" >> $GITHUB_OUTPUT
+          else
+            echo "🔍 Searching for open issues with 'add-person' label..."
+            ISSUES=$(gh issue list --label "add-person" --state open --json number,title,body,labels --limit 10)
+
+            echo "📊 All open add-person issues:"
+            echo "$ISSUES" | jq -r '.[] | "  #\(.number): \(.title)"'
+
+            ISSUE_COUNT=$(echo "$ISSUES" | jq '. | length')
+            echo ""
+            echo "📝 Total open issues: $ISSUE_COUNT"
+
+            if [ "$ISSUE_COUNT" -eq 0 ]; then
+              echo "❌ No open add-person issues found"
+              echo "issue_number=" >> $GITHUB_OUTPUT
+              exit 0
+            fi
+
+            # Get first issue
+            FIRST_ISSUE=$(echo "$ISSUES" | jq '.[0]')
+            ISSUE_NUM=$(echo "$FIRST_ISSUE" | jq -r '.number')
+            echo "$FIRST_ISSUE" > /tmp/issue.json
+
+            echo ""
+            echo "✅ Will process issue #$ISSUE_NUM"
+            echo "issue_number=$ISSUE_NUM" >> $GITHUB_OUTPUT
+          fi
+
+          echo ""
+          echo "📋 Issue details:"
+          cat /tmp/issue.json | jq '.'
+          echo "════════════════════════════════════════════════════════"
+
+      - name: Debug - Issue Body
+        if: steps.find_issue.outputs.issue_number != ''
+        run: |
+          echo "════════════════════════════════════════════════════════"
+          echo "📄 ISSUE BODY CONTENT"
+          echo "════════════════════════════════════════════════════════"
+          cat /tmp/issue.json | jq -r '.body'
+          echo "════════════════════════════════════════════════════════"
+
+      - name: Process the person
+        if: steps.find_issue.outputs.issue_number != ''
+        id: process
+        run: |
+          echo "════════════════════════════════════════════════════════"
+          echo "🚀 PROCESSING PERSON"
+          echo "════════════════════════════════════════════════════════"
+
+          python3 - <<'EOF'
+import json
+import os
+import re
+import sys
+
+print("🐍 Python script started")
+print(f"📂 Current directory: {os.getcwd()}")
+print(f"📄 Files in directory: {os.listdir('.')[:10]}")
+
+# Load issue
+print("\n📋 Loading issue data...")
+with open('/tmp/issue.json', 'r') as f:
+    issue = json.load(f)
+
+issue_number = issue['number']
+issue_title = issue['title']
+issue_body = issue['body']
+
+print(f"📌 Issue #{issue_number}: {issue_title}")
+print(f"📝 Body length: {len(issue_body)} characters")
+
+# Check if family tree exists
+if not os.path.exists('family_tree.json'):
+    print("❌ ERROR: family_tree.json not found!")
+    print(f"   Current directory: {os.getcwd()}")
+    print(f"   Files available: {os.listdir('.')}")
+    sys.exit(1)
+
+print("\n✅ family_tree.json found")
+
+# Load existing family tree
+print("📚 Loading family tree...")
+with open('family_tree.json', 'r') as f:
+    family_data = json.load(f)
+
+people = family_data['family']['people']
+print(f"✅ Loaded family tree with {len(people)} people")
+
+# Try to extract JSON from code block
+print("\n🔍 Looking for JSON data in issue body...")
+json_match = re.search(r'```json\s*([\s\S]*?)\s*```', issue_body)
+person = None
+
+if json_match:
+    json_str = json_match.group(1).strip()
+    print(f"✅ Found JSON block ({len(json_str)} chars)")
+    print(f"📄 JSON content preview:\n{json_str[:200]}...")
+    try:
+        person = json.loads(json_str)
+        print(f"✅ Successfully parsed JSON")
+        print(f"   Person data keys: {list(person.keys())}")
+        print(f"   Name: {person.get('name', 'N/A')}")
+        print(f"   ID: {person.get('id', 'N/A')}")
+        print(f"   DOB: {person.get('dob', 'N/A')}")
+        print(f"   DOD: {person.get('dod', 'N/A')}")
+    except json.JSONDecodeError as e:
+        print(f"❌ JSON parsing error: {e}")
+        person = None
+else:
+    print("ℹ️  No JSON block found, will try form fields")
+
+# If no JSON, try form fields
+if not person:
+    print("\n📝 Parsing from form fields...")
+    person = {}
+
+    # Look for name field
+    name_match = re.search(r'(?:### Full Name|Name:)\s*\n\n(.+?)(?:\n\n###|\n\n|\Z)', issue_body, re.MULTILINE)
+    if name_match:
+        person['name'] = name_match.group(1).strip()
+        print(f"✅ Found name: {person['name']}")
+    else:
+        print("❌ No name found in form fields")
+        print("📄 Issue body preview:")
+        print(issue_body[:500])
+
+# Validate
+if not person.get('name'):
+    print("\n❌ ERROR: Person must have a name!")
+    sys.exit(1)
+
+person_name = person['name']
+print(f"\n👤 Person name: {person_name}")
+
+# Generate ID if needed
+if 'id' not in person:
+    safe_id = re.sub(r'[^a-z0-9]+', '_', person_name.lower()).strip('_')
+    person['id'] = safe_id
+    print(f"🔑 Generated ID: {safe_id}")
+
+person_id = person['id']
+
+# Check if already exists
+if person_id in people:
+    print(f"⚠️  Person {person_id} already exists!")
+    counter = 1
+    new_id = f"{person_id}_{counter}"
+    while new_id in people:
+        counter += 1
+        new_id = f"{person_id}_{counter}"
+    person['id'] = new_id
+    person_id = new_id
+    print(f"🔄 Using unique ID: {person_id}")
+
+# Set defaults
+print("\n🔧 Setting default relationship fields...")
+if 'parentIds' not in person:
+    person['parentIds'] = []
+if 'siblingIds' not in person:
+    person['siblingIds'] = []
+if 'childrenIds' not in person:
+    person['childrenIds'] = []
+if 'spouseId' not in person:
+    person['spouseId'] = None
+
+print(f"   parentIds: {person['parentIds']}")
+print(f"   siblingIds: {person['siblingIds']}")
+print(f"   childrenIds: {person['childrenIds']}")
+print(f"   spouseId: {person['spouseId']}")
+
+# Handle spouse relationship from JSON
+if person.get('spouseId'):
+    spouse_id = person['spouseId']
+    print(f"\n🔗 Found spouse ID in JSON: {spouse_id}")
+    if spouse_id in people:
+        print(f"✅ Spouse {spouse_id} exists in tree")
+        people[spouse_id]['spouseId'] = person_id
+        person['childrenIds'] = people[spouse_id].get('childrenIds', []).copy()
+        print(f"   Set bidirectional spouse relationship")
+        print(f"   Inherited children: {person['childrenIds']}")
+    else:
+        print(f"⚠️  Spouse {spouse_id} not found in tree")
+
+# Extract optional fields
+occupation_match = re.search(r'### Occupation.*?\s*\n\n(.+?)(?:\n\n###|\Z)', issue_body)
+if occupation_match and occupation_match.group(1).strip().lower() not in ['_no response_', '']:
+    person['occupation'] = occupation_match.group(1).strip()
+    print(f"💼 Occupation: {person.get('occupation')}")
+
+location_match = re.search(r'### Home Location.*?\s*\n\n(.+?)(?:\n\n###|\Z)', issue_body)
+if location_match and location_match.group(1).strip().lower() not in ['_no response_', '']:
+    location = location_match.group(1).strip()
+    if ',' in location:
+        parts = location.split(',')
+        person['home_city'] = parts[0].strip()
+        person['home_state'] = parts[1].strip()
+        print(f"🏠 Location: {person['home_city']}, {person['home_state']}")
+
+# Add to tree
+print(f"\n➕ Adding {person_name} to family tree...")
+people[person_id] = person
+print(f"✅ Added successfully!")
+print(f"📊 Family tree now has {len(people)} people")
+
+# Save
+print("\n💾 Saving family tree...")
+with open('family_tree.json', 'w') as f:
+    json.dump(family_data, f, indent=2)
+print("✅ Saved!")
+
+# Save info for later steps
+info = {
+    'name': person_name,
+    'id': person_id,
+    'issue_number': issue_number,
+    'occupation': person.get('occupation', 'Occupation unknown'),
+    'home_city': person.get('home_city', ''),
+    'home_state': person.get('home_state', '')
+}
+
+with open('/tmp/person_info.json', 'w') as f:
+    json.dump(info, f, indent=2)
+
+print("\n✅ Person processing complete!")
+print(f"📋 Person info saved to /tmp/person_info.json")
+EOF
+
+          echo "════════════════════════════════════════════════════════"
+
+      - name: Debug - Check saved files
+        if: steps.find_issue.outputs.issue_number != ''
+        run: |
+          echo "════════════════════════════════════════════════════════"
+          echo "🔍 CHECKING SAVED FILES"
+          echo "════════════════════════════════════════════════════════"
+
+          echo "📄 Person info:"
+          if [ -f "/tmp/person_info.json" ]; then
+            cat /tmp/person_info.json | jq '.'
+          else
+            echo "❌ /tmp/person_info.json not found"
+          fi
+
+          echo ""
+          echo "📊 Family tree changes:"
+          git diff family_tree.json | head -50
+
+          echo "════════════════════════════════════════════════════════"
+
+      - name: Run calculation scripts
+        if: steps.find_issue.outputs.issue_number != ''
+        run: |
+          echo "════════════════════════════════════════════════════════"
+          echo "🧮 RUNNING CALCULATION SCRIPTS"
+          echo "════════════════════════════════════════════════════════"
+
+          if [ -f "add_generations.py" ]; then
+            echo "▶️  Running add_generations.py..."
+            python3 add_generations.py
+            echo "✅ Completed"
+          else
+            echo "⚠️  add_generations.py not found"
+          fi
+
+          echo ""
+
+          if [ -f "add_ethnicity.py" ]; then
+            echo "▶️  Running add_ethnicity.py..."
+            python3 add_ethnicity.py
+            echo "✅ Completed"
+          else
+            echo "⚠️  add_ethnicity.py not found"
+          fi
+
+          echo ""
+
+          if [ -f "calculate_completion.py" ]; then
+            echo "▶️  Running calculate_completion.py..."
+            python3 calculate_completion.py
+            echo "✅ Completed"
+          else
+            echo "⚠️  calculate_completion.py not found"
+          fi
+
+          echo "════════════════════════════════════════════════════════"
+
+      - name: Update README
+        if: steps.find_issue.outputs.issue_number != ''
+        run: |
+          echo "════════════════════════════════════════════════════════"
+          echo "📝 UPDATING README"
+          echo "════════════════════════════════════════════════════════"
+
+          python3 - <<'EOF'
+import json
+import re
+from datetime import datetime
+
+print("📋 Loading person info...")
+with open('/tmp/person_info.json', 'r') as f:
+    person = json.load(f)
+
+print(f"✅ Loaded: {person}")
+
+# Get current date
+date_str = datetime.now().strftime("%B %d, %Y")
+print(f"📅 Date: {date_str}")
+
+# Load family tree for total count
+with open('family_tree.json', 'r') as f:
+    family_data = json.load(f)
+
+total_people = len(family_data['family']['people'])
+print(f"📊 Total people: {total_people}")
+
+# Read README
+print("\n📖 Reading README...")
+with open('README.md', 'r') as f:
+    readme = f.read()
+
+print(f"✅ README loaded ({len(readme)} chars)")
+
+# Prepare values
+person_name = person['name']
+issue_number = person['issue_number']
+occupation = person['occupation']
+home_city = person['home_city']
+home_state = person['home_state']
+location = f"{home_city}, {home_state}" if home_city and home_state else home_city or home_state or "Location unknown"
+
+print(f"\n📝 Updating README with:")
+print(f"   Name: {person_name}")
+print(f"   Occupation: {occupation}")
+print(f"   Location: {location}")
+print(f"   Date: {date_str}")
+print(f"   Issue: #{issue_number}")
+
+# Find and update section
+pattern = r'(## 🆕 Recent Additions\s+### Recently Added People\s+)(.*?)(\n### Recent Family Stories)'
+
+def update_people_section(match):
+    header = match.group(1)
+    old_content = match.group(2)
+    stories_header = match.group(3)
+
+    people_lines = [line for line in old_content.strip().split('\n') if line.strip() and not line.startswith('>')]
+
+    new_entry = f"- **{person_name}** - {occupation} from {location}. Added on {date_str}. _(Issue #{issue_number})_"
+
+    second_person = ""
+    if people_lines and not people_lines[0].startswith('- _('):
+        if len(people_lines) > 0 and '(' in people_lines[0]:
+            second_person = "\n" + people_lines[0]
+
+    new_section = f"{header}{new_entry}{second_person}\n\n> **Total People in Family Tree:** {total_people}\n{stories_header}"
+    return new_section
+
+readme = re.sub(pattern, update_people_section, readme, flags=re.DOTALL)
+
+# Write
+print("\n💾 Writing updated README...")
+with open('README.md', 'w') as f:
+    f.write(readme)
+
+print("✅ README updated!")
+EOF
+
+          echo ""
+          echo "📊 README changes:"
+          git diff README.md | head -30
+
+          echo "════════════════════════════════════════════════════════"
+
+      - name: Close issue
+        if: steps.find_issue.outputs.issue_number != ''
+        env:
+          GH_TOKEN: ${{ github.token }}
+        run: |
+          echo "════════════════════════════════════════════════════════"
+          echo "🔒 CLOSING ISSUE"
+          echo "════════════════════════════════════════════════════════"
+
+          python3 - <<'EOF'
+import json
+import subprocess
+
+with open('/tmp/person_info.json', 'r') as f:
+    person = json.load(f)
+
+issue_number = person['issue_number']
+person_name = person['name']
+person_id = person['id']
+
+print(f"📌 Closing issue #{issue_number}...")
+
+comment_body = f"""## Person Successfully Added to Family Tree!
+
+| Field | Value |
+|-------|-------|
+| **Name** | {person_name} |
+| **ID** | `{person_id}` |
+
+The family tree has been updated and will be visible on the website shortly.
+
+**Next steps:**
+- View on the [Family Tree](https://patruff.github.io/rufftree/)
+- View on the [Family Graph](https://patruff.github.io/rufftree/graph.html)
+
+---
+*This issue was automatically processed by the test workflow.*"""
+
+print("💬 Adding comment...")
+result = subprocess.run([
+    'gh', 'issue', 'comment', str(issue_number),
+    '--body', comment_body
+], capture_output=True, text=True)
+
+if result.returncode == 0:
+    print("✅ Comment added")
+else:
+    print(f"❌ Comment failed: {result.stderr}")
+
+print("\n🏷️  Updating labels...")
+result = subprocess.run([
+    'gh', 'issue', 'edit', str(issue_number),
+    '--remove-label', 'person:pending',
+    '--add-label', 'person:added'
+], capture_output=True, text=True)
+
+if result.returncode == 0:
+    print("✅ Labels updated")
+else:
+    print(f"⚠️  Label update warning: {result.stderr}")
+
+print("\n🔒 Closing issue...")
+result = subprocess.run([
+    'gh', 'issue', 'close', str(issue_number)
+], capture_output=True, text=True)
+
+if result.returncode == 0:
+    print(f"✅ Issue #{issue_number} closed!")
+else:
+    print(f"❌ Close failed: {result.stderr}")
+EOF
+
+          echo "════════════════════════════════════════════════════════"
+
+      - name: Commit and push
+        if: steps.find_issue.outputs.issue_number != ''
+        run: |
+          echo "════════════════════════════════════════════════════════"
+          echo "💾 COMMITTING CHANGES"
+          echo "════════════════════════════════════════════════════════"
+
+          git config --local user.email "github-actions[bot]@users.noreply.github.com"
+          git config --local user.name "github-actions[bot]"
+
+          echo "📊 Files changed:"
+          git status --short
+
+          echo ""
+          echo "➕ Adding files..."
+          git add family_tree.json README.md
+
+          if git diff --staged --quiet; then
+            echo "ℹ️  No changes to commit"
+          else
+            echo "💾 Committing..."
+            PERSON_NAME=$(cat /tmp/person_info.json | python3 -c "import json, sys; print(json.load(sys.stdin)['name'])")
+            git commit -m "Add $PERSON_NAME to family tree (test workflow)"
+
+            echo "📤 Pushing..."
+            git push
+
+            echo "✅ Changes committed and pushed!"
+          fi
+
+          echo "════════════════════════════════════════════════════════"
+
+      - name: Final summary
+        if: always()
+        run: |
+          echo "════════════════════════════════════════════════════════"
+          echo "📊 FINAL SUMMARY"
+          echo "════════════════════════════════════════════════════════"
+
+          if [ -f "/tmp/person_info.json" ]; then
+            echo "✅ Person processed:"
+            cat /tmp/person_info.json | jq '.'
+          else
+            echo "❌ No person was processed"
+          fi
+
+          echo ""
+          echo "🏁 Workflow complete!"
+          echo "════════════════════════════════════════════════════════"
