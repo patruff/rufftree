@@ -9,8 +9,16 @@ def get_generation_info(birth_year):
     """
     Returns (generation_label, from_pat) based on birth year.
     Patrick Ruff (1985) is a Millennial, which is the baseline (from_pat = 0)
+    Returns (None, None) if birth year is unknown or invalid.
     """
-    year = int(birth_year)
+    # Handle missing, unknown, or invalid birth years
+    if not birth_year or birth_year in ['unknown', 'alive', '']:
+        return None, None
+
+    try:
+        year = int(birth_year)
+    except (ValueError, TypeError):
+        return None, None
 
     if year <= 1927:
         return "Greatest Generation", -4
@@ -36,9 +44,13 @@ def main():
     people = data['family']['people']
 
     for person_id, person in people.items():
-        generation, from_pat = get_generation_info(person['dob'])
-        person['generation'] = generation
-        person['from_pat'] = from_pat
+        dob = person.get('dob', 'unknown')
+        generation, from_pat = get_generation_info(dob)
+
+        # Only set if we got valid results
+        if generation is not None:
+            person['generation'] = generation
+            person['from_pat'] = from_pat
 
     # Update the instructions
     if '_instructions' in data:

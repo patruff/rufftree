@@ -120,6 +120,14 @@ if 'childrenIds' not in person:
 if 'spouseId' not in person:
     person['spouseId'] = None
 
+# Ensure dob and dod fields exist
+if 'dob' not in person or not person['dob']:
+    person['dob'] = 'unknown'
+    print("⚠️  No birth year found, setting to 'unknown'")
+if 'dod' not in person or not person['dod']:
+    person['dod'] = 'alive'
+    print("⚠️  No death status found, setting to 'alive'")
+
 print(f"   parentIds: {person['parentIds']}")
 print(f"   siblingIds: {person['siblingIds']}")
 print(f"   childrenIds: {person['childrenIds']}")
