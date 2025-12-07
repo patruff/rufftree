@@ -2,12 +2,14 @@ name: Process Add Person Issue
 
 on:
   issues:
-    types: [labeled]
+    types: [labeled, opened]
 
 jobs:
   process-person:
-    # Only run when the 'add-person' label is added
-    if: github.event.label.name == 'add-person'
+    # Run when 'add-person' label is added OR when issue is opened with the label
+    if: |
+      (github.event.action == 'labeled' && github.event.label.name == 'add-person') ||
+      (github.event.action == 'opened' && contains(github.event.issue.labels.*.name, 'add-person'))
     runs-on: ubuntu-latest
     permissions:
       contents: write
