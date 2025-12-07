@@ -1,0 +1,228 @@
+name: Issue Cleanup
+
+on:
+  workflow_dispatch:
+    inputs:
+      process_stories:
+        description: 'Process story issues'
+        required: false
+        type: boolean
+        default: true
+      process_people:
+        description: 'Process person issues'
+        required: false
+        type: boolean
+        default: true
+
+jobs:
+  cleanup-issues:
+    runs-on: ubuntu-latest
+    permissions:
+      contents: write
+      issues: write
+
+    steps:
+      - name: Checkout repository
+        uses: actions/checkout@v4
+
+      - name: Set up Python
+        uses: actions/setup-python@v4
+        with:
+          python-version: '3.11'
+
+      - name: Install dependencies
+        run: |
+          sudo apt update
+          sudo apt install gh -y
+          pip install -r requirements.txt
+
+      - name: Process person issues
+        if: github.event.inputs.process_people != 'false'
+        env:
+          GH_TOKEN: ${{ github.token }}
+        run: |
+          echo "════════════════════════════════════════════════════════"
+          echo "👥 PROCESSING PERSON ISSUES"
+          echo "════════════════════════════════════════════════════════"
+
+          # Find all open add-person issues
+          gh issue list --label "add-person" --state open --json number,title,body,labels --limit 100 > /tmp/person_issues.json
+
+          ISSUE_COUNT=$(cat /tmp/person_issues.json | jq '. | length')
+          echo "📝 Found $ISSUE_COUNT person issues to process"
+
+          if [ "$ISSUE_COUNT" -eq 0 ]; then
+            echo "✅ No person issues to process"
+          else
+            echo "📊 Issues:"
+            cat /tmp/person_issues.json | jq -r '.[] | "  #\(.number): \(.title)"'
+
+            # Process each issue
+            PROCESSED=0
+            FAILED=0
+
+            for issue_json in $(cat /tmp/person_issues.json | jq -c '.[]'); do
+              echo ""
+              echo "─────────────────────────────────────────────────────"
+              ISSUE_NUM=$(echo "$issue_json" | jq -r '.number')
+              ISSUE_TITLE=$(echo "$issue_json" | jq -r '.title')
+              echo "Processing #$ISSUE_NUM: $ISSUE_TITLE"
+
+              # Save issue to file
+              echo "$issue_json" > /tmp/issue.json
+
+              # Run processing script
+              if python3 .github/scripts/process_person.py; then
+                echo "✅ Person processed successfully"
+
+                # Run calculation scripts
+                for script in add_generations.py add_ethnicity.py calculate_completion.py; do
+                  if [ -f "$script" ]; then
+                    python3 "$script" || echo "⚠️  $script had warnings"
+                  fi
+                done
+
+                # Update README
+                if python3 .github/scripts/update_readme.py; then
+                  echo "✅ README updated"
+                fi
+
+                # Close issue
+                if python3 .github/scripts/close_issue.py; then
+                  echo "✅ Issue closed"
+                  PROCESSED=$((PROCESSED + 1))
+                else
+                  echo "⚠️  Failed to close issue"
+                fi
+
+                # Clean up for next iteration
+                rm -f /tmp/person_info.json
+              else
+                echo "❌ Failed to process person"
+                FAILED=$((FAILED + 1))
+              fi
+            done
+
+            echo ""
+            echo "─────────────────────────────────────────────────────"
+            echo "📊 Person Issues Summary:"
+            echo "   ✅ Processed: $PROCESSED"
+            echo "   ❌ Failed: $FAILED"
+          fi
+
+          echo "════════════════════════════════════════════════════════"
+
+      - name: Process story issues
+        if: github.event.inputs.process_stories != 'false'
+        env:
+          GH_TOKEN: ${{ github.token }}
+          GOOGLE_GENAI_API_KEY: ${{ secrets.GOOGLE_GENAI_API_KEY }}
+          GOOGLE_DRIVE_CREDENTIALS: ${{ secrets.GOOGLE_DRIVE_CREDENTIALS }}
+        run: |
+          echo "════════════════════════════════════════════════════════"
+          echo "📖 PROCESSING STORY ISSUES"
+          echo "════════════════════════════════════════════════════════"
+
+          # Find all open family-story issues
+          gh issue list --label "family-story" --state open --json number,title,body,labels --limit 100 > /tmp/story_issues.json
+
+          ISSUE_COUNT=$(cat /tmp/story_issues.json | jq '. | length')
+          echo "📝 Found $ISSUE_COUNT story issues to process"
+
+          if [ "$ISSUE_COUNT" -eq 0 ]; then
+            echo "✅ No story issues to process"
+          else
+            echo "📊 Issues:"
+            cat /tmp/story_issues.json | jq -r '.[] | "  #\(.number): \(.title)"'
+
+            # Process each issue
+            PROCESSED=0
+            FAILED=0
+
+            for issue_json in $(cat /tmp/story_issues.json | jq -c '.[]'); do
+              echo ""
+              echo "─────────────────────────────────────────────────────"
+              ISSUE_NUM=$(echo "$issue_json" | jq -r '.number')
+              ISSUE_TITLE=$(echo "$issue_json" | jq -r '.title')
+              ISSUE_BODY=$(echo "$issue_json" | jq -r '.body')
+              echo "Processing #$ISSUE_NUM: $ISSUE_TITLE"
+
+              # Extract story fields
+              STORY_TITLE=$(echo "$ISSUE_BODY" | grep -A 1 "### Story Title" | tail -1 | xargs)
+              STORY_ABOUT=$(echo "$ISSUE_BODY" | grep -A 1 "### Who Is This Story About" | tail -1 | xargs)
+              STORY_AUTHOR=$(echo "$ISSUE_BODY" | grep -A 1 "### Your Name (Author)" | tail -1 | xargs)
+
+              # Extract story content
+              STORY_CONTENT=$(echo "$ISSUE_BODY" | sed -n '/### Your Story/,/###/p' | sed '1d;$d' | sed '/^$/d')
+
+              if [ -z "$STORY_TITLE" ] || [ -z "$STORY_CONTENT" ]; then
+                echo "❌ Missing required story fields"
+                FAILED=$((FAILED + 1))
+                continue
+              fi
+
+              echo "  Title: $STORY_TITLE"
+              echo "  About: $STORY_ABOUT"
+              echo "  Author: $STORY_AUTHOR"
+
+              # Add story to RAG
+              if python add_story_to_drive.py --title "$STORY_TITLE" --about "$STORY_ABOUT" --author "${STORY_AUTHOR:-Anonymous}" --story "$STORY_CONTENT"; then
+                echo "✅ Story added to RAG"
+
+                # Close issue
+                export ISSUE_NUM STORY_TITLE STORY_ABOUT STORY_AUTHOR
+                if python3 .github/scripts/close_story_issue.py; then
+                  echo "✅ Issue closed"
+                  PROCESSED=$((PROCESSED + 1))
+                else
+                  echo "⚠️  Failed to close issue"
+                fi
+              else
+                echo "❌ Failed to add story"
+                FAILED=$((FAILED + 1))
+              fi
+            done
+
+            echo ""
+            echo "─────────────────────────────────────────────────────"
+            echo "📊 Story Issues Summary:"
+            echo "   ✅ Processed: $PROCESSED"
+            echo "   ❌ Failed: $FAILED"
+          fi
+
+          echo "════════════════════════════════════════════════════════"
+
+      - name: Commit and push changes
+        run: |
+          echo "════════════════════════════════════════════════════════"
+          echo "💾 COMMITTING CHANGES"
+          echo "════════════════════════════════════════════════════════"
+
+          git config --local user.email "github-actions[bot]@users.noreply.github.com"
+          git config --local user.name "github-actions[bot]"
+
+          git add family_tree.json README.md
+
+          if git diff --staged --quiet; then
+            echo "ℹ️  No changes to commit"
+          else
+            git commit -m "Issue cleanup - process pending stories and people"
+            git push
+            echo "✅ Changes committed and pushed"
+          fi
+
+          echo "════════════════════════════════════════════════════════"
+
+      - name: Final summary
+        if: always()
+        run: |
+          echo "════════════════════════════════════════════════════════"
+          echo "🏁 CLEANUP COMPLETE"
+          echo "════════════════════════════════════════════════════════"
+          echo ""
+          echo "Run 'git log -1' to see the commit (if any)"
+          echo ""
+          echo "Check closed issues at:"
+          echo "  https://github.com/${{ github.repository }}/issues?q=is%3Aissue+is%3Aclosed"
+          echo ""
+          echo "════════════════════════════════════════════════════════"
