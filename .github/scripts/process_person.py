@@ -99,15 +99,12 @@ person_id = person['id']
 
 # Check if already exists
 if person_id in people:
-    print(f"⚠️  Person {person_id} already exists!")
-    counter = 1
-    new_id = f"{person_id}_{counter}"
-    while new_id in people:
-        counter += 1
-        new_id = f"{person_id}_{counter}"
-    person['id'] = new_id
-    person_id = new_id
-    print(f"🔄 Using unique ID: {person_id}")
+    print(f"⚠️  Person {person_id} already exists in the family tree!")
+    print(f"   Existing person: {people[person_id].get('name')}")
+    print(f"   This appears to be a duplicate issue.")
+    print(f"   Skipping to avoid creating duplicate entries.")
+    # Don't save person_info.json - this signals to the workflow that we skipped
+    sys.exit(0)
 
 # Set defaults
 print("\n🔧 Setting default relationship fields...")
