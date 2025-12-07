@@ -1,15 +1,17 @@
 name: Process Family Story Issue
 
 on:
+  # Run every 20 minutes to check for new story issues
+  schedule:
+    - cron: '*/20 * * * *'
+  # Allow manual triggering
+  workflow_dispatch:
+  # Also try to trigger on issue events
   issues:
     types: [labeled, opened]
 
 jobs:
   process-story:
-    # Run when 'family-story' label is added OR when issue is opened with the label
-    if: |
-      (github.event.action == 'labeled' && github.event.label.name == 'family-story') ||
-      (github.event.action == 'opened' && contains(github.event.issue.labels.*.name, 'family-story'))
     runs-on: ubuntu-latest
     permissions:
       contents: write
