@@ -2,12 +2,14 @@ name: Process Family Story Issue
 
 on:
   issues:
-    types: [labeled]
+    types: [labeled, opened]
 
 jobs:
   process-story:
-    # Only run when the 'family-story' label is added
-    if: github.event.label.name == 'family-story'
+    # Run when 'family-story' label is added OR when issue is opened with the label
+    if: |
+      (github.event.action == 'labeled' && github.event.label.name == 'family-story') ||
+      (github.event.action == 'opened' && contains(github.event.issue.labels.*.name, 'family-story'))
     runs-on: ubuntu-latest
     permissions:
       contents: write
