@@ -169,8 +169,8 @@ jobs:
               if python add_story_to_drive.py --title "$STORY_TITLE" --about "$STORY_ABOUT" --author "${STORY_AUTHOR:-Anonymous}" --story "$STORY_CONTENT"; then
                 echo "✅ Story added to RAG"
 
-                # Close issue
-                gh issue comment $ISSUE_NUM --body "## ✅ Story Added Successfully!
+                # Close issue with success comment
+                COMMENT_BODY="## ✅ Story Added Successfully!
 
 The story has been added to the family archive and is now searchable.
 
@@ -181,6 +181,7 @@ The story has been added to the family archive and is now searchable.
 
 Thank you for sharing this family memory! 🙏"
 
+                gh issue comment $ISSUE_NUM --body "$COMMENT_BODY"
                 gh issue edit $ISSUE_NUM --remove-label "story:pending" --add-label "story:processed" 2>/dev/null || true
                 gh issue close $ISSUE_NUM
 
