@@ -286,10 +286,14 @@ jobs:
           import json
           import os
           import re
+          from datetime import datetime
 
           person_name = os.environ.get('PERSON_NAME', '')
           person_id = os.environ.get('PERSON_ID', '')
           issue_number = os.environ.get('ISSUE_NUMBER', '')
+
+          # Get current date
+          date_str = datetime.now().strftime("%B %d, %Y")
 
           # Load family tree to count people
           with open('family_tree.json', 'r') as f:
@@ -319,8 +323,8 @@ jobs:
               # Extract existing people (to keep the second one)
               people_lines = [line for line in old_content.strip().split('\n') if line.strip() and not line.startswith('>')]
 
-              # Create new entry
-              new_entry = f"- **{person_name}** - {occupation} from {location}. _(Issue #{issue_number})_"
+              # Create new entry with date
+              new_entry = f"- **{person_name}** - {occupation} from {location}. Added on {date_str}. _(Issue #{issue_number})_"
 
               # Keep only the most recent previous person (if exists and isn't a placeholder)
               second_person = ""
@@ -337,7 +341,7 @@ jobs:
           with open('README.md', 'w') as f:
               f.write(readme)
 
-          print(f"✅ Updated README: Added {person_name} (Total: {total_people} people)")
+          print(f"✅ Updated README: Added {person_name} on {date_str} (Total: {total_people} people)")
           EOF
 
       - name: Commit changes
