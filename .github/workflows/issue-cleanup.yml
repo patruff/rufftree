@@ -154,7 +154,8 @@ jobs:
             PROCESSED=0
             FAILED=0
 
-            for issue_json in $(cat /tmp/story_issues.json | jq -c '.[]'); do
+            # Use while loop with read to avoid bash word splitting
+            while IFS= read -r issue_json; do
               echo ""
               echo "─────────────────────────────────────────────────────"
               ISSUE_NUM=$(echo "$issue_json" | jq -r '.number')
@@ -196,7 +197,7 @@ jobs:
                 echo "❌ Failed to add story"
                 FAILED=$((FAILED + 1))
               fi
-            done
+            done < <(cat /tmp/story_issues.json | jq -c '.[]')
 
             echo ""
             echo "─────────────────────────────────────────────────────"
