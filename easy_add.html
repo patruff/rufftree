@@ -319,15 +319,14 @@
                 <h3>📝 How to Use</h3>
                 <ol>
                     <li>Fill in the person's name (first and last name required)</li>
-                    <li>Optionally select parents and/or children from existing family members</li>
-                    <li>Click "Save Person" to download the JSON file</li>
-                    <li>Add the downloaded file to the <code>generated_people/</code> folder in the repository</li>
-                    <li>Push to GitHub - the person will be automatically integrated!</li>
+                    <li>Optionally select parents, spouse, and/or children from existing family members</li>
+                    <li>Click "Add to Tree" to submit a GitHub issue</li>
+                    <li>The person will be automatically integrated into the family tree!</li>
                 </ol>
             </div>
 
             <div class="success-message" id="successMessage">
-                ✓ Person saved successfully! Download should start automatically.
+                ✓ GitHub issue created! The person will be automatically added to the family tree.
             </div>
 
             <div class="error-message" id="errorMessage">
@@ -386,7 +385,7 @@
                 </div>
 
                 <div class="button-group">
-                    <button type="submit" class="btn-submit">💾 Save Person</button>
+                    <button type="submit" class="btn-submit">🌳 Add to Tree</button>
                     <button type="button" class="btn-reset" onclick="resetForm()">🔄 Reset Form</button>
                 </div>
             </form>
@@ -394,6 +393,8 @@
     </div>
 
     <script>
+        const GITHUB_REPO = 'patruff/rufftree';
+
         let familyData = null;
         let selectedParents = [];
         let selectedSpouse = null;
@@ -618,17 +619,41 @@
                 spouseId: selectedSpouse ? selectedSpouse.id : null
             };
 
-            // Create JSON blob and download
+            // Create GitHub issue instead of downloading
             const jsonString = JSON.stringify(person, null, 2);
-            const blob = new Blob([jsonString], { type: 'application/json' });
-            const url = URL.createObjectURL(blob);
-            const a = document.createElement('a');
-            a.href = url;
-            a.download = `${personId}.json`;
-            document.body.appendChild(a);
-            a.click();
-            document.body.removeChild(a);
-            URL.revokeObjectURL(url);
+            const title = encodeURIComponent(`Add Person: ${fullName}`);
+
+            // Build relationship descriptions for the issue
+            let relationshipDesc = [];
+            if (selectedParents.length > 0) {
+                relationshipDesc.push(`**Parents:** ${selectedParents.map(p => p.name).join(', ')}`);
+            }
+            if (selectedSpouse) {
+                relationshipDesc.push(`**Spouse:** ${selectedSpouse.name}`);
+            }
+            if (selectedChildren.length > 0) {
+                relationshipDesc.push(`**Children:** ${selectedChildren.map(p => p.name).join(', ')}`);
+            }
+
+            const body = encodeURIComponent(
+`## New Family Member Request
+
+**Name:** ${fullName}
+
+${relationshipDesc.length > 0 ? relationshipDesc.join('\n') + '\n\n' : ''}### Person JSON Data
+
+\`\`\`json
+${jsonString}
+\`\`\`
+
+---
+*This issue was automatically generated from the Easy Add form.*
+*The person will be automatically integrated into the family tree.*`
+            );
+
+            // Open GitHub issue creation page
+            const issueUrl = `https://github.com/${GITHUB_REPO}/issues/new?title=${title}&body=${body}&labels=add-person`;
+            window.open(issueUrl, '_blank');
 
             showSuccess();
             setTimeout(() => resetForm(), 2000);
