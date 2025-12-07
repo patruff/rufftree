@@ -163,7 +163,7 @@ jobs:
               ISSUE_BODY=$(echo "$issue_json" | jq -r '.body')
               echo "Processing #$ISSUE_NUM: $ISSUE_TITLE"
 
-              # Extract story fields
+              # Try to extract structured story fields
               STORY_TITLE=$(echo "$ISSUE_BODY" | grep -A 1 "### Story Title" | tail -1 | xargs)
               STORY_ABOUT=$(echo "$ISSUE_BODY" | grep -A 1 "### Who Is This Story About" | tail -1 | xargs)
               STORY_AUTHOR=$(echo "$ISSUE_BODY" | grep -A 1 "### Your Name (Author)" | tail -1 | xargs)
@@ -171,15 +171,30 @@ jobs:
               # Extract story content
               STORY_CONTENT=$(echo "$ISSUE_BODY" | sed -n '/### Your Story/,/###/p' | sed '1d;$d' | sed '/^$/d')
 
-              if [ -z "$STORY_TITLE" ] || [ -z "$STORY_CONTENT" ]; then
-                echo "❌ Missing required story fields"
-                FAILED=$((FAILED + 1))
-                continue
+              # Fallback: if no structured content found, use entire body as story
+              if [ -z "$STORY_CONTENT" ]; then
+                echo "ℹ️  No structured story content found, using full issue body"
+                STORY_CONTENT="$ISSUE_BODY"
+              fi
+
+              # Fallback: if no title, use issue title (strip [Story] prefix)
+              if [ -z "$STORY_TITLE" ]; then
+                STORY_TITLE=$(echo "$ISSUE_TITLE" | sed 's/^\[Story\] //')
+                echo "ℹ️  Using issue title as story title: $STORY_TITLE"
+              fi
+
+              # Default values for optional fields
+              if [ -z "$STORY_ABOUT" ]; then
+                STORY_ABOUT="Family"
+              fi
+              if [ -z "$STORY_AUTHOR" ]; then
+                STORY_AUTHOR="Anonymous"
               fi
 
               echo "  Title: $STORY_TITLE"
               echo "  About: $STORY_ABOUT"
               echo "  Author: $STORY_AUTHOR"
+              echo "  Content length: ${#STORY_CONTENT} chars"
 
               # Add story to RAG
               if python add_story_to_drive.py --title "$STORY_TITLE" --about "$STORY_ABOUT" --author "${STORY_AUTHOR:-Anonymous}" --story "$STORY_CONTENT"; then
