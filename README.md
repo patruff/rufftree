@@ -5,10 +5,10 @@ A Retrieval Augmented Generation (RAG) system for Ruff family documents using Go
 ## 🆕 Recent Additions
 
 ### Recently Added People
+- **Kristina Wolter** - Occupation unknown from Location unknown. Added on December 07, 2025. _(Issue #42)_
 - **Michael Fischer** - Nurse from Townsend, DE. _(Issue #30)_
-- _(Next person will appear here automatically)_
 
-> **Total People in Family Tree:** _Pending automation_
+> **Total People in Family Tree:** 41
 
 ### Recent Family Stories
 - **Ocean's First Movie** - Patrick's story about Ocean watching her first movie in theaters. December 4, 2025. _(Issue #28)_

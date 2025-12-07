@@ -1110,6 +1110,19 @@
           "Chinese": 100
         },
         "completion_percentage": 12.5
+      },
+      "kristina_wolter": {
+        "id": "kristina_wolter",
+        "name": "Kristina Wolter",
+        "dob": "unknown",
+        "dod": "alive",
+        "parentIds": [
+          "anita"
+        ],
+        "childrenIds": [],
+        "siblingIds": [],
+        "spouseId": null,
+        "completion_percentage": 6.2
       }
     }
   },
