@@ -251,7 +251,8 @@
 
         <div class="instructions">
             <h3>How to Use</h3>
-            <p>🖱️ <strong>Click and drag</strong> nodes to rearrange the graph</p>
+            <p>🌳 <strong>Hierarchical Tree View:</strong> Generations flow from top (grandparents) to bottom (descendants)</p>
+            <p>🎨 <strong>Color-coded generations:</strong> Each generation has a unique color (see legend)</p>
             <p>👆 <strong>Click a person</strong> to view their information in the panel on the right</p>
             <p>🔍 <strong>Scroll to zoom</strong> in and out of the graph</p>
             <p>🎯 <strong>Double-click</strong> a node to focus on that person and their immediate connections</p>
@@ -274,7 +275,33 @@
                 <div class="person-info" id="personInfo"></div>
 
                 <div class="legend">
-                    <h4>Relationship Types</h4>
+                    <h4>Generations</h4>
+                    <div class="legend-item">
+                        <div style="width: 20px; height: 20px; background: #8B4513; border-radius: 50%; margin-right: 10px; border: 2px solid #333;"></div>
+                        <span>Great-grandparents (-2)</span>
+                    </div>
+                    <div class="legend-item">
+                        <div style="width: 20px; height: 20px; background: #FF6B6B; border-radius: 50%; margin-right: 10px; border: 2px solid #333;"></div>
+                        <span>Grandparents (-1)</span>
+                    </div>
+                    <div class="legend-item">
+                        <div style="width: 20px; height: 20px; background: #4ECDC4; border-radius: 50%; margin-right: 10px; border: 2px solid #333;"></div>
+                        <span>Pat's Generation (0)</span>
+                    </div>
+                    <div class="legend-item">
+                        <div style="width: 20px; height: 20px; background: #95E1D3; border-radius: 50%; margin-right: 10px; border: 2px solid #333;"></div>
+                        <span>Children (+1)</span>
+                    </div>
+                    <div class="legend-item">
+                        <div style="width: 20px; height: 20px; background: #FFE66D; border-radius: 50%; margin-right: 10px; border: 2px solid #333;"></div>
+                        <span>Grandchildren (+2)</span>
+                    </div>
+                    <div class="legend-item">
+                        <div style="width: 20px; height: 20px; background: #C7CEEA; border-radius: 50%; margin-right: 10px; border: 2px solid #333;"></div>
+                        <span>Great-grandchildren (+3)</span>
+                    </div>
+
+                    <h4 style="margin-top: 20px;">Relationship Types</h4>
                     <div class="legend-item">
                         <div class="legend-line parent"></div>
                         <span>Parent-Child</span>
@@ -311,6 +338,19 @@
                 alert('Error loading family data. Please check family_tree.json exists.');
             });
 
+        // Generation color mapping
+        function getGenerationColor(fromPat) {
+            const colors = {
+                '-2': '#8B4513',  // Great-grandparents - Brown
+                '-1': '#FF6B6B',  // Grandparents - Red
+                '0': '#4ECDC4',   // Pat's generation - Teal
+                '1': '#95E1D3',   // Children - Light green
+                '2': '#FFE66D',   // Grandchildren - Yellow
+                '3': '#C7CEEA'    // Great-grandchildren - Light purple
+            };
+            return colors[fromPat.toString()] || '#B8B8B8'; // Default gray
+        }
+
         function createGraph(family) {
             const people = family.people;
 
@@ -318,6 +358,8 @@
             allNodes = Object.values(people).map(person => {
                 const age = calculateAge(person.dob, person.dod);
                 const isAlive = person.dod === 'alive';
+                const fromPat = person.from_pat || 0;
+                const nodeColor = getGenerationColor(fromPat);
 
                 return {
                     id: person.id,
@@ -325,8 +367,9 @@
                     title: `${person.name}\n${person.generation || 'Unknown'}\n${age}${isAlive ? ' years old' : ''}`,
                     shape: 'dot',
                     size: 25,
+                    level: -fromPat, // Negative because higher generations should be at top (lower Y values)
                     color: {
-                        background: isAlive ? '#4CAF50' : '#9E9E9E',
+                        background: nodeColor,
                         border: '#333',
                         highlight: {
                             background: '#667eea',
@@ -336,7 +379,8 @@
                     font: {
                         size: 14,
                         color: '#333',
-                        face: 'Segoe UI'
+                        face: 'Segoe UI',
+                        bold: fromPat === 0 ? { color: '#000' } : undefined
                     },
                     person: person // Store full person data
                 };
@@ -411,19 +455,21 @@
             };
 
             const options = {
-                physics: {
-                    enabled: true,
-                    barnesHut: {
-                        gravitationalConstant: -2000,
-                        centralGravity: 0.3,
-                        springLength: 150,
-                        springConstant: 0.04,
-                        damping: 0.09,
-                        avoidOverlap: 0.5
-                    },
-                    stabilization: {
-                        iterations: 200
+                layout: {
+                    hierarchical: {
+                        enabled: true,
+                        direction: 'UD',  // Up-Down (top to bottom)
+                        sortMethod: 'directed',  // Use edges to determine hierarchy
+                        levelSeparation: 150,  // Vertical spacing between generations
+                        nodeSpacing: 120,  // Horizontal spacing between nodes at same level
+                        treeSpacing: 200,  // Spacing between separate trees
+                        blockShifting: true,
+                        edgeMinimization: true,
+                        parentCentralization: true
                     }
+                },
+                physics: {
+                    enabled: false  // Disable physics for cleaner hierarchical layout
                 },
                 interaction: {
                     dragNodes: true,
@@ -438,7 +484,9 @@
                 },
                 edges: {
                     smooth: {
-                        type: 'continuous'
+                        type: 'cubicBezier',
+                        forceDirection: 'vertical',  // Force edges to flow vertically
+                        roundness: 0.4
                     },
                     shadow: true
                 }
@@ -459,17 +507,6 @@
                 if (params.nodes.length > 0) {
                     focusOnNode(params.nodes[0]);
                 }
-            });
-
-            // Stabilization progress
-            network.on('stabilizationProgress', function(params) {
-                console.log('Stabilization progress:', Math.round(params.iterations / params.total * 100) + '%');
-            });
-
-            network.on('stabilizationIterationsDone', function() {
-                console.log('Graph stabilized');
-                network.setOptions({ physics: false });
-                physicsEnabled = false;
             });
         }
 
@@ -842,13 +879,28 @@
         }
 
         function togglePhysics() {
+            // In hierarchical mode, physics is kept off for clean tree layout
+            // This button can temporarily enable it to let things settle
             physicsEnabled = !physicsEnabled;
-            network.setOptions({ physics: physicsEnabled });
             if (physicsEnabled) {
+                network.setOptions({
+                    physics: {
+                        enabled: true,
+                        hierarchicalRepulsion: {
+                            centralGravity: 0.0,
+                            springLength: 100,
+                            springConstant: 0.01,
+                            nodeDistance: 120,
+                            damping: 0.09
+                        }
+                    }
+                });
                 setTimeout(() => {
-                    network.setOptions({ physics: false });
+                    network.setOptions({ physics: { enabled: false } });
                     physicsEnabled = false;
                 }, 3000);
+            } else {
+                network.setOptions({ physics: { enabled: false } });
             }
         }
 
