@@ -60,8 +60,10 @@ jobs:
             # Process each issue
             PROCESSED=0
             FAILED=0
+            SKIPPED=0
 
-            for issue_json in $(cat /tmp/person_issues.json | jq -c '.[]'); do
+            # Use while loop with read to avoid bash word splitting
+            while IFS= read -r issue_json; do
               echo ""
               echo "─────────────────────────────────────────────────────"
               ISSUE_NUM=$(echo "$issue_json" | jq -r '.number')
@@ -75,38 +77,51 @@ jobs:
               if python3 .github/scripts/process_person.py; then
                 echo "✅ Person processed successfully"
 
-                # Run calculation scripts
-                for script in add_generations.py add_ethnicity.py calculate_completion.py; do
-                  if [ -f "$script" ]; then
-                    python3 "$script" || echo "⚠️  $script had warnings"
+                # Check if person was actually added or already existed
+                if [ -f "/tmp/person_info.json" ]; then
+                  PERSON_NAME=$(cat /tmp/person_info.json | jq -r '.name')
+
+                  # Run calculation scripts
+                  for script in add_generations.py add_ethnicity.py calculate_completion.py; do
+                    if [ -f "$script" ]; then
+                      python3 "$script" || echo "⚠️  $script had warnings"
+                    fi
+                  done
+
+                  # Update README
+                  if python3 .github/scripts/update_readme.py; then
+                    echo "✅ README updated"
                   fi
-                done
 
-                # Update README
-                if python3 .github/scripts/update_readme.py; then
-                  echo "✅ README updated"
-                fi
+                  # Close issue
+                  if python3 .github/scripts/close_issue.py; then
+                    echo "✅ Issue closed"
+                    PROCESSED=$((PROCESSED + 1))
+                  else
+                    echo "⚠️  Failed to close issue"
+                  fi
 
-                # Close issue
-                if python3 .github/scripts/close_issue.py; then
-                  echo "✅ Issue closed"
-                  PROCESSED=$((PROCESSED + 1))
+                  # Clean up for next iteration
+                  rm -f /tmp/person_info.json
                 else
-                  echo "⚠️  Failed to close issue"
-                fi
+                  echo "ℹ️  Person already exists, skipping"
+                  SKIPPED=$((SKIPPED + 1))
 
-                # Clean up for next iteration
-                rm -f /tmp/person_info.json
+                  # Close duplicate issue
+                  gh issue comment $ISSUE_NUM --body "This person already exists in the family tree. Closing as duplicate."
+                  gh issue close $ISSUE_NUM --reason "not_planned"
+                fi
               else
                 echo "❌ Failed to process person"
                 FAILED=$((FAILED + 1))
               fi
-            done
+            done < <(cat /tmp/person_issues.json | jq -c '.[]')
 
             echo ""
             echo "─────────────────────────────────────────────────────"
             echo "📊 Person Issues Summary:"
             echo "   ✅ Processed: $PROCESSED"
+            echo "   ⏭️  Skipped (duplicates): $SKIPPED"
             echo "   ❌ Failed: $FAILED"
           fi
 
