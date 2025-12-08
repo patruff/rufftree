@@ -246,6 +246,7 @@
             <a href="submit_story.html">📖 Submit Story</a>
             <a href="person_generator.html">👤 Add Person</a>
             <a href="easy_add.html">➕ Easy Add</a>
+            <a href="edit_person.html">✏️ Edit Person</a>
             <a href="export_minitree.html">📥 Export CSV</a>
         </nav>
 
@@ -278,27 +279,27 @@
                     <h4>Generations</h4>
                     <div class="legend-item">
                         <div style="width: 20px; height: 20px; background: #8B4513; border-radius: 50%; margin-right: 10px; border: 2px solid #333;"></div>
-                        <span>Grandparents (-2)</span>
+                        <span>Silent Generation (-2)</span>
                     </div>
                     <div class="legend-item">
                         <div style="width: 20px; height: 20px; background: #FF6B6B; border-radius: 50%; margin-right: 10px; border: 2px solid #333;"></div>
-                        <span>Parents (-1)</span>
+                        <span>Baby Boomers (-1)</span>
                     </div>
                     <div class="legend-item">
                         <div style="width: 20px; height: 20px; background: #4ECDC4; border-radius: 50%; margin-right: 10px; border: 2px solid #333;"></div>
-                        <span>Pat's Generation (0)</span>
+                        <span>Gen X / Millennials (0)</span>
                     </div>
                     <div class="legend-item">
                         <div style="width: 20px; height: 20px; background: #95E1D3; border-radius: 50%; margin-right: 10px; border: 2px solid #333;"></div>
-                        <span>Children (+1)</span>
+                        <span>Gen Z (+1)</span>
                     </div>
                     <div class="legend-item">
                         <div style="width: 20px; height: 20px; background: #FFE66D; border-radius: 50%; margin-right: 10px; border: 2px solid #333;"></div>
-                        <span>Grandchildren (+2)</span>
+                        <span>Gen Alpha (+2)</span>
                     </div>
                     <div class="legend-item">
                         <div style="width: 20px; height: 20px; background: #C7CEEA; border-radius: 50%; margin-right: 10px; border: 2px solid #333;"></div>
-                        <span>Great-grandchildren (+3)</span>
+                        <span>Gen Beta (+3)</span>
                     </div>
 
                     <h4 style="margin-top: 20px;">Relationship Types</h4>
@@ -341,14 +342,27 @@
         // Generation color mapping
         function getGenerationColor(fromPat) {
             const colors = {
-                '-2': '#8B4513',  // Grandparents - Brown
-                '-1': '#FF6B6B',  // Parents - Red
-                '0': '#4ECDC4',   // Pat's generation - Teal
-                '1': '#95E1D3',   // Children - Light green
-                '2': '#FFE66D',   // Grandchildren - Yellow
-                '3': '#C7CEEA'    // Great-grandchildren - Light purple
+                '-2': '#8B4513',  // Silent Generation - Brown
+                '-1': '#FF6B6B',  // Baby Boomers - Red
+                '0': '#4ECDC4',   // Gen X / Millennials - Teal
+                '1': '#95E1D3',   // Gen Z - Light green
+                '2': '#FFE66D',   // Gen Alpha - Yellow
+                '3': '#C7CEEA'    // Gen Beta - Light purple
             };
             return colors[fromPat.toString()] || '#B8B8B8'; // Default gray
+        }
+
+        // Get generation name based on from_pat
+        function getGenerationName(fromPat) {
+            const names = {
+                '-2': 'Silent Generation',
+                '-1': 'Baby Boomers',
+                '0': 'Gen X / Millennials',
+                '1': 'Gen Z',
+                '2': 'Gen Alpha',
+                '3': 'Gen Beta'
+            };
+            return names[fromPat.toString()] || 'Unknown Generation';
         }
 
         function createGraph(family) {
