@@ -1089,6 +1089,8 @@
             if (!fieldElement) return;
 
             const originalHTML = fieldElement.innerHTML;
+            const originalClasses = fieldElement.className;
+            const originalOnclick = fieldElement.getAttribute('onclick');
 
             // Create input field
             const input = document.createElement('input');
@@ -1110,12 +1112,19 @@
                     personChanges[fieldName] = newValue;
                     currentEditingPerson[fieldName] = newValue;
 
-                    // Update display
+                    // Restore the editable field with new value
+                    fieldElement.className = originalClasses;
+                    fieldElement.setAttribute('onclick', `editField('${fieldName}', '${newValue.replace(/'/g, "\\'")}', '${inputType}')`);
                     fieldElement.innerHTML = newValue || '<em>Click to add</em>';
 
                     // Update changes panel
                     updateChangesPanel();
                 } else {
+                    // No change, restore original
+                    fieldElement.className = originalClasses;
+                    if (originalOnclick) {
+                        fieldElement.setAttribute('onclick', originalOnclick);
+                    }
                     fieldElement.innerHTML = originalHTML;
                 }
             };
@@ -1124,6 +1133,11 @@
             cancelBtn.className = 'edit-btn-cancel';
             cancelBtn.textContent = 'Cancel';
             cancelBtn.onclick = function() {
+                // Restore original state
+                fieldElement.className = originalClasses;
+                if (originalOnclick) {
+                    fieldElement.setAttribute('onclick', originalOnclick);
+                }
                 fieldElement.innerHTML = originalHTML;
             };
 
@@ -1131,6 +1145,8 @@
             actionsDiv.appendChild(cancelBtn);
 
             // Replace field content with input
+            fieldElement.className = ''; // Remove editable-field class during editing
+            fieldElement.removeAttribute('onclick');
             fieldElement.innerHTML = '';
             fieldElement.appendChild(input);
             fieldElement.appendChild(actionsDiv);
@@ -1141,6 +1157,13 @@
             input.addEventListener('keypress', function(e) {
                 if (e.key === 'Enter') {
                     saveBtn.click();
+                }
+            });
+
+            // Cancel on Escape
+            input.addEventListener('keydown', function(e) {
+                if (e.key === 'Escape') {
+                    cancelBtn.click();
                 }
             });
         }
