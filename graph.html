@@ -233,6 +233,11 @@
             font-weight: bold;
         }
 
+        .related-list a:hover {
+            text-decoration: underline !important;
+            color: #764ba2 !important;
+        }
+
         .action-buttons {
             display: flex;
             flex-direction: column;
@@ -1025,7 +1030,7 @@
                 html += `
                     <div class="info-item">
                         <div class="info-label">Spouse</div>
-                        <div class="info-value">${spouse ? spouse.name : person.spouseId}</div>
+                        <div class="info-value"><a href="#" onclick="loadPersonById('${person.spouseId}'); return false;" style="color: #667eea; text-decoration: underline; cursor: pointer;">${spouse ? spouse.name : person.spouseId}</a></div>
                     </div>
                 `;
             }
@@ -1037,7 +1042,7 @@
                         <ul class="related-list">
                             ${person.parentIds.map(id => {
                                 const parent = familyData.people[id];
-                                return `<li>${parent ? parent.name : id}</li>`;
+                                return `<li><a href="#" onclick="loadPersonById('${id}'); return false;" style="color: #667eea; text-decoration: none; cursor: pointer;">${parent ? parent.name : id}</a></li>`;
                             }).join('')}
                         </ul>
                     </div>
@@ -1051,7 +1056,7 @@
                         <ul class="related-list">
                             ${person.childrenIds.map(id => {
                                 const child = familyData.people[id];
-                                return `<li>${child ? child.name : id}</li>`;
+                                return `<li><a href="#" onclick="loadPersonById('${id}'); return false;" style="color: #667eea; text-decoration: none; cursor: pointer;">${child ? child.name : id}</a></li>`;
                             }).join('')}
                         </ul>
                     </div>
@@ -1065,7 +1070,7 @@
                         <ul class="related-list">
                             ${person.siblingIds.map(id => {
                                 const sibling = familyData.people[id];
-                                return `<li>${sibling ? sibling.name : id}</li>`;
+                                return `<li><a href="#" onclick="loadPersonById('${id}'); return false;" style="color: #667eea; text-decoration: none; cursor: pointer;">${sibling ? sibling.name : id}</a></li>`;
                             }).join('')}
                         </ul>
                     </div>
@@ -1183,6 +1188,13 @@
                 changesList.innerHTML = changesHTML;
             } else {
                 changesPanel.classList.remove('active');
+            }
+        }
+
+        function loadPersonById(personId) {
+            const person = familyData.people[personId];
+            if (person) {
+                showPersonInfo(person);
             }
         }
 
