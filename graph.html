@@ -232,6 +232,66 @@
             color: #667eea;
             font-weight: bold;
         }
+
+        .action-buttons {
+            display: flex;
+            flex-direction: column;
+            gap: 10px;
+            margin-top: 20px;
+            padding-top: 20px;
+            border-top: 2px solid #ddd;
+        }
+
+        .action-btn {
+            padding: 12px 16px;
+            border: none;
+            border-radius: 6px;
+            font-weight: 600;
+            font-size: 14px;
+            cursor: pointer;
+            transition: all 0.3s;
+            text-align: center;
+            display: flex;
+            align-items: center;
+            justify-content: center;
+            gap: 8px;
+        }
+
+        .action-btn-edit {
+            background: linear-gradient(135deg, #667eea 0%, #764ba2 100%);
+            color: white;
+        }
+
+        .action-btn-edit:hover {
+            transform: translateY(-2px);
+            box-shadow: 0 4px 12px rgba(102, 126, 234, 0.4);
+        }
+
+        .action-btn-add {
+            background: #4CAF50;
+            color: white;
+        }
+
+        .action-btn-add:hover {
+            background: #45a049;
+            transform: translateY(-2px);
+            box-shadow: 0 4px 12px rgba(76, 175, 80, 0.4);
+        }
+
+        .action-btn-spouse {
+            background: #FF9800;
+            color: white;
+        }
+
+        .action-btn-spouse:hover {
+            background: #FB8C00;
+            transform: translateY(-2px);
+            box-shadow: 0 4px 12px rgba(255, 152, 0, 0.4);
+        }
+
+        .action-btn:active {
+            transform: translateY(0);
+        }
     </style>
 </head>
 <body>
@@ -871,6 +931,24 @@
                 `;
             }
 
+            // Add action buttons
+            html += `
+                <div class="action-buttons">
+                    <button class="action-btn action-btn-edit" onclick="editPerson('${person.id}')">
+                        ✏️ Edit Person
+                    </button>
+                    <button class="action-btn action-btn-add" onclick="addParent('${person.id}')">
+                        👨 Add Parent
+                    </button>
+                    <button class="action-btn action-btn-add" onclick="addChild('${person.id}')">
+                        👶 Add Child
+                    </button>
+                    <button class="action-btn action-btn-spouse" onclick="addSpouse('${person.id}')">
+                        💑 Add Spouse
+                    </button>
+                </div>
+            `;
+
             infoPanel.innerHTML = html;
         }
 
@@ -936,6 +1014,55 @@
             // Highlight connected nodes
             const connectedNodes = network.getConnectedNodes(nodeId);
             network.selectNodes([nodeId, ...connectedNodes]);
+        }
+
+        // Action button handlers
+        function editPerson(personId) {
+            // Store the person ID in sessionStorage and redirect to edit page
+            sessionStorage.setItem('editPersonId', personId);
+            window.location.href = 'edit_person.html';
+        }
+
+        function addParent(personId) {
+            const person = familyData.people[personId];
+            if (!person) return;
+
+            // Store context in sessionStorage
+            sessionStorage.setItem('addParentFor', JSON.stringify({
+                personId: personId,
+                personName: person.name
+            }));
+            window.location.href = 'person_generator.html';
+        }
+
+        function addChild(personId) {
+            const person = familyData.people[personId];
+            if (!person) return;
+
+            // Store context in sessionStorage
+            sessionStorage.setItem('addChildFor', JSON.stringify({
+                personId: personId,
+                personName: person.name,
+                spouseId: person.spouseId
+            }));
+            window.location.href = 'person_generator.html';
+        }
+
+        function addSpouse(personId) {
+            const person = familyData.people[personId];
+            if (!person) return;
+
+            if (person.spouseId) {
+                alert(`${person.name} already has a spouse (${familyData.people[person.spouseId]?.name || person.spouseId})`);
+                return;
+            }
+
+            // Store context in sessionStorage
+            sessionStorage.setItem('addSpouseFor', JSON.stringify({
+                personId: personId,
+                personName: person.name
+            }));
+            window.location.href = 'person_generator.html';
         }
     </script>
 </body>

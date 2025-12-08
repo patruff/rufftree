@@ -576,6 +576,15 @@
                 const response = await fetch('family_tree.json');
                 familyTreeData = await response.json();
                 populatePersonSelector();
+
+                // Check if we should auto-select a person from graph.html
+                const editPersonId = sessionStorage.getItem('editPersonId');
+                if (editPersonId) {
+                    sessionStorage.removeItem('editPersonId');
+                    const personSelect = document.getElementById('personSelect');
+                    personSelect.value = editPersonId;
+                    personSelect.dispatchEvent(new Event('change'));
+                }
             } catch (error) {
                 console.error('Failed to load family tree:', error);
                 alert('Error loading family tree data.');
