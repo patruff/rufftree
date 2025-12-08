@@ -1110,8 +1110,17 @@
             const saveBtn = document.createElement('button');
             saveBtn.className = 'edit-btn-save';
             saveBtn.textContent = 'Save';
-            saveBtn.onclick = function() {
+            saveBtn.onclick = function(e) {
+                e.preventDefault();
+                e.stopPropagation();
+
                 const newValue = input.value.trim();
+
+                // Remove input and buttons first
+                while (fieldElement.firstChild) {
+                    fieldElement.removeChild(fieldElement.firstChild);
+                }
+
                 if (newValue !== currentValue) {
                     // Track the change
                     personChanges[fieldName] = newValue;
@@ -1137,7 +1146,15 @@
             const cancelBtn = document.createElement('button');
             cancelBtn.className = 'edit-btn-cancel';
             cancelBtn.textContent = 'Cancel';
-            cancelBtn.onclick = function() {
+            cancelBtn.onclick = function(e) {
+                e.preventDefault();
+                e.stopPropagation();
+
+                // Remove input and buttons first
+                while (fieldElement.firstChild) {
+                    fieldElement.removeChild(fieldElement.firstChild);
+                }
+
                 // Restore original state
                 fieldElement.className = originalClasses;
                 if (originalOnclick) {
