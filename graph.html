@@ -279,19 +279,19 @@
                     <h4>Generations (Oldest → Youngest)</h4>
                     <div class="legend-item">
                         <div style="width: 20px; height: 20px; background: #4A148C; border-radius: 50%; margin-right: 10px; border: 2px solid #333;"></div>
-                        <span>Greatest Generation (-3)</span>
+                        <span>Silent Generation (-3)</span>
                     </div>
                     <div class="legend-item">
                         <div style="width: 20px; height: 20px; background: #D84315; border-radius: 50%; margin-right: 10px; border: 2px solid #333;"></div>
-                        <span>Silent Generation (-2)</span>
+                        <span>Baby Boomers (-2)</span>
                     </div>
                     <div class="legend-item">
                         <div style="width: 20px; height: 20px; background: #1976D2; border-radius: 50%; margin-right: 10px; border: 2px solid #333;"></div>
-                        <span>Baby Boomers (-1)</span>
+                        <span>Gen X (-1)</span>
                     </div>
                     <div class="legend-item">
                         <div style="width: 20px; height: 20px; background: #388E3C; border-radius: 50%; margin-right: 10px; border: 2px solid #333;"></div>
-                        <span>Gen X / Millennials (0)</span>
+                        <span>Millennials (0)</span>
                     </div>
                     <div class="legend-item">
                         <div style="width: 20px; height: 20px; background: #F57C00; border-radius: 50%; margin-right: 10px; border: 2px solid #333;"></div>
@@ -346,10 +346,10 @@
         // Generation color mapping
         function getGenerationColor(fromPat) {
             const colors = {
-                '-3': '#4A148C',  // Greatest Generation - Deep Purple
-                '-2': '#D84315',  // Silent Generation - Deep Orange
-                '-1': '#1976D2',  // Baby Boomers - Bright Blue
-                '0': '#388E3C',   // Gen X / Millennials - Green
+                '-3': '#4A148C',  // Silent Generation - Deep Purple
+                '-2': '#D84315',  // Baby Boomers - Deep Orange
+                '-1': '#1976D2',  // Gen X - Bright Blue
+                '0': '#388E3C',   // Millennials - Green
                 '1': '#F57C00',   // Gen Z - Orange
                 '2': '#C2185B',   // Gen Alpha - Pink
                 '3': '#FBC02D'    // Gen Beta - Yellow
@@ -360,10 +360,10 @@
         // Get generation name based on from_pat
         function getGenerationName(fromPat) {
             const names = {
-                '-3': 'Greatest Generation',
-                '-2': 'Silent Generation',
-                '-1': 'Baby Boomers',
-                '0': 'Gen X / Millennials',
+                '-3': 'Silent Generation',
+                '-2': 'Baby Boomers',
+                '-1': 'Gen X',
+                '0': 'Millennials',
                 '1': 'Gen Z',
                 '2': 'Gen Alpha',
                 '3': 'Gen Beta'
