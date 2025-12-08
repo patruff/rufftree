@@ -948,6 +948,11 @@
         document.addEventListener('DOMContentLoaded', () => {
             loadFamilyTree();
 
+            // Check for context from graph.html actions
+            setTimeout(() => {
+                handleGraphContext();
+            }, 500); // Wait for family tree to load
+
             const addAsChildSelect = document.getElementById('addAsChildOf');
             addAsChildSelect.addEventListener('change', function() {
                 if (this.value && familyTreeData) {
@@ -963,6 +968,59 @@
                 }
             });
         });
+
+        function handleGraphContext() {
+            // Check for "add parent" context
+            const addParentContext = sessionStorage.getItem('addParentFor');
+            if (addParentContext) {
+                sessionStorage.removeItem('addParentFor');
+                const context = JSON.parse(addParentContext);
+
+                // Show a banner indicating the context
+                const subtitle = document.querySelector('.subtitle');
+                const banner = document.createElement('div');
+                banner.style.cssText = 'background: #e3f2fd; border-left: 4px solid #2196F3; padding: 15px; margin: 20px 0; border-radius: 4px;';
+                banner.innerHTML = `<strong>Adding parent for:</strong> ${context.personName}<br><small>This person will be added as a child of the new person you create.</small>`;
+                subtitle.parentNode.insertBefore(banner, subtitle.nextSibling);
+
+                // Pre-populate the "add as parent of" by setting child relationship
+                // (We'll need to add this info to the generated JSON)
+                window._addAsParentOfPersonId = context.personId;
+            }
+
+            // Check for "add child" context
+            const addChildContext = sessionStorage.getItem('addChildFor');
+            if (addChildContext) {
+                sessionStorage.removeItem('addChildFor');
+                const context = JSON.parse(addChildContext);
+
+                const subtitle = document.querySelector('.subtitle');
+                const banner = document.createElement('div');
+                banner.style.cssText = 'background: #e3f2fd; border-left: 4px solid #2196F3; padding: 15px; margin: 20px 0; border-radius: 4px;';
+                banner.innerHTML = `<strong>Adding child for:</strong> ${context.personName}<br><small>The new person will be a child of ${context.personName}.</small>`;
+                subtitle.parentNode.insertBefore(banner, subtitle.nextSibling);
+
+                // Pre-select parent
+                document.getElementById('addAsChildOf').value = context.personId;
+                document.getElementById('addAsChildOf').dispatchEvent(new Event('change'));
+            }
+
+            // Check for "add spouse" context
+            const addSpouseContext = sessionStorage.getItem('addSpouseFor');
+            if (addSpouseContext) {
+                sessionStorage.removeItem('addSpouseFor');
+                const context = JSON.parse(addSpouseContext);
+
+                const subtitle = document.querySelector('.subtitle');
+                const banner = document.createElement('div');
+                banner.style.cssText = 'background: #e3f2fd; border-left: 4px solid #2196F3; padding: 15px; margin: 20px 0; border-radius: 4px;';
+                banner.innerHTML = `<strong>Adding spouse for:</strong> ${context.personName}<br><small>The new person will be married to ${context.personName}.</small>`;
+                subtitle.parentNode.insertBefore(banner, subtitle.nextSibling);
+
+                // Pre-select spouse
+                document.getElementById('spouse').value = context.personId;
+            }
+        }
 
         function createGitHubIssue() {
             if (!generatedData) {
@@ -1435,10 +1493,18 @@ ${jsonString}
             person.childrenIds = [];
 
             // If we have parents selected, include metadata for the workflow
-            if (parentIds.length > 0 || addAsChildOf) {
+            if (parentIds.length > 0 || addAsChildOf || window._addAsParentOfPersonId) {
                 person._relationshipUpdates = {};
                 if (addAsChildOf) {
                     person._relationshipUpdates.addAsChildOf = addAsChildOf;
+                }
+                // Handle "add parent" context from graph
+                if (window._addAsParentOfPersonId) {
+                    person._relationshipUpdates.addAsParentOf = window._addAsParentOfPersonId;
+                    // Also add the child to this person's childrenIds
+                    if (!person.childrenIds.includes(window._addAsParentOfPersonId)) {
+                        person.childrenIds.push(window._addAsParentOfPersonId);
+                    }
                 }
             }
 
