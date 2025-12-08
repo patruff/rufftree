@@ -292,6 +292,122 @@
         .action-btn:active {
             transform: translateY(0);
         }
+
+        .editable-field {
+            cursor: pointer;
+            padding: 4px;
+            border-radius: 4px;
+            transition: background 0.2s;
+            position: relative;
+        }
+
+        .editable-field:hover {
+            background: #e3f2fd;
+        }
+
+        .editable-field::after {
+            content: "✏️";
+            position: absolute;
+            right: 5px;
+            opacity: 0;
+            transition: opacity 0.2s;
+            font-size: 12px;
+        }
+
+        .editable-field:hover::after {
+            opacity: 0.5;
+        }
+
+        .edit-input {
+            width: 100%;
+            padding: 8px;
+            border: 2px solid #667eea;
+            border-radius: 4px;
+            font-size: 14px;
+            font-family: inherit;
+        }
+
+        .edit-input:focus {
+            outline: none;
+            border-color: #764ba2;
+        }
+
+        .edit-actions {
+            display: flex;
+            gap: 8px;
+            margin-top: 8px;
+        }
+
+        .edit-btn-save,
+        .edit-btn-cancel {
+            padding: 6px 12px;
+            border: none;
+            border-radius: 4px;
+            cursor: pointer;
+            font-weight: 600;
+            font-size: 13px;
+        }
+
+        .edit-btn-save {
+            background: #4CAF50;
+            color: white;
+        }
+
+        .edit-btn-save:hover {
+            background: #45a049;
+        }
+
+        .edit-btn-cancel {
+            background: #f44336;
+            color: white;
+        }
+
+        .edit-btn-cancel:hover {
+            background: #da190b;
+        }
+
+        .changes-panel {
+            background: #fff3cd;
+            border: 2px solid #ffc107;
+            border-radius: 8px;
+            padding: 15px;
+            margin-top: 20px;
+            display: none;
+        }
+
+        .changes-panel.active {
+            display: block;
+        }
+
+        .changes-header {
+            font-weight: 700;
+            color: #856404;
+            margin-bottom: 10px;
+            font-size: 14px;
+        }
+
+        .change-item {
+            font-size: 13px;
+            color: #856404;
+            margin: 5px 0;
+        }
+
+        .submit-changes-btn {
+            width: 100%;
+            padding: 12px;
+            background: linear-gradient(135deg, #667eea 0%, #764ba2 100%);
+            color: white;
+            border: none;
+            border-radius: 6px;
+            font-weight: 600;
+            cursor: pointer;
+            margin-top: 10px;
+        }
+
+        .submit-changes-btn:hover {
+            transform: translateY(-2px);
+            box-shadow: 0 4px 12px rgba(102, 126, 234, 0.4);
+        }
     </style>
 </head>
 <body>
@@ -390,6 +506,8 @@
         let allEdges = [];
         let familyData = {};
         let physicsEnabled = true;
+        let currentEditingPerson = null;
+        let personChanges = {};
 
         // Load family data and create graph
         fetch('family_tree.json')
@@ -597,22 +715,31 @@
             noSelection.style.display = 'none';
             infoPanel.classList.add('active');
 
+            currentEditingPerson = JSON.parse(JSON.stringify(person)); // Deep clone
+            personChanges = {};
+
             const age = calculateAge(person.dob, person.dod);
             const isAlive = person.dod === 'alive';
 
             let html = `
                 <div class="info-item">
                     <div class="info-label">Name</div>
-                    <div class="info-value">${person.name}</div>
+                    <div class="info-value editable-field" onclick="editField('name', '${person.name.replace(/'/g, "\\'")}', 'text')" id="field-name">${person.name}</div>
                 </div>
                 <div class="info-item">
                     <div class="info-label">Birth Year</div>
-                    <div class="info-value">${person.dob}</div>
+                    <div class="info-value editable-field" onclick="editField('dob', '${person.dob}', 'number')" id="field-dob">${person.dob}</div>
                 </div>
                 <div class="info-item">
                     <div class="info-label">Status</div>
-                    <div class="info-value">${isAlive ? '✅ Alive' : '❌ Deceased (' + person.dod + ')'}</div>
+                    <div class="info-value">${isAlive ? '✅ Alive' : '❌ Deceased'}</div>
                 </div>
+                ${!isAlive ? `
+                <div class="info-item">
+                    <div class="info-label">Death Year</div>
+                    <div class="info-value editable-field" onclick="editField('dod', '${person.dod}', 'number')" id="field-dod">${person.dod}</div>
+                </div>
+                ` : ''}
                 <div class="info-item">
                     <div class="info-label">Age</div>
                     <div class="info-value">${age}${isAlive ? ' years old' : ''}</div>
@@ -670,7 +797,14 @@
                 html += `
                     <div class="info-item">
                         <div class="info-label">Occupation</div>
-                        <div class="info-value">${person.occupation}</div>
+                        <div class="info-value editable-field" onclick="editField('occupation', '${person.occupation.replace(/'/g, "\\'")}', 'text')" id="field-occupation">${person.occupation}</div>
+                    </div>
+                `;
+            } else {
+                html += `
+                    <div class="info-item">
+                        <div class="info-label">Occupation</div>
+                        <div class="info-value editable-field" onclick="editField('occupation', '', 'text')" id="field-occupation"><em>Click to add</em></div>
                     </div>
                 `;
             }
@@ -679,7 +813,14 @@
                 html += `
                     <div class="info-item">
                         <div class="info-label">Phone</div>
-                        <div class="info-value">${person.phone}</div>
+                        <div class="info-value editable-field" onclick="editField('phone', '${person.phone}', 'text')" id="field-phone">${person.phone}</div>
+                    </div>
+                `;
+            } else {
+                html += `
+                    <div class="info-item">
+                        <div class="info-label">Phone</div>
+                        <div class="info-value editable-field" onclick="editField('phone', '', 'text')" id="field-phone"><em>Click to add</em></div>
                     </div>
                 `;
             }
@@ -931,25 +1072,147 @@
                 `;
             }
 
-            // Add action buttons
+            // Add changes panel
             html += `
-                <div class="action-buttons">
-                    <button class="action-btn action-btn-edit" onclick="editPerson('${person.id}')">
-                        ✏️ Edit Person
-                    </button>
-                    <button class="action-btn action-btn-add" onclick="addParent('${person.id}')">
-                        👨 Add Parent
-                    </button>
-                    <button class="action-btn action-btn-add" onclick="addChild('${person.id}')">
-                        👶 Add Child
-                    </button>
-                    <button class="action-btn action-btn-spouse" onclick="addSpouse('${person.id}')">
-                        💑 Add Spouse
-                    </button>
+                <div class="changes-panel" id="changesPanel">
+                    <div class="changes-header">✏️ Pending Changes</div>
+                    <div id="changesList"></div>
+                    <button class="submit-changes-btn" onclick="submitChanges()">Submit Changes to GitHub</button>
                 </div>
             `;
 
             infoPanel.innerHTML = html;
+        }
+
+        function editField(fieldName, currentValue, inputType) {
+            const fieldElement = document.getElementById(`field-${fieldName}`);
+            if (!fieldElement) return;
+
+            const originalHTML = fieldElement.innerHTML;
+
+            // Create input field
+            const input = document.createElement('input');
+            input.type = inputType;
+            input.className = 'edit-input';
+            input.value = currentValue;
+
+            // Create action buttons
+            const actionsDiv = document.createElement('div');
+            actionsDiv.className = 'edit-actions';
+
+            const saveBtn = document.createElement('button');
+            saveBtn.className = 'edit-btn-save';
+            saveBtn.textContent = 'Save';
+            saveBtn.onclick = function() {
+                const newValue = input.value.trim();
+                if (newValue !== currentValue) {
+                    // Track the change
+                    personChanges[fieldName] = newValue;
+                    currentEditingPerson[fieldName] = newValue;
+
+                    // Update display
+                    fieldElement.innerHTML = newValue || '<em>Click to add</em>';
+
+                    // Update changes panel
+                    updateChangesPanel();
+                } else {
+                    fieldElement.innerHTML = originalHTML;
+                }
+            };
+
+            const cancelBtn = document.createElement('button');
+            cancelBtn.className = 'edit-btn-cancel';
+            cancelBtn.textContent = 'Cancel';
+            cancelBtn.onclick = function() {
+                fieldElement.innerHTML = originalHTML;
+            };
+
+            actionsDiv.appendChild(saveBtn);
+            actionsDiv.appendChild(cancelBtn);
+
+            // Replace field content with input
+            fieldElement.innerHTML = '';
+            fieldElement.appendChild(input);
+            fieldElement.appendChild(actionsDiv);
+            input.focus();
+            input.select();
+
+            // Save on Enter
+            input.addEventListener('keypress', function(e) {
+                if (e.key === 'Enter') {
+                    saveBtn.click();
+                }
+            });
+        }
+
+        function updateChangesPanel() {
+            const changesPanel = document.getElementById('changesPanel');
+            const changesList = document.getElementById('changesList');
+
+            if (Object.keys(personChanges).length > 0) {
+                changesPanel.classList.add('active');
+
+                let changesHTML = '';
+                for (const [field, value] of Object.entries(personChanges)) {
+                    const fieldLabel = field.charAt(0).toUpperCase() + field.slice(1).replace(/_/g, ' ');
+                    changesHTML += `<div class="change-item">• ${fieldLabel}: "${value}"</div>`;
+                }
+                changesList.innerHTML = changesHTML;
+            } else {
+                changesPanel.classList.remove('active');
+            }
+        }
+
+        function submitChanges() {
+            if (!currentEditingPerson || Object.keys(personChanges).length === 0) {
+                alert('No changes to submit');
+                return;
+            }
+
+            const GITHUB_REPO = 'patruff/rufftree';
+            const personName = currentEditingPerson.name;
+            const personId = currentEditingPerson.id;
+
+            // Build the updated person object
+            const updatedPerson = JSON.parse(JSON.stringify(currentEditingPerson));
+
+            // Create a summary of changes
+            let changesSummary = '';
+            for (const [field, value] of Object.entries(personChanges)) {
+                const fieldLabel = field.charAt(0).toUpperCase() + field.slice(1).replace(/_/g, ' ');
+                changesSummary += `- **${fieldLabel}**: \`${value}\`\n`;
+            }
+
+            const jsonString = JSON.stringify(updatedPerson, null, 2);
+
+            const title = encodeURIComponent(`Update Person: ${personName}`);
+            const body = encodeURIComponent(
+`## Person Update Request
+
+**Name:** ${personName}
+**ID:** ${personId}
+
+### Changes Made:
+${changesSummary}
+
+### Updated Person JSON Data
+
+\`\`\`json
+${jsonString}
+\`\`\`
+
+---
+*This issue was automatically generated from the Family Graph.*
+*A maintainer will review and update this person in the family tree.*`
+            );
+
+            const issueUrl = `https://github.com/${GITHUB_REPO}/issues/new?title=${title}&body=${body}&labels=update-person`;
+            window.open(issueUrl, '_blank');
+
+            // Reset changes
+            alert('GitHub issue created! Your changes have been submitted for review.');
+            personChanges = {};
+            updateChangesPanel();
         }
 
         function calculateAge(dob, dod) {
@@ -1016,54 +1279,6 @@
             network.selectNodes([nodeId, ...connectedNodes]);
         }
 
-        // Action button handlers
-        function editPerson(personId) {
-            // Store the person ID in sessionStorage and redirect to edit page
-            sessionStorage.setItem('editPersonId', personId);
-            window.location.href = 'edit_person.html';
-        }
-
-        function addParent(personId) {
-            const person = familyData.people[personId];
-            if (!person) return;
-
-            // Store context in sessionStorage
-            sessionStorage.setItem('addParentFor', JSON.stringify({
-                personId: personId,
-                personName: person.name
-            }));
-            window.location.href = 'person_generator.html';
-        }
-
-        function addChild(personId) {
-            const person = familyData.people[personId];
-            if (!person) return;
-
-            // Store context in sessionStorage
-            sessionStorage.setItem('addChildFor', JSON.stringify({
-                personId: personId,
-                personName: person.name,
-                spouseId: person.spouseId
-            }));
-            window.location.href = 'person_generator.html';
-        }
-
-        function addSpouse(personId) {
-            const person = familyData.people[personId];
-            if (!person) return;
-
-            if (person.spouseId) {
-                alert(`${person.name} already has a spouse (${familyData.people[person.spouseId]?.name || person.spouseId})`);
-                return;
-            }
-
-            // Store context in sessionStorage
-            sessionStorage.setItem('addSpouseFor', JSON.stringify({
-                personId: personId,
-                personName: person.name
-            }));
-            window.location.href = 'person_generator.html';
-        }
     </script>
 </body>
 </html>
