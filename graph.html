@@ -370,49 +370,6 @@
         .edit-btn-cancel:hover {
             background: #da190b;
         }
-
-        .changes-panel {
-            background: #fff3cd;
-            border: 2px solid #ffc107;
-            border-radius: 8px;
-            padding: 15px;
-            margin-top: 20px;
-            display: none;
-        }
-
-        .changes-panel.active {
-            display: block;
-        }
-
-        .changes-header {
-            font-weight: 700;
-            color: #856404;
-            margin-bottom: 10px;
-            font-size: 14px;
-        }
-
-        .change-item {
-            font-size: 13px;
-            color: #856404;
-            margin: 5px 0;
-        }
-
-        .submit-changes-btn {
-            width: 100%;
-            padding: 12px;
-            background: linear-gradient(135deg, #667eea 0%, #764ba2 100%);
-            color: white;
-            border: none;
-            border-radius: 6px;
-            font-weight: 600;
-            cursor: pointer;
-            margin-top: 10px;
-        }
-
-        .submit-changes-btn:hover {
-            transform: translateY(-2px);
-            box-shadow: 0 4px 12px rgba(102, 126, 234, 0.4);
-        }
     </style>
 </head>
 <body>
@@ -512,7 +469,6 @@
         let familyData = {};
         let physicsEnabled = true;
         let currentEditingPerson = null;
-        let personChanges = {};
 
         // Load family data and create graph
         fetch('family_tree.json')
@@ -721,7 +677,6 @@
             infoPanel.classList.add('active');
 
             currentEditingPerson = JSON.parse(JSON.stringify(person)); // Deep clone
-            personChanges = {};
 
             const age = calculateAge(person.dob, person.dod);
             const isAlive = person.dod === 'alive';
@@ -1077,15 +1032,6 @@
                 `;
             }
 
-            // Add changes panel
-            html += `
-                <div class="changes-panel" id="changesPanel">
-                    <div class="changes-header">✏️ Pending Changes</div>
-                    <div id="changesList"></div>
-                    <button class="submit-changes-btn" onclick="submitChanges()">Submit Changes to GitHub</button>
-                </div>
-            `;
-
             infoPanel.innerHTML = html;
         }
 
@@ -1136,24 +1082,12 @@
 
                 if (newValue !== currentValue) {
                     // Track the change
-                    personChanges[fieldName] = newValue;
                     currentEditingPerson[fieldName] = newValue;
 
-                    // If birth year changed, recalculate generation and update age display
+                    // If birth year changed, recalculate generation
                     if (fieldName === 'dob') {
                         const newGeneration = calculateGenerationFromYear(newValue);
                         currentEditingPerson.generation = newGeneration;
-                        personChanges.generation = newGeneration;
-
-                        // Refresh the entire person info to update age and generation
-                        showPersonInfo(currentEditingPerson);
-                        return; // Exit early since we're refreshing the whole panel
-                    }
-
-                    // If death year changed, also refresh to update age
-                    if (fieldName === 'dod') {
-                        showPersonInfo(currentEditingPerson);
-                        return;
                     }
 
                     // Restore the editable field with new value
@@ -1161,8 +1095,13 @@
                     fieldElement.setAttribute('onclick', `editField('${fieldName}', '${newValue.replace(/'/g, "\\'")}', '${inputType}')`);
                     fieldElement.innerHTML = newValue || '<em>Click to add</em>';
 
-                    // Update changes panel
-                    updateChangesPanel();
+                    // Immediately create GitHub issue for this change
+                    createIssueForEdit(fieldName, currentValue, newValue);
+
+                    // Refresh display if birth/death year changed to update age
+                    if (fieldName === 'dob' || fieldName === 'dod') {
+                        setTimeout(() => showPersonInfo(currentEditingPerson), 1500);
+                    }
                 } else {
                     // No change, restore original
                     fieldElement.className = originalClasses;
@@ -1220,24 +1159,6 @@
             });
         }
 
-        function updateChangesPanel() {
-            const changesPanel = document.getElementById('changesPanel');
-            const changesList = document.getElementById('changesList');
-
-            if (Object.keys(personChanges).length > 0) {
-                changesPanel.classList.add('active');
-
-                let changesHTML = '';
-                for (const [field, value] of Object.entries(personChanges)) {
-                    const fieldLabel = field.charAt(0).toUpperCase() + field.slice(1).replace(/_/g, ' ');
-                    changesHTML += `<div class="change-item">• ${fieldLabel}: "${value}"</div>`;
-                }
-                changesList.innerHTML = changesHTML;
-            } else {
-                changesPanel.classList.remove('active');
-            }
-        }
-
         function loadPersonById(personId) {
             const person = familyData.people[personId];
             if (person) {
@@ -1245,29 +1166,30 @@
             }
         }
 
-        function submitChanges() {
-            if (!currentEditingPerson || Object.keys(personChanges).length === 0) {
-                alert('No changes to submit');
-                return;
-            }
+        function createIssueForEdit(fieldName, oldValue, newValue) {
+            if (!currentEditingPerson) return;
 
             const GITHUB_REPO = 'patruff/rufftree';
             const personName = currentEditingPerson.name;
             const personId = currentEditingPerson.id;
 
-            // Build the updated person object
+            // Build the updated person object with the change
             const updatedPerson = JSON.parse(JSON.stringify(currentEditingPerson));
 
-            // Create a summary of changes
-            let changesSummary = '';
-            for (const [field, value] of Object.entries(personChanges)) {
-                const fieldLabel = field.charAt(0).toUpperCase() + field.slice(1).replace(/_/g, ' ');
-                changesSummary += `- **${fieldLabel}**: \`${value}\`\n`;
+            // Format field name for display
+            const fieldLabel = fieldName.charAt(0).toUpperCase() + fieldName.slice(1).replace(/_/g, ' ');
+
+            // Build change summary
+            let changesSummary = `- **${fieldLabel}**: \`${oldValue}\` → \`${newValue}\`\n`;
+
+            // If birth year changed, also note the generation change
+            if (fieldName === 'dob' && updatedPerson.generation) {
+                changesSummary += `- **Generation**: Auto-updated to \`${updatedPerson.generation}\`\n`;
             }
 
             const jsonString = JSON.stringify(updatedPerson, null, 2);
 
-            const title = encodeURIComponent(`Update Person: ${personName}`);
+            const title = encodeURIComponent(`Update Person: ${personName} - ${fieldLabel}`);
             const body = encodeURIComponent(
 `## Person Update Request
 
@@ -1284,17 +1206,12 @@ ${jsonString}
 \`\`\`
 
 ---
-*This issue was automatically generated from the Family Graph.*
+*This issue was automatically generated from the Family Graph inline editing.*
 *A maintainer will review and update this person in the family tree.*`
             );
 
             const issueUrl = `https://github.com/${GITHUB_REPO}/issues/new?title=${title}&body=${body}&labels=update-person`;
             window.open(issueUrl, '_blank');
-
-            // Reset changes
-            alert('GitHub issue created! Your changes have been submitted for review.');
-            personChanges = {};
-            updateChangesPanel();
         }
 
         function calculateAge(dob, dod) {
