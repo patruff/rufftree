@@ -1089,6 +1089,19 @@
             infoPanel.innerHTML = html;
         }
 
+        // Calculate generation name from birth year
+        function calculateGenerationFromYear(birthYear) {
+            const year = parseInt(birthYear);
+            if (year >= 2025) return 'Generation Beta';
+            if (year >= 2013) return 'Generation Alpha';
+            if (year >= 1997) return 'Generation Z';
+            if (year >= 1981) return 'Millennials';
+            if (year >= 1965) return 'Generation X';
+            if (year >= 1946) return 'Baby Boomers';
+            if (year >= 1928) return 'Silent Generation';
+            return 'Greatest Generation';
+        }
+
         function editField(fieldName, currentValue, inputType) {
             const fieldElement = document.getElementById(`field-${fieldName}`);
             if (!fieldElement) return;
@@ -1125,6 +1138,23 @@
                     // Track the change
                     personChanges[fieldName] = newValue;
                     currentEditingPerson[fieldName] = newValue;
+
+                    // If birth year changed, recalculate generation and update age display
+                    if (fieldName === 'dob') {
+                        const newGeneration = calculateGenerationFromYear(newValue);
+                        currentEditingPerson.generation = newGeneration;
+                        personChanges.generation = newGeneration;
+
+                        // Refresh the entire person info to update age and generation
+                        showPersonInfo(currentEditingPerson);
+                        return; // Exit early since we're refreshing the whole panel
+                    }
+
+                    // If death year changed, also refresh to update age
+                    if (fieldName === 'dod') {
+                        showPersonInfo(currentEditingPerson);
+                        return;
+                    }
 
                     // Restore the editable field with new value
                     fieldElement.className = originalClasses;
