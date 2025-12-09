@@ -22,18 +22,9 @@ jobs:
 
             // Check if this is a story issue
             if (issueTitle.startsWith('[Story]')) {
-              console.log('Detected story issue - adding labels');
+              console.log('Detected story issue - adding comment (labels already set by template)');
 
-              await github.rest.issues.addLabels({
-                owner: context.repo.owner,
-                repo: context.repo.repo,
-                issue_number: issueNumber,
-                labels: ['family-story', 'story:pending']
-              });
-
-              console.log('✅ Added labels: family-story, story:pending');
-
-              // Add a comment to inform the user
+              // Labels are already added by the issue template, just add an informative comment
               await github.rest.issues.createComment({
                 owner: context.repo.owner,
                 repo: context.repo.repo,

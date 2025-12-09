@@ -1,18 +1,17 @@
 name: Process Family Story Issue
 
 on:
-  # Run every 20 minutes to check for new story issues
-  schedule:
-    - cron: '*/20 * * * *'
-  # Allow manual triggering
+  # Allow manual triggering for reprocessing
   workflow_dispatch:
-  # Also try to trigger on issue events
+  # Trigger only when issue is opened (not labeled, to avoid duplicates)
   issues:
-    types: [labeled, opened]
+    types: [opened]
 
 jobs:
   process-story:
     runs-on: ubuntu-latest
+    # Only process if issue has story:pending label (not already processed)
+    if: contains(github.event.issue.labels.*.name, 'story:pending')
     permissions:
       contents: write
       issues: write
