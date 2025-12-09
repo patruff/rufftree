@@ -14,9 +14,10 @@ _No recent edits yet. Click on any person in the Family Graph to edit their info
 > **Total People in Family Tree:** 41
 
 ### Recent Family Stories
+- **The Time Pat Won 4th In The State 800m** - Patrick Ruff. 2002. _(Issue #62)_
 - **Dad built a rope swing** - Joe Ruff Sr.. Summer 1989. _(Issue #25)_
-- **Ocean's First Movie** - Patrick's story about Ocean watching her first movie in theaters. December 4, 2025. _(Issue #28)_
 
+> **Total Stories in RAG:** 10
 > **Total Stories in RAG:** 5
 > **Total Stories in RAG:** _Pending automation_
 > 💡 **Note**: This section automatically updates when new people or stories are added through the website.
