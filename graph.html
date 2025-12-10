@@ -97,6 +97,8 @@
             border: 2px solid #e0e0e0;
             border-radius: 10px;
             background: #fafafa;
+            position: relative;
+            z-index: 1;
         }
 
         .info-panel {
@@ -372,19 +374,21 @@
         }
 
         /* Mobile Responsive Styles */
-        @media (max-width: 768px) {
+        @media screen and (max-width: 768px) {
             body {
                 padding: 10px;
+                overflow-x: hidden;
             }
 
             .container {
-                padding: 20px;
+                padding: 20px 15px;
                 border-radius: 10px;
+                overflow-x: hidden;
             }
 
             h1 {
                 font-size: 1.8em;
-                margin-bottom: 15px;
+                margin-bottom: 8px;
             }
 
             .subtitle {
@@ -393,47 +397,72 @@
             }
 
             nav {
-                gap: 10px;
+                gap: 8px;
+                margin-bottom: 20px;
             }
 
             nav a {
-                padding: 8px 15px;
-                font-size: 0.9em;
+                padding: 8px 12px;
+                font-size: 0.85em;
             }
 
             .instructions {
                 padding: 12px 15px;
                 margin-bottom: 20px;
+                font-size: 0.9em;
             }
 
             .instructions h3 {
                 font-size: 1.1em;
+                margin-bottom: 8px;
             }
 
             .instructions p {
-                font-size: 0.9em;
+                font-size: 0.85em;
+                margin-bottom: 6px;
             }
 
+            .controls {
+                padding: 10px;
+                margin-bottom: 15px;
+                gap: 8px;
+            }
+
+            .controls button {
+                padding: 10px 14px;
+                font-size: 0.9em;
+                flex: 1;
+                min-width: 100px;
+            }
+
+            /* Stack graph and info panel vertically on mobile */
             .graph-wrapper {
                 flex-direction: column;
                 height: auto;
-                min-height: 500px;
+                gap: 15px;
+                overflow: visible;
             }
 
             #mynetwork {
-                width: 100%;
                 height: 500px;
-                min-height: 500px;
+                width: 100%;
+                min-height: 400px;
+                flex-shrink: 0; /* Prevent shrinking on mobile */
+                overflow: hidden; /* Contain the canvas properly */
+                touch-action: pan-x pan-y; /* Enable smooth touch panning */
             }
 
             .info-panel {
                 width: 100%;
-                max-height: 400px;
-                margin-top: 20px;
+                max-height: 600px;
+                padding: 15px;
+                position: relative;
+                z-index: 0; /* Ensure it doesn't overlay the graph */
             }
 
             .info-panel h3 {
-                font-size: 1.1em;
+                font-size: 1.2em;
+                margin-bottom: 12px;
             }
 
             .info-item {
@@ -446,17 +475,60 @@
             }
 
             .info-value {
+                font-size: 0.95em;
+            }
+
+            .legend {
+                padding: 15px;
+                margin-top: 15px;
+            }
+
+            .legend h4 {
+                font-size: 1em;
+                margin-bottom: 10px;
+            }
+
+            .legend-item {
+                font-size: 0.9em;
+                margin-bottom: 8px;
+            }
+
+            .action-buttons {
+                gap: 8px;
+                margin-top: 15px;
+                padding-top: 15px;
+            }
+
+            .action-btn {
+                padding: 12px 14px;
                 font-size: 0.9em;
             }
 
-            .edit-btn {
-                padding: 6px 12px;
-                font-size: 0.85em;
+            /* Make touch targets larger for mobile */
+            .editable-field {
+                padding: 8px;
+                min-height: 24px;
+            }
+
+            .edit-input {
+                padding: 10px;
+                font-size: 16px; /* Prevents zoom on iOS */
+            }
+
+            .edit-btn-save,
+            .edit-btn-cancel {
+                padding: 10px 16px;
+                font-size: 14px;
+            }
+
+            .related-list li {
+                padding: 8px 0;
+                font-size: 0.95em;
             }
         }
 
-        /* Smaller mobile devices */
-        @media (max-width: 480px) {
+        /* Extra small devices (phones in portrait, less than 576px) */
+        @media screen and (max-width: 576px) {
             h1 {
                 font-size: 1.5em;
             }
@@ -465,22 +537,44 @@
                 font-size: 0.9em;
             }
 
-            nav {
-                flex-direction: column;
-                align-items: stretch;
+            nav a {
+                padding: 6px 10px;
+                font-size: 0.8em;
             }
 
-            nav a {
-                text-align: center;
+            .controls button {
+                padding: 8px 10px;
+                font-size: 0.85em;
+                min-width: 80px;
             }
 
             #mynetwork {
                 height: 400px;
-                min-height: 400px;
+                min-height: 300px;
             }
 
             .info-panel {
-                max-height: 300px;
+                padding: 12px;
+            }
+
+            .legend {
+                padding: 12px;
+            }
+
+            .legend-item {
+                font-size: 0.85em;
+            }
+        }
+
+        /* Landscape orientation optimizations */
+        @media screen and (max-width: 768px) and (orientation: landscape) {
+            #mynetwork {
+                height: 350px;
+                min-height: 300px;
+            }
+
+            .info-panel {
+                max-height: 400px;
             }
         }
     </style>
@@ -726,15 +820,23 @@
                 edges: new vis.DataSet(allEdges)
             };
 
+            // Detect mobile device
+            const isMobile = window.innerWidth <= 768;
+
+            // Adjust spacing for mobile
+            const levelSeparation = isMobile ? 100 : 150;
+            const nodeSpacing = isMobile ? 80 : 120;
+            const treeSpacing = isMobile ? 100 : 200;
+
             const options = {
                 layout: {
                     hierarchical: {
                         enabled: true,
                         direction: 'UD',  // Up-Down (top to bottom)
                         sortMethod: 'directed',  // Use edges to determine hierarchy
-                        levelSeparation: 150,  // Vertical spacing between generations
-                        nodeSpacing: 120,  // Horizontal spacing between nodes at same level
-                        treeSpacing: 200,  // Spacing between separate trees
+                        levelSeparation: levelSeparation,  // Vertical spacing between generations
+                        nodeSpacing: nodeSpacing,  // Horizontal spacing between nodes at same level
+                        treeSpacing: treeSpacing,  // Spacing between separate trees
                         blockShifting: true,
                         edgeMinimization: true,
                         parentCentralization: true
@@ -765,6 +867,23 @@
             };
 
             network = new vis.Network(container, data, options);
+
+            // Fit and scale properly after network stabilization
+            network.once('stabilizationIterationsDone', function() {
+                network.fit({
+                    animation: {
+                        duration: 500,
+                        easingFunction: 'easeInOutQuad'
+                    }
+                });
+            });
+
+            // Ensure proper fit on initial load
+            setTimeout(() => {
+                network.fit({
+                    animation: false
+                });
+            }, 100);
 
             // Event listeners
             network.on('click', function(params) {

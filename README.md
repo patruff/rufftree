@@ -5,11 +5,8 @@ A Retrieval Augmented Generation (RAG) system for Ruff family documents using Go
 ## 🆕 Recent Additions
 
 ### Recently Added People
+- **Ocean Ruff** - Occupation unknown from Location unknown. Added on December 10, 2025. _(Issue #73)_
 - **Kristina Wolter** - Occupation unknown from Location unknown. Added on December 07, 2025. _(Issue #42)_
-- **Michael Fischer** - Nurse from Townsend, DE. _(Issue #30)_
-
-### Recently Edited People
-_No recent edits yet. Click on any person in the Family Graph to edit their information!_
 
 > **Total People in Family Tree:** 41
 
