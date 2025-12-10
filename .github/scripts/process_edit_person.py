@@ -133,6 +133,87 @@ print(f"\n🔄 Updating {updated_person.get('name')} in family tree...")
 people[person_id] = updated_person
 print(f"✅ Updated successfully!")
 
+# Update bidirectional relationships
+print("\n🔗 Updating bidirectional relationships...")
+relationships_updated = 0
+
+# Update siblings (bidirectional)
+old_siblings = set(existing_person.get('siblingIds', []))
+new_siblings = set(updated_person.get('siblingIds', []))
+
+# Add this person to new siblings
+for sibling_id in new_siblings:
+    if sibling_id in people and person_id not in people[sibling_id].get('siblingIds', []):
+        if 'siblingIds' not in people[sibling_id]:
+            people[sibling_id]['siblingIds'] = []
+        people[sibling_id]['siblingIds'].append(person_id)
+        print(f"   ✓ Added {person_id} to {sibling_id}'s siblings")
+        relationships_updated += 1
+
+# Remove this person from old siblings that are no longer siblings
+for old_sibling_id in old_siblings - new_siblings:
+    if old_sibling_id in people and person_id in people[old_sibling_id].get('siblingIds', []):
+        people[old_sibling_id]['siblingIds'].remove(person_id)
+        print(f"   ✓ Removed {person_id} from {old_sibling_id}'s siblings")
+        relationships_updated += 1
+
+# Update parents (add this person to their children)
+old_parents = set(existing_person.get('parentIds', []))
+new_parents = set(updated_person.get('parentIds', []))
+
+for parent_id in new_parents:
+    if parent_id in people and person_id not in people[parent_id].get('childrenIds', []):
+        if 'childrenIds' not in people[parent_id]:
+            people[parent_id]['childrenIds'] = []
+        people[parent_id]['childrenIds'].append(person_id)
+        print(f"   ✓ Added {person_id} to {parent_id}'s children")
+        relationships_updated += 1
+
+for old_parent_id in old_parents - new_parents:
+    if old_parent_id in people and person_id in people[old_parent_id].get('childrenIds', []):
+        people[old_parent_id]['childrenIds'].remove(person_id)
+        print(f"   ✓ Removed {person_id} from {old_parent_id}'s children")
+        relationships_updated += 1
+
+# Update children (add this person to their parents)
+old_children = set(existing_person.get('childrenIds', []))
+new_children = set(updated_person.get('childrenIds', []))
+
+for child_id in new_children:
+    if child_id in people and person_id not in people[child_id].get('parentIds', []):
+        if 'parentIds' not in people[child_id]:
+            people[child_id]['parentIds'] = []
+        people[child_id]['parentIds'].append(person_id)
+        print(f"   ✓ Added {person_id} to {child_id}'s parents")
+        relationships_updated += 1
+
+for old_child_id in old_children - new_children:
+    if old_child_id in people and person_id in people[old_child_id].get('parentIds', []):
+        people[old_child_id]['parentIds'].remove(person_id)
+        print(f"   ✓ Removed {person_id} from {old_child_id}'s parents")
+        relationships_updated += 1
+
+# Update spouse (bidirectional)
+old_spouse = existing_person.get('spouseId')
+new_spouse = updated_person.get('spouseId')
+
+if new_spouse and new_spouse != old_spouse:
+    if new_spouse in people:
+        people[new_spouse]['spouseId'] = person_id
+        print(f"   ✓ Set {person_id} as spouse of {new_spouse}")
+        relationships_updated += 1
+
+if old_spouse and old_spouse != new_spouse:
+    if old_spouse in people and people[old_spouse].get('spouseId') == person_id:
+        people[old_spouse]['spouseId'] = None
+        print(f"   ✓ Removed {person_id} as spouse of {old_spouse}")
+        relationships_updated += 1
+
+if relationships_updated == 0:
+    print("   No relationship updates needed")
+else:
+    print(f"   Total relationship updates: {relationships_updated}")
+
 # Save
 print("\n💾 Saving family tree...")
 with open('family_tree.json', 'w') as f:

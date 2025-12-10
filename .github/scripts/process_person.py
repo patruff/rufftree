@@ -164,6 +164,45 @@ people[person_id] = person
 print(f"✅ Added successfully!")
 print(f"📊 Family tree now has {len(people)} people")
 
+# Update bidirectional relationships
+print("\n🔗 Updating bidirectional relationships...")
+relationships_updated = 0
+
+# Add this person to siblings' sibling lists
+for sibling_id in person.get('siblingIds', []):
+    if sibling_id in people:
+        if 'siblingIds' not in people[sibling_id]:
+            people[sibling_id]['siblingIds'] = []
+        if person_id not in people[sibling_id]['siblingIds']:
+            people[sibling_id]['siblingIds'].append(person_id)
+            print(f"   ✓ Added {person_id} to {sibling_id}'s siblings")
+            relationships_updated += 1
+
+# Add this person to parents' children lists
+for parent_id in person.get('parentIds', []):
+    if parent_id in people:
+        if 'childrenIds' not in people[parent_id]:
+            people[parent_id]['childrenIds'] = []
+        if person_id not in people[parent_id]['childrenIds']:
+            people[parent_id]['childrenIds'].append(person_id)
+            print(f"   ✓ Added {person_id} to {parent_id}'s children")
+            relationships_updated += 1
+
+# Add this person to children's parent lists
+for child_id in person.get('childrenIds', []):
+    if child_id in people:
+        if 'parentIds' not in people[child_id]:
+            people[child_id]['parentIds'] = []
+        if person_id not in people[child_id]['parentIds']:
+            people[child_id]['parentIds'].append(person_id)
+            print(f"   ✓ Added {person_id} to {child_id}'s parents")
+            relationships_updated += 1
+
+if relationships_updated == 0:
+    print("   No additional relationship updates needed")
+else:
+    print(f"   Total relationship updates: {relationships_updated}")
+
 # Save
 print("\n💾 Saving family tree...")
 with open('family_tree.json', 'w') as f:
