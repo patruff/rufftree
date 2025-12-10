@@ -5,8 +5,8 @@ A Retrieval Augmented Generation (RAG) system for Ruff family documents using Go
 ## 🆕 Recent Additions
 
 ### Recently Added People
-- **Oliver Ruff** - Occupation unknown from Location unknown. Updated on December 10, 2025. _(Issue #75)_
-- **Ocean Ruff** - Occupation unknown from Location unknown. Added on December 10, 2025. _(Issue #73)_
+- **Oliver Ruff** - Occupation unknown from Location unknown. Updated on December 10, 2025. _(Issue #69)_
+- **Ocean Daining Ruff** - Occupation unknown from Location unknown. Updated on December 10, 2025. _(Issue #71)_
 
 > **Total People in Family Tree:** 41
 
