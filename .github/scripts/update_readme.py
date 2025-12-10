@@ -40,8 +40,11 @@ occupation = person['occupation']
 home_city = person['home_city']
 home_state = person['home_state']
 location = f"{home_city}, {home_state}" if home_city and home_state else home_city or home_state or "Location unknown"
+action = person.get('action', 'added')  # Default to 'added' for backwards compatibility
+action_verb = 'Updated' if action == 'updated' else 'Added'
 
 print(f"\n📝 Updating README with:")
+print(f"   Action: {action_verb}")
 print(f"   Name: {person_name}")
 print(f"   Occupation: {occupation}")
 print(f"   Location: {location}")
@@ -58,7 +61,7 @@ def update_people_section(match):
 
     people_lines = [line for line in old_content.strip().split('\n') if line.strip() and not line.startswith('>')]
 
-    new_entry = f"- **{person_name}** - {occupation} from {location}. Added on {date_str}. _(Issue #{issue_number})_"
+    new_entry = f"- **{person_name}** - {occupation} from {location}. {action_verb} on {date_str}. _(Issue #{issue_number})_"
 
     second_person = ""
     if people_lines and not people_lines[0].startswith('- _('):
