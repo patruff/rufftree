@@ -60,8 +60,8 @@
       },
       "patrick_child1": {
         "id": "patrick_child1",
-        "name": "Oliver Ruff",
-        "dob": "2010",
+        "name": "Oliver Haoning Ruff",
+        "dob": "2020",
         "dod": "alive",
         "spouseId": null,
         "parentIds": [
@@ -72,8 +72,8 @@
           "patrick_child2"
         ],
         "childrenIds": [],
-        "generation": "Generation Z",
-        "from_pat": 1,
+        "generation": "Generation Alpha",
+        "from_pat": 2,
         "ethnicity": {
           "German": 17,
           "Irish": 16,
