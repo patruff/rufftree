@@ -177,7 +177,8 @@ info = {
     'issue_number': issue_number,
     'occupation': person.get('occupation', 'Occupation unknown'),
     'home_city': person.get('home_city', ''),
-    'home_state': person.get('home_state', '')
+    'home_state': person.get('home_state', ''),
+    'action': 'added'
 }
 
 with open('/tmp/person_info.json', 'w') as f:

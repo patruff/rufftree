@@ -148,7 +148,8 @@ info = {
     'occupation': updated_person.get('occupation', 'Occupation unknown'),
     'home_city': updated_person.get('home_city', ''),
     'home_state': updated_person.get('home_state', ''),
-    'changes': len(changes)
+    'changes': len(changes),
+    'action': 'updated'
 }
 
 with open('/tmp/person_info.json', 'w') as f:
