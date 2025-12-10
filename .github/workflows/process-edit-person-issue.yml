@@ -1,0 +1,96 @@
+name: Process Edit Person Issue
+
+on:
+  schedule:
+    - cron: '*/20 * * * *'
+  workflow_dispatch:
+  issues:
+    types: [labeled, opened]
+
+jobs:
+  process-edit-person:
+    runs-on: ubuntu-latest
+    permissions:
+      contents: write
+      issues: write
+
+    steps:
+      - name: Checkout repository
+        uses: actions/checkout@v4
+
+      - name: Set up Python
+        uses: actions/setup-python@v4
+        with:
+          python-version: '3.11'
+
+      - name: Install GitHub CLI
+        run: |
+          sudo apt update
+          sudo apt install gh -y
+
+      - name: Find open update-person issues
+        id: find_issues
+        env:
+          GH_TOKEN: ${{ github.token }}
+        run: |
+          echo "🔍 Searching for open issues with 'update-person' label..."
+          gh issue list --label "update-person" --state open --json number,title,body,labels --limit 100 > /tmp/issues.json
+
+          ISSUE_COUNT=$(cat /tmp/issues.json | jq '. | length')
+          echo "📝 Total issues to process: $ISSUE_COUNT"
+
+          if [ "$ISSUE_COUNT" -eq 0 ]; then
+            echo "✅ No update-person issues to process"
+            echo "has_issues=false" >> $GITHUB_OUTPUT
+          else
+            echo "has_issues=true" >> $GITHUB_OUTPUT
+            echo "📊 Found issues:"
+            cat /tmp/issues.json | jq -r '.[] | "  #\(.number): \(.title)"'
+          fi
+
+      - name: Process each issue
+        if: steps.find_issues.outputs.has_issues == 'true'
+        env:
+          GH_TOKEN: ${{ github.token }}
+        run: |
+          echo "🚀 Processing issues..."
+
+          # Process each issue
+          for issue_json in $(cat /tmp/issues.json | jq -c '.[]'); do
+            echo "$issue_json" > /tmp/issue.json
+
+            # Run the processing script
+            python3 .github/scripts/process_edit_person.py || echo "⚠️  Failed to process issue"
+
+            # If processing succeeded, run other steps
+            if [ -f "/tmp/person_info.json" ]; then
+              # Run calculation scripts
+              for script in add_generations.py add_ethnicity.py calculate_completion.py; do
+                [ -f "$script" ] && python3 "$script"
+              done
+
+              # Update README
+              python3 .github/scripts/update_readme.py
+
+              # Close issue
+              python3 .github/scripts/close_issue.py
+
+              # Clean up for next iteration
+              rm -f /tmp/person_info.json
+            fi
+          done
+
+      - name: Commit and push changes
+        if: steps.find_issues.outputs.has_issues == 'true'
+        run: |
+          git config --local user.email "github-actions[bot]@users.noreply.github.com"
+          git config --local user.name "github-actions[bot]"
+          git add family_tree.json README.md
+
+          if git diff --staged --quiet; then
+            echo "ℹ️  No changes to commit"
+          else
+            git commit -m "Process update-person issues (automated)"
+            git push
+            echo "✅ Changes committed and pushed"
+          fi
