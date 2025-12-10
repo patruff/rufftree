@@ -83,8 +83,8 @@ jobs:
         run: |
           echo "🚀 Processing issues..."
 
-          # Process each issue
-          for issue_json in $(cat /tmp/issues.json | jq -c '.[]'); do
+          # Process each issue (use while read to properly handle JSON with spaces)
+          cat /tmp/issues.json | jq -c '.[]' | while IFS= read -r issue_json; do
             echo "$issue_json" > /tmp/issue.json
 
             # Run the processing script
