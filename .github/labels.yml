@@ -24,6 +24,10 @@
   color: "3498DB"  # Blue
   description: "Add a new person to the family tree"
 
+- name: "update-person"
+  color: "5DADE2"  # Light blue
+  description: "Update an existing person in the family tree"
+
 - name: "missing-person"
   color: "E74C3C"  # Red
   description: "Person mentioned in story but not in tree - needs identification"

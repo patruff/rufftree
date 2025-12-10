@@ -52,6 +52,26 @@ jobs:
                 body: `🤖 **Automatic Processing Started**\n\nYour person has been detected and will be integrated into the family tree automatically. The automation will:\n\n1. Extract the person data from this issue\n2. Integrate them into the family tree JSON\n3. Set up relationships with existing family members\n4. Run generation and ethnicity calculations\n5. Close this issue when complete\n\nYou'll receive another comment when processing is finished. Thank you for adding to the family tree! 👨‍👩‍👧‍👦`
               });
 
+            } else if (issueTitle.startsWith('Update Person:')) {
+              console.log('Detected person update issue - adding labels');
+
+              await github.rest.issues.addLabels({
+                owner: context.repo.owner,
+                repo: context.repo.repo,
+                issue_number: issueNumber,
+                labels: ['update-person', 'person:pending']
+              });
+
+              console.log('✅ Added labels: update-person, person:pending');
+
+              // Add a comment to inform the user
+              await github.rest.issues.createComment({
+                owner: context.repo.owner,
+                repo: context.repo.repo,
+                issue_number: issueNumber,
+                body: `🤖 **Automatic Processing Started**\n\nYour person update has been detected and will be processed automatically. The automation will:\n\n1. Extract the updated person data from this issue\n2. Update the person in the family tree JSON\n3. Recalculate generation and ethnicity data if needed\n4. Update profile completion percentage\n5. Close this issue when complete\n\nYou'll receive another comment when processing is finished. Thank you for keeping the family tree up to date! 👨‍👩‍👧‍👦`
+              });
+
             } else {
               console.log('Not a story or person issue - skipping auto-label');
             }
