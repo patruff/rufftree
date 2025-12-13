@@ -1662,6 +1662,18 @@ This project is adapted from the longevitypdf RAG system. To contribute:
 
 MIT License - feel free to adapt for your own family archive projects!
 
+## 🏆 Top Contributors
+
+Thank you to everyone who has contributed to preserving our family history!
+
+| Rank | Contributor | Stories | People Added | Questions | Total |
+|------|------------|---------|--------------|-----------|-------|
+| 1 | 🥇 Patrick Ruff | 4 | 41 | 0 | **45** |
+| 2 | 🥈 Sarah Ruff | 0 | 0 | 1 | **1** |
+| 3 | 🥉 Michael Ruff | 0 | 0 | 1 | **1** |
+
+*Leaderboard updated automatically. Contribute by [sharing a story](../../issues/new?template=family-story.yml) or [adding a family member](../../issues/new?template=add-person.yml)!*
+
 ## Resources
 
 - [Gemini File Search Documentation](https://ai.google.dev/gemini-api/docs/file-search)
