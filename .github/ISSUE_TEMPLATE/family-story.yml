@@ -31,8 +31,10 @@ body:
     id: author
     attributes:
       label: Your Name (Author)
-      description: Who is writing/sharing this story? This helps us attribute the story correctly.
-      placeholder: "Sarah Ruff"
+      description: |
+        Who is writing/sharing this story? This helps us attribute the story correctly and track contributors.
+        You can enter "Anonymous" if you prefer not to be named.
+      placeholder: "Sarah Ruff (or Anonymous)"
     validations:
       required: true
 
