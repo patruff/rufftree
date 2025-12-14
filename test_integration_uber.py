@@ -511,110 +511,173 @@ class TestUberIntegration:
 
             print(f"\n🔍 Attempting to delete RAG document: {self.test_story_document_name}")
 
-            # Approach 1: Try with query_parameters (REST API style)
-            try:
-                print("   Attempt 1: Using query_parameters...")
-                google_client.file_search_stores.documents.delete(
-                    name=self.test_story_document_name,
-                    query_parameters={'force': 'true'}
-                )
-                print(f"✅ Deleted test story from RAG (method: query_parameters)")
-                deletion_successful = True
-            except Exception as e:
-                print(f"   ❌ Method 1 failed: {e}")
-
-            # Approach 2: Try using the raw API client with force parameter
-            if not deletion_successful:
-                try:
-                    print("   Attempt 2: Using _api_client.request...")
-                    # Get the underlying API client
-                    api_client = google_client._api_client
-                    delete_url = f"https://generativelanguage.googleapis.com/v1beta/{self.test_story_document_name}?force=true"
-
-                    response = api_client.request(
-                        method='DELETE',
-                        url=delete_url
-                    )
-                    print(f"✅ Deleted test story from RAG (method: direct API)")
-                    print(f"   Response: {response}")
-                    deletion_successful = True
-                except Exception as e:
-                    print(f"   ❌ Method 2 failed: {e}")
-
-            # Approach 3: Try standard delete and see if it works now
-            if not deletion_successful:
-                try:
-                    print("   Attempt 3: Standard delete (no force)...")
-                    google_client.file_search_stores.documents.delete(
-                        name=self.test_story_document_name
-                    )
-                    print(f"✅ Deleted test story from RAG (method: standard)")
-                    deletion_successful = True
-                except Exception as e:
-                    print(f"   ❌ Method 3 failed: {e}")
-
-            # Approach 4: Try using requests directly with API key
+            # Approach 1: Try requests with force=true (string)
             if not deletion_successful:
                 try:
                     import requests
-                    print("   Attempt 4: Using requests library with force=true...")
+                    print("   Attempt 1: requests.delete with force='true' (string)...")
 
                     api_key = os.getenv("GOOGLE_GENAI_API_KEY")
                     delete_url = f"https://generativelanguage.googleapis.com/v1beta/{self.test_story_document_name}"
 
-                    headers = {
-                        'x-goog-api-key': api_key,
-                    }
-                    params = {
-                        'force': 'true'
-                    }
+                    headers = {'x-goog-api-key': api_key}
+                    params = {'force': 'true'}  # String
 
                     response = requests.delete(delete_url, headers=headers, params=params)
                     print(f"   Response status: {response.status_code}")
-                    print(f"   Response body: {response.text[:200]}")
+                    print(f"   Response body: {response.text[:500] if response.text else 'empty'}")
 
-                    if response.status_code == 200 or response.status_code == 204:
-                        print(f"✅ Deleted test story from RAG (method: requests+force)")
+                    if response.status_code in [200, 204]:
+                        print(f"✅ Deleted with requests (force=true string)")
                         deletion_successful = True
                     else:
-                        print(f"   ❌ Method 4 failed with status {response.status_code}")
+                        print(f"   ❌ Failed with status {response.status_code}")
+                except Exception as e:
+                    print(f"   ❌ Method 1 failed: {e}")
+
+            # Approach 2: Try requests with force=True (boolean)
+            if not deletion_successful:
+                try:
+                    import requests
+                    print("   Attempt 2: requests.delete with force=True (boolean)...")
+
+                    api_key = os.getenv("GOOGLE_GENAI_API_KEY")
+                    delete_url = f"https://generativelanguage.googleapis.com/v1beta/{self.test_story_document_name}"
+
+                    headers = {'x-goog-api-key': api_key}
+                    params = {'force': True}  # Boolean
+
+                    response = requests.delete(delete_url, headers=headers, params=params)
+                    print(f"   Response status: {response.status_code}")
+                    print(f"   Response body: {response.text[:500] if response.text else 'empty'}")
+
+                    if response.status_code in [200, 204]:
+                        print(f"✅ Deleted with requests (force=True boolean)")
+                        deletion_successful = True
+                    else:
+                        print(f"   ❌ Failed with status {response.status_code}")
+                except Exception as e:
+                    print(f"   ❌ Method 2 failed: {e}")
+
+            # Approach 3: Try requests with force=1 (integer)
+            if not deletion_successful:
+                try:
+                    import requests
+                    print("   Attempt 3: requests.delete with force=1 (integer)...")
+
+                    api_key = os.getenv("GOOGLE_GENAI_API_KEY")
+                    delete_url = f"https://generativelanguage.googleapis.com/v1beta/{self.test_story_document_name}"
+
+                    headers = {'x-goog-api-key': api_key}
+                    params = {'force': 1}  # Integer
+
+                    response = requests.delete(delete_url, headers=headers, params=params)
+                    print(f"   Response status: {response.status_code}")
+                    print(f"   Response body: {response.text[:500] if response.text else 'empty'}")
+
+                    if response.status_code in [200, 204]:
+                        print(f"✅ Deleted with requests (force=1 integer)")
+                        deletion_successful = True
+                    else:
+                        print(f"   ❌ Failed with status {response.status_code}")
+                except Exception as e:
+                    print(f"   ❌ Method 3 failed: {e}")
+
+            # Approach 4: Try URL-encoded force in URL directly
+            if not deletion_successful:
+                try:
+                    import requests
+                    print("   Attempt 4: requests.delete with force in URL...")
+
+                    api_key = os.getenv("GOOGLE_GENAI_API_KEY")
+                    delete_url = f"https://generativelanguage.googleapis.com/v1beta/{self.test_story_document_name}?force=true"
+
+                    headers = {'x-goog-api-key': api_key}
+
+                    response = requests.delete(delete_url, headers=headers)
+                    print(f"   Response status: {response.status_code}")
+                    print(f"   Response body: {response.text[:500] if response.text else 'empty'}")
+
+                    if response.status_code in [200, 204]:
+                        print(f"✅ Deleted with force in URL")
+                        deletion_successful = True
+                    else:
+                        print(f"   ❌ Failed with status {response.status_code}")
                 except Exception as e:
                     print(f"   ❌ Method 4 failed: {e}")
 
-            # Approach 5: Debug - print available methods and attributes
+            # Approach 5: Try with Authorization header instead of x-goog-api-key
             if not deletion_successful:
-                print("\n   🔍 DEBUG: Inspecting delete method...")
-                delete_method = google_client.file_search_stores.documents.delete
-                print(f"   Method: {delete_method}")
-                print(f"   Type: {type(delete_method)}")
-
-                # Try to get signature
-                import inspect
                 try:
-                    sig = inspect.signature(delete_method)
-                    print(f"   Signature: {sig}")
-                    print(f"   Parameters: {list(sig.parameters.keys())}")
+                    import requests
+                    print("   Attempt 5: requests.delete with Authorization header...")
+
+                    api_key = os.getenv("GOOGLE_GENAI_API_KEY")
+                    delete_url = f"https://generativelanguage.googleapis.com/v1beta/{self.test_story_document_name}?force=true"
+
+                    headers = {'Authorization': f'Bearer {api_key}'}
+
+                    response = requests.delete(delete_url, headers=headers)
+                    print(f"   Response status: {response.status_code}")
+                    print(f"   Response body: {response.text[:500] if response.text else 'empty'}")
+
+                    if response.status_code in [200, 204]:
+                        print(f"✅ Deleted with Authorization header")
+                        deletion_successful = True
+                    else:
+                        print(f"   ❌ Failed with status {response.status_code}")
                 except Exception as e:
-                    print(f"   Could not get signature: {e}")
+                    print(f"   ❌ Method 5 failed: {e}")
 
-                # Try to get docstring
-                if delete_method.__doc__:
-                    print(f"   Docstring:\n{delete_method.__doc__[:500]}")
-
-                # Check what's available on the documents object
-                print(f"\n   Available methods on documents:")
-                for attr in dir(google_client.file_search_stores.documents):
-                    if not attr.startswith('_'):
-                        print(f"      - {attr}")
-
-                print(f"\n   ⚠️  All deletion methods failed - document will remain in RAG")
-                print(f"   Note: Test document may need manual cleanup via console")
-
+            # Approach 6: Try standard SDK delete (no force) - maybe chunks auto-deleted?
             if not deletion_successful:
-                print(f"❌ Could not delete RAG document after trying multiple approaches")
-                print(f"   Document: {self.test_story_document_name}")
-            else:
+                try:
+                    print("   Attempt 6: Standard SDK delete (no force)...")
+                    google_client.file_search_stores.documents.delete(
+                        name=self.test_story_document_name
+                    )
+                    print(f"✅ Deleted with standard SDK")
+                    deletion_successful = True
+                except Exception as e:
+                    print(f"   ❌ Method 6 failed: {e}")
+
+            # Approach 7: Debug - inspect what the API actually expects
+            if not deletion_successful:
+                print("\n   🔍 DEBUG: Inspecting delete method and making test request...")
+
+                try:
+                    import requests
+                    # Try to get info about the document first
+                    api_key = os.getenv("GOOGLE_GENAI_API_KEY")
+                    get_url = f"https://generativelanguage.googleapis.com/v1beta/{self.test_story_document_name}"
+
+                    response = requests.get(get_url, headers={'x-goog-api-key': api_key})
+                    print(f"   GET document status: {response.status_code}")
+                    if response.status_code == 200:
+                        doc_info = response.json()
+                        print(f"   Document info: {json.dumps(doc_info, indent=2)[:500]}")
+
+                    # Check SDK method signature
+                    delete_method = google_client.file_search_stores.documents.delete
+                    import inspect
+                    try:
+                        sig = inspect.signature(delete_method)
+                        print(f"   SDK Signature: {sig}")
+                        print(f"   Parameters: {list(sig.parameters.keys())}")
+                    except:
+                        pass
+
+                except Exception as e:
+                    print(f"   Debug failed: {e}")
+
+                print(f"\n   ⚠️  All deletion methods failed")
+                print(f"   Document will remain: {self.test_story_document_name}")
+                print(f"   This is expected - Google may require console access for deletion")
+
+            if deletion_successful:
                 print(f"✅ Successfully deleted RAG document")
+            else:
+                print(f"ℹ️  Document cleanup unsuccessful - may require manual removal")
 
         # Delete local test story file
         if self.test_story_path and self.test_story_path.exists():
