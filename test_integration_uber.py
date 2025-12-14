@@ -676,6 +676,27 @@ class TestUberIntegration:
 
             if deletion_successful:
                 print(f"✅ Successfully deleted RAG document")
+
+                # Wait for deletion to propagate (async operation)
+                print(f"⏳ Waiting for deletion to propagate...")
+                time.sleep(10)
+
+                # Verify deletion by trying to GET the document
+                try:
+                    import requests
+                    api_key = os.getenv("GOOGLE_GENAI_API_KEY")
+                    get_url = f"https://generativelanguage.googleapis.com/v1beta/{self.test_story_document_name}"
+
+                    response = requests.get(get_url, headers={'x-goog-api-key': api_key})
+                    if response.status_code == 404:
+                        print(f"✅ Confirmed: Document deleted (404 Not Found)")
+                    elif response.status_code == 200:
+                        print(f"⚠️  Document still exists (200 OK) - deletion may take longer")
+                    else:
+                        print(f"   Document status: {response.status_code}")
+                except Exception as e:
+                    print(f"   Could not verify deletion: {e}")
+
             else:
                 print(f"ℹ️  Document cleanup unsuccessful - may require manual removal")
 
@@ -712,27 +733,41 @@ class TestUberIntegration:
         print(f"✅ Test person removed from Patrick's children")
         print(f"   Patrick's children: {patrick['childrenIds']}")
 
-        # Verify RAG document was deleted
+        # Verify RAG document was deleted (with retries for async deletion)
         print(f"\n🔍 Verifying RAG document cleanup...")
-        docs = list(google_client.file_search_stores.documents.list(parent=file_search_store))
 
-        # Check if test document still exists
         test_doc_found = False
-        for doc in docs:
-            doc_display = getattr(doc, 'display_name', '')
-            if doc_display.lower() == TEST_STORY_FILENAME.lower():
-                test_doc_found = True
-                print(f"❌ Test document still in RAG: {doc_display}")
+        max_retries = 3
+        retry_delay = 5  # seconds
+
+        for attempt in range(max_retries):
+            docs = list(google_client.file_search_stores.documents.list(parent=file_search_store))
+
+            # Check if test document still exists
+            test_doc_found = False
+            for doc in docs:
+                doc_display = getattr(doc, 'display_name', '')
+                if doc_display.lower() == TEST_STORY_FILENAME.lower():
+                    test_doc_found = True
+                    if attempt < max_retries - 1:
+                        print(f"   Attempt {attempt + 1}/{max_retries}: Document still present, retrying in {retry_delay}s...")
+                        time.sleep(retry_delay)
+                    else:
+                        print(f"❌ Test document still in RAG after {max_retries} attempts: {doc_display}")
+                    break
+
+            if not test_doc_found:
+                print(f"✅ Test document removed from RAG (verified after {attempt + 1} attempt(s))")
                 break
 
-        if not test_doc_found:
-            print(f"✅ Test document removed from RAG")
-        else:
-            # Don't fail - just warn
-            print(f"⚠️  Test document still exists but will be cleaned up manually")
+        if test_doc_found:
+            # Don't fail - just warn (deletion may take longer than test duration)
+            print(f"⚠️  Test document still exists - deletion may be processing")
+            print(f"   Note: Google File Search deletions can take several minutes to propagate")
 
         # Print current document count
-        print(f"📚 Current RAG documents: {len(docs)}")
+        docs_final = list(google_client.file_search_stores.documents.list(parent=file_search_store))
+        print(f"📚 Current RAG documents: {len(docs_final)}")
         print(f"   Test documents should not be in this list")
 
         print(f"✅ TEST 7 PASSED: Cleanup verified")
