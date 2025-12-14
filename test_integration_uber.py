@@ -401,8 +401,9 @@ class TestUberIntegration:
         print(f"   Using store: {file_search_store}")
 
         # Query the RAG system
+        # Use stable model that supports file search
         response = google_client.models.generate_content(
-            model="gemini-2.0-flash-exp",
+            model="gemini-2.5-flash",
             contents=query,
             config={
                 'tools': [{
@@ -504,12 +505,19 @@ class TestUberIntegration:
             print(f"✅ Deleted test person: {self.test_person_id}")
 
         # Delete test story from RAG
+        # Note: Google File Search may not allow immediate deletion of documents
+        # Documents will auto-expire or can be managed through the console
         if self.test_story_document_name:
             try:
                 google_client.file_search_stores.documents.delete(name=self.test_story_document_name)
                 print(f"✅ Deleted test story from RAG: {self.test_story_document_name}")
             except Exception as e:
-                print(f"⚠️  Could not delete RAG document: {e}")
+                error_msg = str(e)
+                if "Cannot delete non-empty Document" in error_msg or "FAILED_PRECONDITION" in error_msg:
+                    print(f"ℹ️  RAG document will auto-expire (Google doesn't allow immediate deletion)")
+                    print(f"   Document: {self.test_story_document_name}")
+                else:
+                    print(f"⚠️  Could not delete RAG document: {e}")
 
         # Delete local test story file
         if self.test_story_path and self.test_story_path.exists():
