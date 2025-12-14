@@ -1,0 +1,64 @@
+{
+  "_description": "Tracks all contributions to the Ruff family archive",
+  "contributors": {
+    "Patrick Ruff": {
+      "stories": 1,
+      "people_added": 0,
+      "queries": 0,
+      "total": 1
+    },
+    "Joe Ruff Sr.": {
+      "stories": 1,
+      "people_added": 0,
+      "queries": 0,
+      "total": 1
+    },
+    "Sarah Ruff": {
+      "stories": 0,
+      "people_added": 0,
+      "queries": 1,
+      "total": 1
+    },
+    "Michael Ruff": {
+      "stories": 0,
+      "people_added": 0,
+      "queries": 1,
+      "total": 1
+    }
+  },
+  "stories": [
+    {
+      "author": "Patrick Ruff",
+      "title": "The Time Pat Won 4th In The State 800m",
+      "about": [
+        "Patrick Ruff"
+      ],
+      "date": "2024-12-13",
+      "type": "story"
+    },
+    {
+      "author": "Joe Ruff Sr.",
+      "title": "Dad built a rope swing",
+      "about": [
+        "Joe Ruff Sr."
+      ],
+      "date": "2024-11-28",
+      "type": "story"
+    }
+  ],
+  "people_added": [],
+  "queries": [
+    {
+      "contributor": "Sarah Ruff",
+      "question": "When did the Ruff family immigrate to America?",
+      "date": "2025-01-10",
+      "type": "query"
+    },
+    {
+      "contributor": "Michael Ruff",
+      "question": "What occupations were common in the Ruff family?",
+      "date": "2025-01-05",
+      "type": "query"
+    }
+  ]
+}

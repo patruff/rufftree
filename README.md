@@ -1662,6 +1662,28 @@ This project is adapted from the longevitypdf RAG system. To contribute:
 
 MIT License - feel free to adapt for your own family archive projects!
 
+## 🏆 Top Contributors
+
+Thank you to everyone who has contributed to preserving our family history!
+
+| Rank | Contributor | Stories | People Added | Questions | Total |
+|------|------------|---------|--------------|-----------|-------|
+| 1 | 🥇 Patrick Ruff | 1 | 0 | 0 | **1** |
+| 2 | 🥈 Joe Ruff Sr. | 1 | 0 | 0 | **1** |
+| 3 | 🥉 Sarah Ruff | 0 | 0 | 1 | **1** |
+| 4 | Michael Ruff | 0 | 0 | 1 | **1** |
+
+*Leaderboard updated automatically. Contribute by [sharing a story](../../issues/new?template=family-story.yml) or [adding a family member](../../issues/new?template=add-person.yml)!*
+
+### How Contributor Tracking Works
+
+When you submit a story through the website, the "Your Name (Author)" field is used to track your contribution. You can:
+- Enter your name to get credit for your contribution
+- Enter "Anonymous" if you prefer not to be named
+
+All contributions are tracked in `contributors.json` and the leaderboard updates automatically when new stories, people, or questions are added.
+
+
 ## Resources
 
 - [Gemini File Search Documentation](https://ai.google.dev/gemini-api/docs/file-search)

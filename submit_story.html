@@ -3,7 +3,7 @@
 <head>
     <meta charset="UTF-8">
     <meta name="viewport" content="width=device-width, initial-scale=1.0">
-    <title>Submit Family Story - Rufftree</title>
+    <title>Share Your Story - Ruff Family Archive</title>
     <style>
         * {
             margin: 0;
@@ -12,152 +12,134 @@
         }
 
         body {
-            font-family: -apple-system, BlinkMacSystemFont, "Segoe UI", Roboto, sans-serif;
+            font-family: 'Segoe UI', Tahoma, Geneva, Verdana, sans-serif;
             background: linear-gradient(135deg, #667eea 0%, #764ba2 100%);
             min-height: 100vh;
+            display: flex;
+            justify-content: center;
+            align-items: center;
             padding: 20px;
         }
 
         .container {
-            max-width: 900px;
-            margin: 0 auto;
             background: white;
             border-radius: 20px;
             box-shadow: 0 20px 60px rgba(0, 0, 0, 0.3);
+            max-width: 800px;
+            width: 100%;
             padding: 40px;
         }
 
         h1 {
-            color: #333;
+            color: #667eea;
             margin-bottom: 10px;
-            font-size: 32px;
+            font-size: 2.5em;
+            text-align: center;
         }
 
         .subtitle {
             color: #666;
+            text-align: center;
             margin-bottom: 30px;
-            font-size: 16px;
-        }
-
-        nav {
-            display: flex;
-            gap: 15px;
-            justify-content: center;
-            margin-bottom: 30px;
-            flex-wrap: wrap;
-        }
-
-        nav a {
-            padding: 10px 20px;
-            background: #f8f9fa;
-            color: #667eea;
-            text-decoration: none;
-            border-radius: 8px;
-            transition: all 0.3s;
-            font-weight: 500;
-        }
-
-        nav a:hover {
-            background: #667eea;
-            color: white;
-        }
-
-        nav a.active {
-            background: #667eea;
-            color: white;
-        }
-
-        .info-box {
-            background: #e8f4fd;
-            border: 1px solid #b8daff;
-            border-radius: 12px;
-            padding: 25px;
-            margin-bottom: 30px;
-        }
-
-        .info-box h3 {
-            color: #004085;
-            margin-bottom: 15px;
-            font-size: 18px;
-        }
-
-        .info-box p {
-            color: #004085;
-            line-height: 1.6;
-            margin-bottom: 10px;
-        }
-
-        .info-box ul {
-            color: #004085;
-            margin-left: 20px;
-            line-height: 1.8;
-        }
-
-        .form-section {
-            background: #f8f9fa;
-            border-radius: 12px;
-            padding: 30px;
-            margin-bottom: 30px;
-        }
-
-        .form-section h2 {
-            color: #333;
-            margin-bottom: 25px;
-            font-size: 24px;
+            font-size: 1.1em;
         }
 
         .form-group {
             margin-bottom: 25px;
         }
 
-        .form-group label {
+        label {
             display: block;
-            font-weight: 600;
-            color: #333;
             margin-bottom: 8px;
-            font-size: 16px;
+            color: #333;
+            font-weight: 600;
+            font-size: 1.1em;
         }
 
-        .form-group .description {
-            color: #666;
-            font-size: 14px;
-            margin-bottom: 10px;
-        }
-
-        .form-group input[type="text"],
-        .form-group select,
-        .form-group textarea {
+        select, textarea, input[type="text"] {
             width: 100%;
-            padding: 14px 16px;
+            padding: 12px;
             border: 2px solid #e0e0e0;
-            border-radius: 10px;
+            border-radius: 8px;
             font-size: 16px;
             font-family: inherit;
-            transition: border-color 0.3s, box-shadow 0.3s;
+            transition: border-color 0.3s;
         }
 
-        .form-group input[type="text"]:focus,
-        .form-group select:focus,
-        .form-group textarea:focus {
+        select:focus, textarea:focus, input[type="text"]:focus {
             outline: none;
             border-color: #667eea;
-            box-shadow: 0 0 0 3px rgba(102, 126, 234, 0.2);
         }
 
-        .form-group textarea {
-            min-height: 200px;
+        textarea {
+            min-height: 300px;
             resize: vertical;
+            line-height: 1.6;
         }
 
-        .form-row {
-            display: grid;
-            grid-template-columns: 1fr 1fr;
-            gap: 20px;
+        .extra-options {
+            display: none;
+            border-top: 2px solid #e0e0e0;
+            margin-top: 20px;
+            padding-top: 20px;
         }
 
-        .checkbox-group {
+        .extra-options.show {
+            display: block;
+        }
+
+        .toggle-options {
+            background: #f5f5f5;
+            border: 2px solid #e0e0e0;
+            padding: 12px 24px;
+            border-radius: 8px;
+            cursor: pointer;
+            font-size: 16px;
+            color: #667eea;
+            font-weight: 600;
+            width: 100%;
+            margin-bottom: 20px;
+            transition: all 0.3s;
+        }
+
+        .toggle-options:hover {
+            background: #667eea;
+            color: white;
+            border-color: #667eea;
+        }
+
+        .submit-btn {
+            background: linear-gradient(135deg, #667eea 0%, #764ba2 100%);
+            color: white;
+            border: none;
+            padding: 16px 48px;
+            font-size: 1.2em;
+            font-weight: 600;
+            border-radius: 50px;
+            cursor: pointer;
+            width: 100%;
+            transition: transform 0.2s, box-shadow 0.2s;
+            box-shadow: 0 4px 15px rgba(102, 126, 234, 0.4);
+        }
+
+        .submit-btn:hover {
+            transform: translateY(-2px);
+            box-shadow: 0 6px 20px rgba(102, 126, 234, 0.6);
+        }
+
+        .submit-btn:active {
+            transform: translateY(0);
+        }
+
+        .submit-btn:disabled {
+            opacity: 0.6;
+            cursor: not-allowed;
+            transform: none;
+        }
+
+        .checkboxes {
             display: grid;
-            grid-template-columns: repeat(auto-fill, minmax(180px, 1fr));
+            grid-template-columns: repeat(auto-fill, minmax(200px, 1fr));
             gap: 10px;
             margin-top: 10px;
         }
@@ -165,218 +147,140 @@
         .checkbox-item {
             display: flex;
             align-items: center;
-            gap: 8px;
-            padding: 10px 12px;
-            background: white;
-            border: 2px solid #e0e0e0;
-            border-radius: 8px;
+        }
+
+        .checkbox-item input[type="checkbox"] {
+            width: 20px;
+            height: 20px;
+            margin-right: 8px;
             cursor: pointer;
-            transition: all 0.2s;
         }
 
-        .checkbox-item:hover {
-            border-color: #667eea;
-        }
-
-        .checkbox-item.selected {
-            border-color: #667eea;
-            background: #f0f4ff;
-        }
-
-        .checkbox-item input {
-            width: 18px;
-            height: 18px;
-            accent-color: #667eea;
-        }
-
-        .btn {
-            display: inline-block;
-            background: linear-gradient(135deg, #667eea 0%, #764ba2 100%);
-            color: white;
-            padding: 18px 40px;
-            border: none;
-            border-radius: 12px;
-            font-size: 18px;
-            font-weight: 600;
+        .checkbox-item label {
+            margin: 0;
+            font-weight: normal;
             cursor: pointer;
-            text-decoration: none;
-            transition: transform 0.2s, box-shadow 0.2s;
-            width: 100%;
+        }
+
+        .loading {
+            display: none;
             text-align: center;
+            margin-top: 20px;
         }
 
-        .btn:hover {
-            transform: translateY(-2px);
-            box-shadow: 0 10px 20px rgba(102, 126, 234, 0.3);
-        }
-
-        .btn:disabled {
-            opacity: 0.6;
-            cursor: not-allowed;
-            transform: none;
-        }
-
-        .required {
-            color: #dc3545;
-        }
-
-        .autocomplete-container {
-            position: relative;
-        }
-
-        .autocomplete-list {
-            position: absolute;
-            top: 100%;
-            left: 0;
-            right: 0;
-            background: white;
-            border: 2px solid #667eea;
-            border-top: none;
-            border-radius: 0 0 10px 10px;
-            max-height: 200px;
-            overflow-y: auto;
-            z-index: 100;
-            display: none;
-        }
-
-        .autocomplete-list.active {
+        .loading.show {
             display: block;
         }
 
-        .autocomplete-item {
-            padding: 12px 16px;
-            cursor: pointer;
-            transition: background 0.2s;
+        .spinner {
+            border: 4px solid #f3f3f3;
+            border-top: 4px solid #667eea;
+            border-radius: 50%;
+            width: 40px;
+            height: 40px;
+            animation: spin 1s linear infinite;
+            margin: 0 auto;
         }
 
-        .autocomplete-item:hover {
-            background: #f0f4ff;
+        @keyframes spin {
+            0% { transform: rotate(0deg); }
+            100% { transform: rotate(360deg); }
         }
 
-        .selected-people {
-            display: flex;
-            flex-wrap: wrap;
-            gap: 8px;
-            margin-top: 10px;
+        .error {
+            background: #fee;
+            border: 2px solid #fcc;
+            color: #c00;
+            padding: 15px;
+            border-radius: 8px;
+            margin-top: 20px;
+            display: none;
         }
 
-        .selected-tag {
-            display: inline-flex;
-            align-items: center;
-            gap: 6px;
-            background: #667eea;
-            color: white;
-            padding: 6px 12px;
-            border-radius: 20px;
-            font-size: 14px;
+        .error.show {
+            display: block;
         }
 
-        .selected-tag button {
-            background: none;
-            border: none;
-            color: white;
-            cursor: pointer;
-            font-size: 16px;
-            padding: 0;
-            line-height: 1;
+        .nav-links {
+            text-align: center;
+            margin-top: 30px;
+            padding-top: 20px;
+            border-top: 2px solid #e0e0e0;
         }
 
-        .story-tips {
-            background: #fff3cd;
-            border: 1px solid #ffc107;
-            border-radius: 12px;
-            padding: 20px;
-            margin-bottom: 30px;
+        .nav-links a {
+            color: #667eea;
+            text-decoration: none;
+            margin: 0 15px;
+            font-weight: 600;
         }
 
-        .story-tips h4 {
-            color: #856404;
-            margin-bottom: 12px;
-            font-size: 16px;
+        .nav-links a:hover {
+            text-decoration: underline;
         }
 
-        .story-tips ul {
-            color: #856404;
-            margin-left: 20px;
-            line-height: 1.8;
-        }
-
-        .validation-error {
-            color: #dc3545;
-            font-size: 14px;
+        .help-text {
+            font-size: 0.9em;
+            color: #666;
             margin-top: 5px;
-            display: none;
-        }
-
-        .validation-error.show {
-            display: block;
-        }
-
-        @media (max-width: 768px) {
-            .container {
-                padding: 20px;
-            }
-
-            .form-row {
-                grid-template-columns: 1fr;
-            }
-
-            .checkbox-group {
-                grid-template-columns: 1fr;
-            }
         }
     </style>
 </head>
 <body>
     <div class="container">
-        <h1>📖 Submit a Family Story</h1>
-        <p class="subtitle">Share memories, anecdotes, and stories about family members</p>
+        <h1>📖 Share Your Story</h1>
+        <p class="subtitle">Help preserve our family history by sharing your memories</p>
 
-        <nav>
-            <a href="index.html">🌳 Family Tree</a>
-            <a href="graph.html">📊 Family Graph</a>
-            <a href="queries.html">💬 Ask Questions</a>
-            <a href="submit_story.html" class="active">📖 Submit Story</a>
-            <a href="person_generator.html">👤 Add Person</a>
-            <a href="easy_add.html">➕ Easy Add</a>
-            <a href="export_minitree.html">📥 Export CSV</a>
-        </nav>
-
-        <div class="info-box">
-            <h3>✨ Your stories help preserve family history!</h3>
-            <p>When you submit a story, it automatically:</p>
-            <ul>
-                <li><strong>Saves to our family archive</strong> - preserved for future generations</li>
-                <li><strong>Becomes searchable</strong> - anyone can ask questions and find your story</li>
-                <li><strong>Gets metadata tagged</strong> - author, subjects, and time period for accurate attribution</li>
-            </ul>
-        </div>
-
-        <div class="form-section">
-            <h2>📝 Share Your Story</h2>
-
+        <form id="storyForm">
+            <!-- Author Selection -->
             <div class="form-group">
-                <label>Story Title <span class="required">*</span></label>
-                <p class="description">Give your story a memorable title</p>
-                <input type="text" id="storyTitle" placeholder="The Time Grandpa Built the Treehouse">
-                <p class="validation-error" id="titleError">Please enter a story title</p>
+                <label for="author">Who is sharing this story? *</label>
+                <select id="author" name="author" required>
+                    <option value="">-- Select your name --</option>
+                    <option value="Anonymous">Anonymous</option>
+                </select>
+                <p class="help-text">Select your name or choose "Anonymous"</p>
             </div>
 
-            <div class="form-row">
+            <!-- Story Content -->
+            <div class="form-group">
+                <label for="story">Your Story *</label>
+                <textarea id="story" name="story" required placeholder="Share your family memory here...
+
+What happened? Who was there? Where did it take place? What makes this memory special?
+
+Be as detailed as you can - these stories preserve our family history for future generations."></textarea>
+            </div>
+
+            <!-- Toggle Extra Options -->
+            <button type="button" class="toggle-options" onclick="toggleExtraOptions()">
+                ➕ Extra Options (Title, Date, People Mentioned)
+            </button>
+
+            <!-- Extra Options Section (Hidden by Default) -->
+            <div class="extra-options" id="extraOptions">
                 <div class="form-group">
-                    <label>Your Name (Author) <span class="required">*</span></label>
-                    <p class="description">Who is sharing this story?</p>
-                    <select id="authorSelect">
-                        <option value="">-- Select your name --</option>
-                    </select>
-                    <input type="text" id="authorOther" placeholder="Enter your name" style="display: none; margin-top: 10px;">
-                    <p class="validation-error" id="authorError">Please select or enter your name</p>
+                    <label for="title">Story Title (Optional)</label>
+                    <input type="text" id="title" name="title" placeholder="e.g., The Time Grandpa Built the Treehouse">
+                    <p class="help-text">Give your story a title, or we'll generate one</p>
                 </div>
 
                 <div class="form-group">
-                    <label>When Did This Happen? <span class="required">*</span></label>
-                    <p class="description">Select the decade</p>
-                    <select id="decadeSelect">
+                    <label>Who is this story about? (Optional)</label>
+                    <div class="checkboxes" id="peopleCheckboxes">
+                        <!-- Populated from family_tree.json -->
+                    </div>
+                </div>
+
+                <div class="form-group">
+                    <label for="otherPeople">Other People Mentioned (Optional)</label>
+                    <input type="text" id="otherPeople" name="otherPeople" placeholder="Uncle Bob, Cousin Lisa">
+                    <p class="help-text">Comma-separated names not in the list above</p>
+                </div>
+
+                <div class="form-group">
+                    <label for="decade">When did this happen? (Optional)</label>
+                    <select id="decade" name="decade">
                         <option value="">-- Select decade --</option>
                         <option value="2020s (2020-present)">2020s (2020-present)</option>
                         <option value="2010s (2010-2019)">2010s (2010-2019)</option>
@@ -388,270 +292,39 @@
                         <option value="1950s (1950-1959)">1950s (1950-1959)</option>
                         <option value="1940s (1940-1949)">1940s (1940-1949)</option>
                         <option value="1930s or earlier">1930s or earlier</option>
-                        <option value="Not sure / Multiple decades">Not sure / Multiple decades</option>
                     </select>
-                    <p class="validation-error" id="decadeError">Please select a decade</p>
+                </div>
+
+                <div class="form-group">
+                    <label for="specificDate">Specific Date or Year (Optional)</label>
+                    <input type="text" id="specificDate" name="specificDate" placeholder="e.g., Summer 1985">
                 </div>
             </div>
 
-            <div class="form-group">
-                <label>Specific Date or Year (Optional)</label>
-                <p class="description">If you remember the exact year or occasion</p>
-                <input type="text" id="specificDate" placeholder="Summer 1985 or Christmas 2010">
-            </div>
-
-            <div class="form-group">
-                <label>Who Is This Story About? <span class="required">*</span></label>
-                <p class="description">Select family members or add others</p>
-                <div class="checkbox-group" id="peopleCheckboxes">
-                    <!-- Populated by JavaScript -->
-                </div>
-                <div style="margin-top: 15px;">
-                    <label style="font-weight: normal; font-size: 14px;">Other people (comma-separated):</label>
-                    <input type="text" id="otherPeople" placeholder="Uncle Bob, Cousin Lisa, Grandma Rose" style="margin-top: 5px;">
-                </div>
-                <p class="validation-error" id="aboutError">Please select at least one person or enter names</p>
-            </div>
-
-            <div class="form-group">
-                <label>Your Story <span class="required">*</span></label>
-                <p class="description">Share your family memory in as much detail as you can!</p>
-                <textarea id="storyContent" placeholder="Tell your story here...
-
-- What happened?
-- Who was there?
-- Where did it take place?
-- What makes this memory special?"></textarea>
-                <p class="validation-error" id="storyError">Please enter your story</p>
-            </div>
-
-            <div class="form-group">
-                <label>Additional Context (Optional)</label>
-                <p class="description">Any additional notes, corrections, or context</p>
-                <input type="text" id="additionalContext" placeholder="This story was told to me by my grandmother...">
-            </div>
-
-            <button class="btn" id="submitBtn" onclick="submitStory()">
-                📝 Submit Your Story
+            <!-- Submit Button -->
+            <button type="submit" class="submit-btn" id="submitBtn">
+                🚀 Share Your Story
             </button>
-        </div>
 
-        <div class="story-tips">
-            <h4>💡 Story Ideas</h4>
-            <ul>
-                <li>Favorite memories with grandparents, aunts, uncles</li>
-                <li>Family traditions and holiday celebrations</li>
-                <li>How family members met (parents, grandparents)</li>
-                <li>Funny stories or memorable quotes</li>
-                <li>Career stories, achievements, or life lessons</li>
-            </ul>
+            <!-- Loading -->
+            <div class="loading" id="loading">
+                <div class="spinner"></div>
+                <p style="margin-top: 15px; color: #667eea; font-weight: 600;">Saving your story...</p>
+            </div>
+
+            <!-- Error -->
+            <div class="error" id="error">
+                <strong>Error:</strong> <span id="errorMessage"></span>
+            </div>
+        </form>
+
+        <!-- Navigation -->
+        <div class="nav-links">
+            <a href="index.html">🌳 View Family Tree</a>
+            <a href="queries.html">💬 Ask Questions</a>
         </div>
     </div>
 
-    <script>
-        // Family members list - loaded from family_tree.json
-        let familyMembers = [];
-
-        // Load family tree data
-        async function loadFamilyTree() {
-            try {
-                const response = await fetch('family_tree.json');
-                const data = await response.json();
-                familyMembers = data.map(p => p.name).sort();
-                populateAuthorSelect();
-                populatePeopleCheckboxes();
-            } catch (error) {
-                console.error('Could not load family tree:', error);
-                // Use fallback list
-                familyMembers = [
-                    "Patrick Ruff", "Jenny Wang", "Joe Ruff Sr.", "Debbie Ruff",
-                    "Joe Ruff Jr.", "Katie Ruff", "Sarah Boilon", "Kevin Boilon",
-                    "Phil Ruff", "Ashley Ruff", "Annette Ludke", "Stan Miller Sr.",
-                    "Beth Miller Bradley"
-                ];
-                populateAuthorSelect();
-                populatePeopleCheckboxes();
-            }
-        }
-
-        function populateAuthorSelect() {
-            const select = document.getElementById('authorSelect');
-            familyMembers.forEach(name => {
-                const option = document.createElement('option');
-                option.value = name;
-                option.textContent = name;
-                select.appendChild(option);
-            });
-            // Add "Other" option
-            const otherOption = document.createElement('option');
-            otherOption.value = "__other__";
-            otherOption.textContent = "Other (enter name)";
-            select.appendChild(otherOption);
-
-            // Show/hide other input
-            select.addEventListener('change', function() {
-                const otherInput = document.getElementById('authorOther');
-                if (this.value === '__other__') {
-                    otherInput.style.display = 'block';
-                    otherInput.focus();
-                } else {
-                    otherInput.style.display = 'none';
-                }
-            });
-        }
-
-        function populatePeopleCheckboxes() {
-            const container = document.getElementById('peopleCheckboxes');
-            familyMembers.forEach(name => {
-                const item = document.createElement('label');
-                item.className = 'checkbox-item';
-                item.innerHTML = `
-                    <input type="checkbox" value="${name}" onchange="toggleCheckbox(this)">
-                    <span>${name}</span>
-                `;
-                container.appendChild(item);
-            });
-        }
-
-        function toggleCheckbox(checkbox) {
-            const item = checkbox.parentElement;
-            if (checkbox.checked) {
-                item.classList.add('selected');
-            } else {
-                item.classList.remove('selected');
-            }
-        }
-
-        function getSelectedPeople() {
-            const checkboxes = document.querySelectorAll('#peopleCheckboxes input:checked');
-            const selected = Array.from(checkboxes).map(cb => cb.value);
-            const other = document.getElementById('otherPeople').value.trim();
-            if (other) {
-                selected.push(...other.split(',').map(s => s.trim()).filter(s => s));
-            }
-            return selected;
-        }
-
-        function getAuthor() {
-            const select = document.getElementById('authorSelect');
-            if (select.value === '__other__') {
-                return document.getElementById('authorOther').value.trim();
-            }
-            return select.value;
-        }
-
-        function validateForm() {
-            let valid = true;
-
-            // Title
-            const title = document.getElementById('storyTitle').value.trim();
-            if (!title) {
-                document.getElementById('titleError').classList.add('show');
-                valid = false;
-            } else {
-                document.getElementById('titleError').classList.remove('show');
-            }
-
-            // Author
-            const author = getAuthor();
-            if (!author) {
-                document.getElementById('authorError').classList.add('show');
-                valid = false;
-            } else {
-                document.getElementById('authorError').classList.remove('show');
-            }
-
-            // Decade
-            const decade = document.getElementById('decadeSelect').value;
-            if (!decade) {
-                document.getElementById('decadeError').classList.add('show');
-                valid = false;
-            } else {
-                document.getElementById('decadeError').classList.remove('show');
-            }
-
-            // People
-            const people = getSelectedPeople();
-            if (people.length === 0) {
-                document.getElementById('aboutError').classList.add('show');
-                valid = false;
-            } else {
-                document.getElementById('aboutError').classList.remove('show');
-            }
-
-            // Story
-            const story = document.getElementById('storyContent').value.trim();
-            if (!story) {
-                document.getElementById('storyError').classList.add('show');
-                valid = false;
-            } else {
-                document.getElementById('storyError').classList.remove('show');
-            }
-
-            return valid;
-        }
-
-        function submitStory() {
-            if (!validateForm()) {
-                return;
-            }
-
-            const title = document.getElementById('storyTitle').value.trim();
-            const author = getAuthor();
-            const decade = document.getElementById('decadeSelect').value;
-            const specificDate = document.getElementById('specificDate').value.trim();
-            const people = getSelectedPeople();
-            const story = document.getElementById('storyContent').value.trim();
-            const additionalContext = document.getElementById('additionalContext').value.trim();
-
-            // Build the issue body in the format the workflow expects
-            const issueBody = `### Story Title
-
-${title}
-
-### Your Name (Author)
-
-${author}
-
-### Who Is This Story About?
-
-${people.map(p => `- [X] ${p}`).join('\n')}
-
-### Other People This Story Is About
-
-${document.getElementById('otherPeople').value.trim() || '_No response_'}
-
-### When Did This Story Take Place?
-
-${decade}
-
-### Specific Date or Year (Optional)
-
-${specificDate || '_No response_'}
-
-### Your Story
-
-${story}
-
-### Additional Context (Optional)
-
-${additionalContext || '_No response_'}`;
-
-            // Create the GitHub issue URL
-            const baseUrl = 'https://github.com/patruff/rufftree/issues/new';
-            const params = new URLSearchParams({
-                template: 'family-story.yml',
-                title: `[Story] ${title}`,
-                body: issueBody,
-                labels: 'family-story,story:pending'
-            });
-
-            // Open in new tab
-            window.open(`${baseUrl}?${params.toString()}`, '_blank');
-        }
-
-        // Initialize
-        loadFamilyTree();
-    </script>
+    <script src="submit_story.js"></script>
 </body>
 </html>

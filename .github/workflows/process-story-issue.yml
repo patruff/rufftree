@@ -138,6 +138,22 @@ jobs:
 
           eval $CMD
 
+      - name: Track contributor
+        env:
+          STORY_AUTHOR: ${{ steps.extract.outputs.author }}
+          STORY_TITLE: ${{ steps.extract.outputs.title }}
+          STORY_ABOUT: ${{ steps.extract.outputs.about }}
+        run: |
+          # Track the story contribution
+          AUTHOR="${STORY_AUTHOR:-Anonymous}"
+          python track_contributors.py add-story \
+            --author "$AUTHOR" \
+            --title "$STORY_TITLE" \
+            --about "$STORY_ABOUT"
+
+          # Update the README leaderboard
+          python track_contributors.py update-leaderboard
+
       - name: Update README with latest story
         env:
           GOOGLE_GENAI_API_KEY: ${{ secrets.GOOGLE_GENAI_API_KEY }}
@@ -213,12 +229,12 @@ jobs:
           print(f"✅ Updated README: Added '{story_title}' (Total: {story_count} stories)")
           EOF
 
-      - name: Commit README update
+      - name: Commit README and contributor updates
         run: |
           git config --local user.email "github-actions[bot]@users.noreply.github.com"
           git config --local user.name "github-actions[bot]"
-          git add README.md
-          git diff --staged --quiet || git commit -m "Update README with story '${{ steps.extract.outputs.title }}'"
+          git add README.md contributors.json
+          git diff --staged --quiet || git commit -m "Update README and contributors for story '${{ steps.extract.outputs.title }}' by ${{ steps.extract.outputs.author }}"
           git push
 
       - name: Update labels and close issue

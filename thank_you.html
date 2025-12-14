@@ -1,0 +1,241 @@
+<!DOCTYPE html>
+<html lang="en">
+<head>
+    <meta charset="UTF-8">
+    <meta name="viewport" content="width=device-width, initial-scale=1.0">
+    <title>Thank You! - Ruff Family Archive</title>
+    <style>
+        * {
+            margin: 0;
+            padding: 0;
+            box-sizing: border-box;
+        }
+
+        body {
+            font-family: 'Segoe UI', Tahoma, Geneva, Verdana, sans-serif;
+            background: linear-gradient(135deg, #667eea 0%, #764ba2 100%);
+            min-height: 100vh;
+            display: flex;
+            justify-content: center;
+            align-items: center;
+            padding: 20px;
+        }
+
+        .container {
+            background: white;
+            border-radius: 20px;
+            box-shadow: 0 20px 60px rgba(0, 0, 0, 0.3);
+            max-width: 700px;
+            width: 100%;
+            padding: 60px 40px;
+            text-align: center;
+        }
+
+        .success-icon {
+            font-size: 80px;
+            margin-bottom: 20px;
+            animation: bounce 0.6s ease-out;
+        }
+
+        @keyframes bounce {
+            0%, 20%, 50%, 80%, 100% {
+                transform: translateY(0);
+            }
+            40% {
+                transform: translateY(-30px);
+            }
+            60% {
+                transform: translateY(-15px);
+            }
+        }
+
+        h1 {
+            color: #667eea;
+            margin-bottom: 15px;
+            font-size: 2.5em;
+        }
+
+        .message {
+            color: #333;
+            font-size: 1.2em;
+            line-height: 1.6;
+            margin-bottom: 30px;
+        }
+
+        .story-info {
+            background: #f8f9fa;
+            border-left: 4px solid #667eea;
+            padding: 20px;
+            margin: 30px 0;
+            text-align: left;
+        }
+
+        .story-info h2 {
+            color: #667eea;
+            font-size: 1.3em;
+            margin-bottom: 10px;
+        }
+
+        .story-info p {
+            color: #666;
+            margin: 5px 0;
+        }
+
+        .story-info strong {
+            color: #333;
+        }
+
+        .next-steps {
+            background: #fff9e6;
+            border: 2px solid #ffeb3b;
+            border-radius: 12px;
+            padding: 25px;
+            margin: 30px 0;
+        }
+
+        .next-steps h2 {
+            color: #ff9800;
+            font-size: 1.4em;
+            margin-bottom: 15px;
+        }
+
+        .next-steps ul {
+            text-align: left;
+            list-style: none;
+            padding: 0;
+        }
+
+        .next-steps li {
+            color: #555;
+            margin: 12px 0;
+            padding-left: 30px;
+            position: relative;
+            line-height: 1.5;
+        }
+
+        .next-steps li:before {
+            content: '✓';
+            position: absolute;
+            left: 0;
+            color: #4caf50;
+            font-weight: bold;
+            font-size: 1.2em;
+        }
+
+        .action-buttons {
+            display: flex;
+            gap: 15px;
+            margin-top: 40px;
+            flex-wrap: wrap;
+            justify-content: center;
+        }
+
+        .btn {
+            padding: 15px 30px;
+            border: none;
+            border-radius: 50px;
+            font-size: 1.1em;
+            font-weight: 600;
+            cursor: pointer;
+            text-decoration: none;
+            display: inline-block;
+            transition: transform 0.2s, box-shadow 0.2s;
+            flex: 1;
+            min-width: 200px;
+            max-width: 300px;
+        }
+
+        .btn-primary {
+            background: linear-gradient(135deg, #667eea 0%, #764ba2 100%);
+            color: white;
+            box-shadow: 0 4px 15px rgba(102, 126, 234, 0.4);
+        }
+
+        .btn-primary:hover {
+            transform: translateY(-2px);
+            box-shadow: 0 6px 20px rgba(102, 126, 234, 0.6);
+        }
+
+        .btn-secondary {
+            background: white;
+            color: #667eea;
+            border: 2px solid #667eea;
+        }
+
+        .btn-secondary:hover {
+            background: #f5f5ff;
+            transform: translateY(-2px);
+        }
+
+        .extra-links {
+            margin-top: 30px;
+            padding-top: 30px;
+            border-top: 2px solid #e0e0e0;
+        }
+
+        .extra-links a {
+            color: #667eea;
+            text-decoration: none;
+            margin: 0 15px;
+            font-weight: 600;
+        }
+
+        .extra-links a:hover {
+            text-decoration: underline;
+        }
+    </style>
+</head>
+<body>
+    <div class="container">
+        <div class="success-icon">🎉</div>
+
+        <h1>Thank You!</h1>
+
+        <p class="message">
+            Your story has been successfully submitted and will be added to the family archive shortly.
+        </p>
+
+        <div class="story-info">
+            <h2>📖 Your Submission</h2>
+            <p><strong>Title:</strong> <span id="storyTitle">Your Story</span></p>
+            <p><strong>Submitted by:</strong> <span id="storyAuthor">Anonymous</span></p>
+        </div>
+
+        <div class="next-steps">
+            <h2>🚀 What Happens Next</h2>
+            <ul>
+                <li>Your story is being processed automatically</li>
+                <li>It will be added to our searchable archive within minutes</li>
+                <li>Family members can ask questions about your story using our AI-powered search</li>
+                <li>Your contribution will appear on the contributor leaderboard</li>
+            </ul>
+        </div>
+
+        <div class="action-buttons">
+            <a href="queries.html" class="btn btn-primary">
+                💬 Ask Questions About Stories
+            </a>
+            <a href="submit_story.html" class="btn btn-secondary">
+                📝 Share Another Story
+            </a>
+        </div>
+
+        <div class="extra-links">
+            <a href="index.html">🌳 View Family Tree</a>
+            <a href="graph.html">🔗 Interactive Graph</a>
+            <a href="queries.html">❓ View Answered Questions</a>
+        </div>
+    </div>
+
+    <script>
+        // Extract parameters from URL
+        const urlParams = new URLSearchParams(window.location.search);
+        const author = urlParams.get('author') || 'Anonymous';
+        const title = urlParams.get('title') || 'Your Story';
+
+        // Update the page with submission details
+        document.getElementById('storyAuthor').textContent = author;
+        document.getElementById('storyTitle').textContent = title;
+    </script>
+</body>
+</html>

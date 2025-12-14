@@ -1,0 +1,137 @@
+name: Deduplicate RAG Documents
+
+on:
+  workflow_dispatch:
+    inputs:
+      mode:
+        description: 'Deduplication mode'
+        required: true
+        type: choice
+        options:
+          - 'dry-run'
+          - 'interactive'
+          - 'auto-delete'
+        default: 'dry-run'
+      similarity_threshold:
+        description: 'Filename similarity threshold (0.0-1.0)'
+        required: false
+        default: '0.9'
+      size_tolerance:
+        description: 'Size difference tolerance (0.0-1.0, e.g., 0.05 = 5%)'
+        required: false
+        default: '0.05'
+  schedule:
+    # Run monthly on the 15th at 3 AM UTC
+    - cron: '0 3 15 * *'
+
+jobs:
+  deduplicate:
+    runs-on: ubuntu-latest
+    permissions:
+      contents: write
+      issues: write
+
+    steps:
+      - name: Checkout repository
+        uses: actions/checkout@v4
+
+      - name: Set up Python
+        uses: actions/setup-python@v5
+        with:
+          python-version: '3.11'
+
+      - name: Install dependencies
+        run: |
+          pip install google-genai
+
+      - name: Run deduplication (dry-run)
+        if: github.event.inputs.mode == 'dry-run' || github.event_name == 'schedule'
+        env:
+          GOOGLE_GENAI_API_KEY: ${{ secrets.GOOGLE_GENAI_API_KEY }}
+        run: |
+          python deduplicate_documents.py \
+            --dry-run \
+            --similarity ${{ github.event.inputs.similarity_threshold || '0.9' }} \
+            --size-tolerance ${{ github.event.inputs.size_tolerance || '0.05' }} \
+            --report deduplication_report.json
+
+      - name: Run deduplication (auto-delete)
+        if: github.event.inputs.mode == 'auto-delete'
+        env:
+          GOOGLE_GENAI_API_KEY: ${{ secrets.GOOGLE_GENAI_API_KEY }}
+        run: |
+          python deduplicate_documents.py \
+            --delete \
+            --similarity ${{ github.event.inputs.similarity_threshold || '0.9' }} \
+            --size-tolerance ${{ github.event.inputs.size_tolerance || '0.05' }} \
+            --report deduplication_report.json
+
+      - name: Upload deduplication report
+        if: always()
+        uses: actions/upload-artifact@v4
+        with:
+          name: deduplication-report
+          path: deduplication_report.json
+          retention-days: 90
+
+      - name: Create issue if duplicates found
+        if: (github.event.inputs.mode == 'dry-run' || github.event_name == 'schedule') && hashFiles('deduplication_report.json') != ''
+        env:
+          GITHUB_TOKEN: ${{ secrets.GITHUB_TOKEN }}
+        run: |
+          # Check if report exists and has duplicates
+          if [ -f deduplication_report.json ]; then
+            DUPLICATE_COUNT=$(python -c "import json; data=json.load(open('deduplication_report.json')); print(data.get('total_duplicates', 0))")
+
+            if [ "$DUPLICATE_COUNT" -gt 0 ]; then
+              # Read the report
+              REPORT=$(cat deduplication_report.json)
+
+              # Create issue body
+              ISSUE_BODY="## 🧹 Duplicate Documents Detected
+
+          The deduplication workflow found **${DUPLICATE_COUNT}** potential duplicate document(s) in the RAG system.
+
+          ### 📊 Summary
+          - Total duplicate groups: $(python -c "import json; data=json.load(open('deduplication_report.json')); print(data.get('total_groups', 0))")
+          - Total duplicates: ${DUPLICATE_COUNT}
+
+          ### 🔍 What to do next
+
+          1. **Review the report**: Download the \`deduplication_report.json\` artifact from the workflow run
+          2. **Run cleanup**: Go to Actions → \"Deduplicate RAG Documents\" → \"Run workflow\"
+             - Choose \"auto-delete\" to automatically remove duplicates
+             - Choose \"interactive\" for manual review (requires local setup)
+
+          ### 📋 Report
+
+          <details>
+          <summary>Click to view full report</summary>
+
+          \`\`\`json
+          ${REPORT}
+          \`\`\`
+
+          </details>
+
+          ### ⚙️ Deduplication Settings
+          - Filename similarity threshold: ${{ github.event.inputs.similarity_threshold || '0.9' }}
+          - Size tolerance: ${{ github.event.inputs.size_tolerance || '0.05' }}
+
+          ---
+          *This issue was automatically created by the deduplication workflow.*"
+
+              # Create the issue
+              gh issue create \
+                --title "🧹 Duplicate Documents Found in RAG System" \
+                --body "$ISSUE_BODY" \
+                --label "documentation"
+            fi
+          fi
+
+      - name: Comment on completion
+        if: always() && github.event.inputs.mode != ''
+        run: |
+          echo "✅ Deduplication workflow completed"
+          echo "Mode: ${{ github.event.inputs.mode }}"
+          echo "Report artifact uploaded - check workflow run for details"
