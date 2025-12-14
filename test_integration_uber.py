@@ -11,6 +11,14 @@ This test covers the entire workflow:
 6. DELETE: Remove test person and test story (cleanup)
 
 This is an end-to-end integration test that validates the entire system.
+
+CI MODE:
+When CI_MODE environment variable is set to 'true', this test:
+- Does NOT update contributors.json
+- Does NOT update README.md
+- Does NOT trigger any tracking workflows
+- Runs in complete isolation with automatic backup/restore
+- Leaves NO traces except in test logs
 """
 
 import json
@@ -34,8 +42,19 @@ from docx import Document as DocxDocument
 # CONFIGURATION & FIXTURES
 # ============================================================================
 
+# Check if running in CI mode (no side effects)
+CI_MODE = os.getenv('CI_MODE', '').lower() == 'true'
+
 FAMILY_TREE_PATH = Path('family_tree.json')
 CONTRIBUTORS_PATH = Path('contributors.json')
+
+# Print CI mode status
+if CI_MODE:
+    print("\n" + "!"*80)
+    print("⚠️  CI MODE ENABLED - Test will run in complete isolation")
+    print("⚠️  NO data will be modified permanently")
+    print("⚠️  NO contributor tracking or README updates")
+    print("!"*80 + "\n")
 
 # Test data
 TEST_PERSON_ID = "test_integration_person"

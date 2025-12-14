@@ -1,0 +1,205 @@
+name: Integration Test (Uber Test)
+
+# Run the comprehensive integration test without leaving any trace
+# This test validates CRUD operations, RAG queries, and data integrity
+# NO data is committed back - test runs in isolation and only logs results
+
+on:
+  # Manual trigger via GitHub UI
+  workflow_dispatch:
+    inputs:
+      verbose:
+        description: 'Verbose output'
+        required: false
+        default: 'true'
+        type: boolean
+
+  # Scheduled run (weekly on Sundays at 2 AM UTC)
+  schedule:
+    - cron: '0 2 * * 0'
+
+  # Allow running on specific branches for testing
+  push:
+    branches:
+      - 'test/integration-*'
+    paths:
+      - 'test_integration_uber.py'
+      - '.github/workflows/integration-test.yml'
+
+jobs:
+  integration-test:
+    name: Run Uber Integration Test
+    runs-on: ubuntu-latest
+    timeout-minutes: 15
+
+    # Set CI mode to prevent any side effects
+    env:
+      CI_MODE: 'true'
+      GOOGLE_GENAI_API_KEY: ${{ secrets.GOOGLE_GENAI_API_KEY }}
+
+    steps:
+      - name: 📥 Checkout repository
+        uses: actions/checkout@v4
+
+      - name: 🐍 Set up Python
+        uses: actions/setup-python@v5
+        with:
+          python-version: '3.11'
+          cache: 'pip'
+
+      - name: 📦 Install dependencies
+        run: |
+          python -m pip install --upgrade pip
+          pip install -r requirements.txt
+
+      - name: 🔍 Verify family_tree.json exists
+        run: |
+          if [ ! -f family_tree.json ]; then
+            echo "❌ family_tree.json not found!"
+            exit 1
+          fi
+          echo "✅ family_tree.json found"
+          echo "📊 Current family tree size: $(wc -l < family_tree.json) lines"
+
+      - name: 💾 Create backup of data files
+        run: |
+          # Backup all data files before test
+          cp family_tree.json family_tree.json.ci-backup
+          if [ -f contributors.json ]; then
+            cp contributors.json contributors.json.ci-backup
+          fi
+          if [ -f README.md ]; then
+            cp README.md README.md.ci-backup
+          fi
+          echo "✅ Backed up data files"
+
+      - name: 🧪 Run Integration Test
+        id: test
+        run: |
+          echo "════════════════════════════════════════════════════════"
+          echo "🚀 RUNNING UBER INTEGRATION TEST (CI MODE)"
+          echo "════════════════════════════════════════════════════════"
+          echo ""
+          echo "⚠️  CI_MODE=true - No data will be committed"
+          echo ""
+
+          # Run test with verbose output
+          if [ "${{ inputs.verbose }}" = "true" ] || [ "${{ github.event_name }}" = "workflow_dispatch" ]; then
+            pytest test_integration_uber.py -v -s --tb=short 2>&1 | tee test_output.log
+          else
+            pytest test_integration_uber.py -v --tb=short 2>&1 | tee test_output.log
+          fi
+
+          TEST_EXIT_CODE=${PIPESTATUS[0]}
+          echo "test_exit_code=$TEST_EXIT_CODE" >> $GITHUB_OUTPUT
+          exit $TEST_EXIT_CODE
+
+      - name: 🔄 Restore original data files
+        if: always()
+        run: |
+          echo "🔄 Restoring original data files..."
+
+          # Restore backups
+          if [ -f family_tree.json.ci-backup ]; then
+            mv family_tree.json.ci-backup family_tree.json
+            echo "✅ Restored family_tree.json"
+          fi
+
+          if [ -f contributors.json.ci-backup ]; then
+            mv contributors.json.ci-backup contributors.json
+            echo "✅ Restored contributors.json"
+          fi
+
+          if [ -f README.md.ci-backup ]; then
+            mv README.md.ci-backup README.md
+            echo "✅ Restored README.md"
+          fi
+
+          # Verify no changes remain
+          if git diff --exit-code family_tree.json contributors.json README.md 2>/dev/null; then
+            echo "✅ No changes detected - data files are clean"
+          else
+            echo "⚠️  Warning: Some changes detected, but backups restored"
+            git diff family_tree.json contributors.json README.md || true
+          fi
+
+      - name: 🧹 Cleanup test artifacts
+        if: always()
+        run: |
+          # Remove any test files that might have been created
+          rm -f /tmp/*test*integration*.docx
+          rm -f test_output.log
+          rm -f .coverage
+          rm -rf htmlcov
+          rm -rf .pytest_cache
+          echo "✅ Cleaned up test artifacts"
+
+      - name: 📊 Test Summary
+        if: always()
+        run: |
+          echo ""
+          echo "════════════════════════════════════════════════════════"
+          echo "📊 TEST SUMMARY"
+          echo "════════════════════════════════════════════════════════"
+
+          if [ "${{ steps.test.outputs.test_exit_code }}" = "0" ]; then
+            echo "✅ ALL TESTS PASSED"
+            echo ""
+            echo "Validated:"
+            echo "  ✓ Person creation with bidirectional relationships"
+            echo "  ✓ Parent-child relationship updates"
+            echo "  ✓ Story upload to RAG"
+            echo "  ✓ Document indexing and querying"
+            echo "  ✓ RAG query with citations"
+            echo "  ✓ Cleanup and data integrity"
+            echo ""
+            echo "🎉 System is functioning correctly!"
+          else
+            echo "❌ TESTS FAILED"
+            echo ""
+            echo "Exit code: ${{ steps.test.outputs.test_exit_code }}"
+            echo ""
+            echo "⚠️  Please review the test output above for details."
+            echo "⚠️  The integration test detected issues that need attention."
+          fi
+
+          echo ""
+          echo "════════════════════════════════════════════════════════"
+
+      - name: 💬 Comment on failure (manual runs only)
+        if: failure() && github.event_name == 'workflow_dispatch'
+        uses: actions/github-script@v7
+        with:
+          script: |
+            const output = `
+            ## ❌ Integration Test Failed
+
+            The uber integration test encountered errors.
+
+            **Run Details:**
+            - Workflow: ${{ github.workflow }}
+            - Run ID: ${{ github.run_id }}
+            - Triggered by: ${{ github.actor }}
+
+            **View Details:** [Workflow Run](${{ github.server_url }}/${{ github.repository }}/actions/runs/${{ github.run_id }})
+
+            Please review the logs to identify the issue.
+            `;
+
+            // Only comment if manually triggered
+            console.log(output);
+
+      - name: ✅ Mark success
+        if: success()
+        run: |
+          echo "✅ Integration test completed successfully"
+          echo "✅ No traces left in repository"
+          echo "✅ All data restored to original state"
+
+# Notes:
+# - This workflow NEVER commits anything back to the repository
+# - All tests run in complete isolation
+# - Data files are backed up before tests and restored after
+# - CI_MODE environment variable prevents side effects
+# - Test artifacts are cleaned up automatically
+# - Only logs are preserved in GitHub Actions output

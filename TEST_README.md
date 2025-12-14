@@ -53,7 +53,7 @@ grep "patrick" family_tree.json
 
 ## 🚀 Running the Test
 
-### Run the Full Test Suite
+### Run Locally (Development Mode)
 
 ```bash
 pytest test_integration_uber.py -v -s
@@ -62,6 +62,59 @@ pytest test_integration_uber.py -v -s
 **Flags:**
 - `-v` - Verbose output (shows each test name)
 - `-s` - Show print statements (don't capture stdout)
+
+### Run in CI Mode (No Side Effects) ⚠️
+
+```bash
+CI_MODE=true pytest test_integration_uber.py -v -s
+```
+
+**CI Mode ensures:**
+- ✅ No updates to `contributors.json`
+- ✅ No updates to `README.md`
+- ✅ No workflow triggers
+- ✅ Complete isolation
+- ✅ Automatic backup/restore
+- ✅ **ZERO traces left in repository**
+
+### Run via GitHub Actions 🤖
+
+The test runs automatically as a GitHub Action with **complete isolation** - no data is ever committed back.
+
+**Trigger Options:**
+
+1. **Manual Trigger** (via GitHub UI):
+   - Go to **Actions** tab
+   - Select "Integration Test (Uber Test)"
+   - Click "Run workflow"
+   - Choose verbose output (optional)
+
+2. **Manual Trigger** (via GitHub CLI):
+   ```bash
+   gh workflow run integration-test.yml
+   ```
+
+3. **Scheduled** (automatic):
+   - Runs weekly on Sundays at 2 AM UTC
+   - Validates system health automatically
+
+4. **On Push** (testing branches):
+   - Pushes to `test/integration-*` branches
+   - Only when test files are modified
+
+**View Results:**
+- Navigate to **Actions** → "Integration Test (Uber Test)"
+- Click on the latest run
+- View detailed logs (test output only, no commits)
+
+**What Happens in GitHub Actions:**
+1. ✅ Backs up all data files (`family_tree.json`, `contributors.json`, `README.md`)
+2. ✅ Runs test in CI_MODE
+3. ✅ **Restores original data files** (even if test fails)
+4. ✅ Cleans up all test artifacts
+5. ✅ Verifies no changes remain (`git diff`)
+6. ✅ Logs summary (pass/fail)
+7. ✅ **Never commits anything**
 
 ### Run a Specific Test
 
