@@ -11,9 +11,10 @@ A Retrieval Augmented Generation (RAG) system for Ruff family documents using Go
 > **Total People in Family Tree:** 41
 
 ### Recent Family Stories
+- **Pat's PhD Graduation Party** - Patrick Ruff, Robert Thomas. Summer 2013. _(Issue #99)_
 - **The Time Pat Won 4th In The State 800m** - Patrick Ruff. 2002. _(Issue #62)_
-- **Dad built a rope swing** - Joe Ruff Sr.. Summer 1989. _(Issue #25)_
 
+> **Total Stories in RAG:** 11
 > **Total Stories in RAG:** 10
 > **Total Stories in RAG:** 5
 > **Total Stories in RAG:** _Pending automation_
@@ -1668,20 +1669,12 @@ Thank you to everyone who has contributed to preserving our family history!
 
 | Rank | Contributor | Stories | People Added | Questions | Total |
 |------|------------|---------|--------------|-----------|-------|
-| 1 | 🥇 Patrick Ruff | 1 | 0 | 0 | **1** |
+| 1 | 🥇 Patrick Ruff | 2 | 0 | 0 | **2** |
 | 2 | 🥈 Joe Ruff Sr. | 1 | 0 | 0 | **1** |
 | 3 | 🥉 Sarah Ruff | 0 | 0 | 1 | **1** |
 | 4 | Michael Ruff | 0 | 0 | 1 | **1** |
 
 *Leaderboard updated automatically. Contribute by [sharing a story](../../issues/new?template=family-story.yml) or [adding a family member](../../issues/new?template=add-person.yml)!*
-
-### How Contributor Tracking Works
-
-When you submit a story through the website, the "Your Name (Author)" field is used to track your contribution. You can:
-- Enter your name to get credit for your contribution
-- Enter "Anonymous" if you prefer not to be named
-
-All contributions are tracked in `contributors.json` and the leaderboard updates automatically when new stories, people, or questions are added.
 
 
 ## Resources
