@@ -126,38 +126,28 @@ async function submitStory(event) {
 }
 
 function buildGitHubIssueUrl({ title, author, mentions, otherPeople, decade, specificDate, story }) {
-    // Build the issue body in markdown format matching the YAML template structure
-    let body = '### Story Title\n\n' + title + '\n\n';
-    body += '### Your Name (Author)\n\n' + author + '\n\n';
-
-    // Who is this story about
-    body += '### Who Is This Story About?\n\n';
-    if (mentions.length > 0) {
-        mentions.forEach(person => {
-            body += '- [x] ' + person + '\n';
-        });
-    } else {
-        body += '_No response_\n';
-    }
-    body += '\n';
-
-    if (otherPeople) {
-        body += '### Other People This Story Is About\n\n' + otherPeople + '\n\n';
-    } else {
-        body += '### Other People This Story Is About\n\n_No response_\n\n';
-    }
-
-    body += '### When Did This Story Take Place?\n\n' + (decade || '_No response_') + '\n\n';
-    body += '### Specific Date or Year (Optional)\n\n' + (specificDate || '_No response_') + '\n\n';
-    body += '### Your Story\n\n' + story + '\n\n';
-    body += '### Additional Context (Optional)\n\n_No response_';
-
-    // Build GitHub issue URL with pre-filled data
+    // Use the GitHub issue template which properly applies labels
+    // Template fields are pre-filled using their IDs from family-story.yml
     const baseUrl = 'https://github.com/patruff/rufftree/issues/new';
+
+    // Note: GitHub doesn't support pre-filling checkboxes via URL
+    // So we'll add mentions to the other_people field as a note
+    let otherPeopleText = otherPeople || '';
+    if (mentions.length > 0) {
+        const mentionsNote = 'People mentioned: ' + mentions.join(', ');
+        otherPeopleText = otherPeopleText
+            ? mentionsNote + '\n\n' + otherPeopleText
+            : mentionsNote;
+    }
+
     const params = new URLSearchParams({
-        title: '[Story] ' + title,
-        body: body,
-        labels: 'family-story,story:pending'
+        template: 'family-story.yml',
+        title: title,
+        author: author,
+        other_people: otherPeopleText,
+        decade: decade || '',
+        specific_date: specificDate || '',
+        story: story
     });
 
     return baseUrl + '?' + params.toString();
