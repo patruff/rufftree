@@ -29,5 +29,6 @@ jobs:
         env:
           GOOGLE_GENAI_API_KEY: ${{ secrets.GOOGLE_GENAI_API_KEY }}
           GOOGLE_DRIVE_CREDENTIALS: ${{ secrets.GOOGLE_DRIVE_CREDENTIALS }}
+          GOOGLE_DRIVE_FOLDER_ID: '1-LuDZpY36jD3z40AAtvgKxpp9K13VLz7'
         run: |
           python sync_drive_documents.py

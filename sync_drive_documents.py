@@ -28,6 +28,7 @@ from test_file_search import get_client, get_or_create_store, upload_document, l
 
 # Configuration
 DRIVE_FOLDER_NAME = "rufftree"
+DRIVE_FOLDER_ID = os.getenv("GOOGLE_DRIVE_FOLDER_ID")  # Optional: use specific folder ID
 STATE_FILE = Path.home() / ".rufftree_mcp" / "synced_files.json"
 METADATA_CONFIG_FILE = Path(__file__).parent / "document_metadata.json"
 SCOPES = ['https://www.googleapis.com/auth/drive.readonly']
@@ -141,8 +142,29 @@ def get_drive_service():
     return service
 
 
-def find_folder(service, folder_name: str) -> str:
-    """Find a folder by name and return its ID."""
+def find_folder(service, folder_name: str, folder_id: str = None) -> str:
+    """
+    Find a folder and return its ID.
+    If folder_id is provided, use it directly and verify it exists.
+    Otherwise, search by name.
+    """
+    if folder_id:
+        # Use the provided folder ID directly
+        try:
+            file = service.files().get(
+                fileId=folder_id,
+                fields='id, name, mimeType'
+            ).execute()
+
+            if file['mimeType'] != 'application/vnd.google-apps.folder':
+                raise ValueError(f"ID {folder_id} is not a folder")
+
+            print(f"📁 Using specified folder: {file['name']} (ID: {folder_id})")
+            return folder_id
+        except Exception as e:
+            raise ValueError(f"Could not access folder with ID {folder_id}: {e}")
+
+    # Fall back to searching by name
     query = f"name='{folder_name}' and mimeType='application/vnd.google-apps.folder' and trashed=false"
 
     results = service.files().list(
@@ -158,6 +180,7 @@ def find_folder(service, folder_name: str) -> str:
 
     if len(files) > 1:
         print(f"⚠️  Warning: Multiple folders named '{folder_name}' found. Using the first one.")
+        print(f"   💡 Tip: Set GOOGLE_DRIVE_FOLDER_ID environment variable to use a specific folder")
 
     folder_id = files[0]['id']
     print(f"📁 Found folder: {folder_name} (ID: {folder_id})")
@@ -282,8 +305,8 @@ def sync_documents():
     print("\n📡 Connecting to Google Drive...")
     drive_service = get_drive_service()
 
-    # Find the rufftree folder
-    folder_id = find_folder(drive_service, DRIVE_FOLDER_NAME)
+    # Find the rufftree folder (use specific ID if provided, otherwise search by name)
+    folder_id = find_folder(drive_service, DRIVE_FOLDER_NAME, DRIVE_FOLDER_ID)
 
     # List documents in the folder
     drive_docs = list_documents_in_folder(drive_service, folder_id)
