@@ -115,7 +115,7 @@ async function submitStory(event) {
     loading.classList.add('show');
 
     try {
-        // Create GitHub issue via API
+        // Create GitHub issue via secure API endpoint
         const issueBody = buildIssueBody({
             title,
             author,
@@ -126,7 +126,13 @@ async function submitStory(event) {
             story
         });
 
-        const response = await fetch('https://api.github.com/repos/patruff/rufftree/issues', {
+        // Use serverless API endpoint instead of direct GitHub API call
+        // This endpoint securely handles authentication
+        const apiEndpoint = window.location.hostname === 'localhost' || window.location.hostname === '127.0.0.1'
+            ? 'http://localhost:3000/api/create-story-issue'
+            : '/api/create-story-issue';
+
+        const response = await fetch(apiEndpoint, {
             method: 'POST',
             headers: {
                 'Content-Type': 'application/json',
@@ -139,8 +145,12 @@ async function submitStory(event) {
         });
 
         if (!response.ok) {
-            throw new Error('Failed to submit story (HTTP ' + response.status + ')');
+            const errorData = await response.json();
+            throw new Error(errorData.error || 'Failed to submit story (HTTP ' + response.status + ')');
         }
+
+        const result = await response.json();
+        console.log('Story submitted successfully:', result);
 
         // Success! Redirect to thank you page
         window.location.href = 'thank_you.html?author=' + encodeURIComponent(author) + '&title=' + encodeURIComponent(title);
