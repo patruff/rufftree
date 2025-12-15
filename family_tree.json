@@ -1146,13 +1146,43 @@
           "agreeableness": 65,
           "neuroticism": 50
         },
-        "spouseId": null,
+        "spouseId": "israel_1765786476687",
         "parentIds": [
           "john"
         ],
         "siblingIds": [],
         "childrenIds": [],
         "_relationshipUpdates": {},
+        "dob": "unknown",
+        "completion_percentage": 43.8
+      },
+      "israel_1765786476687": {
+        "id": "israel_1765786476687",
+        "name": "Israel Eleazar",
+        "firstName": "Israel",
+        "lastName": "Eleazar",
+        "decadeBorn": "1970s",
+        "dod": "alive",
+        "hairColor": "black",
+        "height": "medium",
+        "education": "college",
+        "attributes": [
+          "Funny",
+          "Smart",
+          "Energetic",
+          "Charismatic"
+        ],
+        "personality": {
+          "openness": 75,
+          "conscientiousness": 50,
+          "extraversion": 78,
+          "agreeableness": 65,
+          "neuroticism": 50
+        },
+        "spouseId": "sherry_1765783551198",
+        "parentIds": [],
+        "siblingIds": [],
+        "childrenIds": [],
         "dob": "unknown",
         "completion_percentage": 37.5
       }
