@@ -1128,7 +1128,7 @@
       },
       "sherry_1765783551198": {
         "id": "sherry_1765783551198",
-        "name": "Sherry Ruff",
+        "name": "Cheri Ruff",
         "firstName": "Sherry",
         "lastName": "Ruff",
         "decadeBorn": "1980s",
@@ -1146,7 +1146,7 @@
           "agreeableness": 65,
           "neuroticism": 50
         },
-        "spouseId": "israel_1765786476687",
+        "spouseId": null,
         "parentIds": [
           "john"
         ],
@@ -1154,7 +1154,7 @@
         "childrenIds": [],
         "_relationshipUpdates": {},
         "dob": "unknown",
-        "completion_percentage": 43.8
+        "completion_percentage": 37.5
       },
       "israel_1765786476687": {
         "id": "israel_1765786476687",
@@ -1179,12 +1179,12 @@
           "agreeableness": 65,
           "neuroticism": 50
         },
-        "spouseId": "sherry_1765783551198",
+        "spouseId": null,
         "parentIds": [],
         "siblingIds": [],
         "childrenIds": [],
         "dob": "unknown",
-        "completion_percentage": 37.5
+        "completion_percentage": 31.2
       }
     }
   },
