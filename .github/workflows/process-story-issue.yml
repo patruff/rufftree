@@ -142,22 +142,36 @@ jobs:
           STORY_DECADE: ${{ steps.extract.outputs.decade }}
           STORY_SPECIFIC_DATE: ${{ steps.extract.outputs.specific_date }}
         run: |
-          STORY_CONTENT=$(cat /tmp/story_content.txt)
+          # Use Python to safely handle story content with special characters
+          python - <<'EOF'
+          import subprocess
+          import os
 
-          # Build command with optional decade flag
-          CMD="python add_story_to_drive.py --title \"$STORY_TITLE\" --about \"$STORY_ABOUT\" --author \"$STORY_AUTHOR\""
+          # Read story from temp file
+          with open('/tmp/story_content.txt', 'r') as f:
+              story_content = f.read()
 
-          if [ -n "$STORY_DECADE" ]; then
-            CMD="$CMD --decade \"$STORY_DECADE\""
-          fi
+          # Build command arguments safely
+          cmd = [
+              'python', 'add_story_to_drive.py',
+              '--title', os.environ['STORY_TITLE'],
+              '--about', os.environ['STORY_ABOUT'],
+              '--author', os.environ['STORY_AUTHOR']
+          ]
 
-          if [ -n "$STORY_SPECIFIC_DATE" ]; then
-            CMD="$CMD --specific-date \"$STORY_SPECIFIC_DATE\""
-          fi
+          # Add optional arguments
+          if os.environ.get('STORY_DECADE'):
+              cmd.extend(['--decade', os.environ['STORY_DECADE']])
 
-          CMD="$CMD --story \"$STORY_CONTENT\""
+          if os.environ.get('STORY_SPECIFIC_DATE'):
+              cmd.extend(['--specific-date', os.environ['STORY_SPECIFIC_DATE']])
 
-          eval $CMD
+          # Add story content
+          cmd.extend(['--story', story_content])
+
+          # Execute command
+          subprocess.run(cmd, check=True)
+          EOF
 
       - name: Track contributor
         if: steps.check.outputs.is_story == 'true'
