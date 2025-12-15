@@ -126,38 +126,24 @@ async function submitStory(event) {
 }
 
 function buildGitHubIssueUrl({ title, author, mentions, otherPeople, decade, specificDate, story }) {
-    // Build the issue body that matches the template format
-    let body = '### Story Title\n\n' + title + '\n\n';
-    body += '### Your Name (Author)\n\n' + author + '\n\n';
-
-    // Who is this story about
-    body += '### Who Is This Story About?\n\n';
-    if (mentions.length > 0) {
-        mentions.forEach(person => {
-            body += '- [x] ' + person + '\n';
-        });
-    } else {
-        body += '_No response_\n';
-    }
-    body += '\n';
-
-    if (otherPeople) {
-        body += '### Other People This Story Is About\n\n' + otherPeople + '\n\n';
-    } else {
-        body += '### Other People This Story Is About\n\n_No response_\n\n';
-    }
-
-    body += '### When Did This Story Take Place?\n\n' + (decade || '_No response_') + '\n\n';
-    body += '### Specific Date or Year (Optional)\n\n' + (specificDate || '_No response_') + '\n\n';
-    body += '### Your Story\n\n' + story + '\n\n';
-    body += '### Additional Context (Optional)\n\n_No response_';
-
-    // Redirect to GitHub issue creation with pre-filled body and labels
+    // Use the GitHub issue template with pre-filled values
     const baseUrl = 'https://github.com/patruff/rufftree/issues/new';
+
+    // Combine mentions and other people for the other_people field
+    let allPeople = otherPeople || '';
+    if (mentions.length > 0) {
+        const mentionsList = mentions.join(', ');
+        allPeople = allPeople ? mentionsList + ', ' + allPeople : mentionsList;
+    }
+
     const params = new URLSearchParams({
-        title: '[Story] ' + title,
-        body: body,
-        labels: 'family-story,story:pending'
+        template: 'family-story.yml',
+        title: title,
+        author: author,
+        other_people: allPeople,
+        decade: decade || '',
+        specific_date: specificDate || '',
+        story: story
     });
 
     return baseUrl + '?' + params.toString();

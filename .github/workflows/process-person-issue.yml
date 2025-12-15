@@ -1,8 +1,6 @@
 name: Process Add Person Issue
 
 on:
-  schedule:
-    - cron: '*/20 * * * *'
   workflow_dispatch:
   issues:
     types: [labeled, opened]

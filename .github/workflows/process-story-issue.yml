@@ -1,9 +1,6 @@
 name: Process Family Story Issue
 
 on:
-  # Run every 20 minutes to check for new story issues
-  schedule:
-    - cron: '*/20 * * * *'
   # Allow manual triggering for reprocessing
   workflow_dispatch:
   # Trigger when issue is opened or labeled
