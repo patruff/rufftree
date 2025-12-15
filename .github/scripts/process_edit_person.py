@@ -96,20 +96,21 @@ if updated_person.get('id') != person_id:
 existing_person = people[person_id]
 print("\n🔧 Merging updated data with existing relationships...")
 
-# If relationships aren't in the update, preserve them from existing
-if 'parentIds' not in updated_person:
+# If relationships aren't in the update or are null, preserve them from existing
+# This handles both missing keys and null values from form submissions
+if 'parentIds' not in updated_person or updated_person.get('parentIds') is None:
     updated_person['parentIds'] = existing_person.get('parentIds', [])
     print(f"   Preserved parentIds: {updated_person['parentIds']}")
 
-if 'siblingIds' not in updated_person:
+if 'siblingIds' not in updated_person or updated_person.get('siblingIds') is None:
     updated_person['siblingIds'] = existing_person.get('siblingIds', [])
     print(f"   Preserved siblingIds: {updated_person['siblingIds']}")
 
-if 'childrenIds' not in updated_person:
+if 'childrenIds' not in updated_person or updated_person.get('childrenIds') is None:
     updated_person['childrenIds'] = existing_person.get('childrenIds', [])
     print(f"   Preserved childrenIds: {updated_person['childrenIds']}")
 
-if 'spouseId' not in updated_person:
+if 'spouseId' not in updated_person or updated_person.get('spouseId') is None:
     updated_person['spouseId'] = existing_person.get('spouseId', None)
     print(f"   Preserved spouseId: {updated_person['spouseId']}")
 
