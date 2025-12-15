@@ -275,10 +275,12 @@ def add_story(title: str, about: str, story: str, author: str = "Patrick Ruff",
             {"key": "content_type", "string_value": "story"}
         ]
 
-        # Add each subject as metadata (comma-separated list becomes multiple entries)
+        # Add subjects as a single comma-separated metadata value
+        # (Google API doesn't allow duplicate keys, so we combine all subjects)
         subjects = [s.strip() for s in about.split(',') if s.strip()]
-        for subject in subjects:
-            custom_metadata.append({"key": "subject_of_story", "string_value": subject})
+        if subjects:
+            subjects_combined = ', '.join(subjects)
+            custom_metadata.append({"key": "subject_of_story", "string_value": subjects_combined})
 
         # Add decade metadata if provided
         if decade:
