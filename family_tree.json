@@ -1129,7 +1129,7 @@
       "sherry_1765783551198": {
         "id": "sherry_1765783551198",
         "name": "Cheri Ruff",
-        "firstName": "Sherry",
+        "firstName": "Cheri",
         "lastName": "Ruff",
         "decadeBorn": "1980s",
         "dod": "alive",
@@ -1146,7 +1146,7 @@
           "agreeableness": 65,
           "neuroticism": 50
         },
-        "spouseId": null,
+        "spouseId": "israel_1765786476687",
         "parentIds": [
           "john"
         ],
@@ -1179,7 +1179,7 @@
           "agreeableness": 65,
           "neuroticism": 50
         },
-        "spouseId": null,
+        "spouseId": "sherry_1765783551198",
         "parentIds": [],
         "siblingIds": [],
         "childrenIds": [],
