@@ -13,25 +13,42 @@ on:
 jobs:
   process-story:
     runs-on: ubuntu-latest
-    # Only process if issue has story:pending label (not already processed)
-    if: contains(github.event.issue.labels.*.name, 'story:pending')
     permissions:
       contents: write
       issues: write
 
     steps:
+      - name: Check if this is a story issue
+        id: check
+        env:
+          ISSUE_TITLE: ${{ github.event.issue.title }}
+          ISSUE_BODY: ${{ github.event.issue.body }}
+        run: |
+          # Check if this looks like a story issue
+          if [[ "$ISSUE_TITLE" == *"[Story]"* ]] || [[ "$ISSUE_BODY" == *"### Your Story"* ]]; then
+            echo "is_story=true" >> $GITHUB_OUTPUT
+            echo "✅ This is a story issue, will process"
+          else
+            echo "is_story=false" >> $GITHUB_OUTPUT
+            echo "⏭️  Not a story issue, skipping"
+          fi
+
       - name: Checkout repository
+        if: steps.check.outputs.is_story == 'true'
         uses: actions/checkout@v4
 
       - name: Set up Python
+        if: steps.check.outputs.is_story == 'true'
         uses: actions/setup-python@v4
         with:
           python-version: '3.11'
 
       - name: Install dependencies
+        if: steps.check.outputs.is_story == 'true'
         run: pip install -r requirements.txt
 
       - name: Extract story from issue
+        if: steps.check.outputs.is_story == 'true'
         id: extract
         env:
           ISSUE_BODY: ${{ github.event.issue.body }}
@@ -114,6 +131,7 @@ jobs:
           EOF
 
       - name: Add story to RAG system
+        if: steps.check.outputs.is_story == 'true'
         id: add_story
         env:
           GOOGLE_GENAI_API_KEY: ${{ secrets.GOOGLE_GENAI_API_KEY }}
@@ -142,6 +160,7 @@ jobs:
           eval $CMD
 
       - name: Track contributor
+        if: steps.check.outputs.is_story == 'true'
         env:
           STORY_AUTHOR: ${{ steps.extract.outputs.author }}
           STORY_TITLE: ${{ steps.extract.outputs.title }}
@@ -158,6 +177,7 @@ jobs:
           python track_contributors.py update-leaderboard
 
       - name: Update README with latest story
+        if: steps.check.outputs.is_story == 'true'
         env:
           GOOGLE_GENAI_API_KEY: ${{ secrets.GOOGLE_GENAI_API_KEY }}
           STORY_TITLE: ${{ steps.extract.outputs.title }}
@@ -233,6 +253,7 @@ jobs:
           EOF
 
       - name: Commit README and contributor updates
+        if: steps.check.outputs.is_story == 'true'
         run: |
           git config --local user.email "github-actions[bot]@users.noreply.github.com"
           git config --local user.name "github-actions[bot]"
@@ -241,6 +262,7 @@ jobs:
           git push
 
       - name: Update labels and close issue
+        if: steps.check.outputs.is_story == 'true'
         uses: actions/github-script@v7
         with:
           script: |
