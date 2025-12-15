@@ -808,7 +808,9 @@
           "anita",
           "winifred"
         ],
-        "childrenIds": [],
+        "childrenIds": [
+          "sherry_1765783551198"
+        ],
         "generation": "Generation X",
         "from_pat": -1,
         "ethnicity": {
@@ -816,7 +818,7 @@
           "Irish": 55,
           "English": 20
         },
-        "completion_percentage": 12.5
+        "completion_percentage": 18.8
       },
       "mary_ruff": {
         "id": "mary_ruff",
@@ -1123,6 +1125,36 @@
         "siblingIds": [],
         "spouseId": null,
         "completion_percentage": 6.2
+      },
+      "sherry_1765783551198": {
+        "id": "sherry_1765783551198",
+        "name": "Sherry Ruff",
+        "firstName": "Sherry",
+        "lastName": "Ruff",
+        "decadeBorn": "1980s",
+        "dod": "alive",
+        "hairColor": "blonde",
+        "height": "tall",
+        "education": "college",
+        "attributes": [
+          "Funny"
+        ],
+        "personality": {
+          "openness": 50,
+          "conscientiousness": 50,
+          "extraversion": 70,
+          "agreeableness": 65,
+          "neuroticism": 50
+        },
+        "spouseId": null,
+        "parentIds": [
+          "john"
+        ],
+        "siblingIds": [],
+        "childrenIds": [],
+        "_relationshipUpdates": {},
+        "dob": "unknown",
+        "completion_percentage": 37.5
       }
     }
   },

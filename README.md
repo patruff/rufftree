@@ -5,10 +5,10 @@ A Retrieval Augmented Generation (RAG) system for Ruff family documents using Go
 ## 🆕 Recent Additions
 
 ### Recently Added People
+- **Sherry Ruff** - Occupation unknown from Location unknown. Added on December 15, 2025. _(Issue #101)_
 - **Oliver Haoning Ruff** - Occupation unknown from Location unknown. Updated on December 10, 2025. _(Issue #77)_
-- **Oliver Ruff** - Occupation unknown from Location unknown. Updated on December 10, 2025. _(Issue #69)_
 
-> **Total People in Family Tree:** 41
+> **Total People in Family Tree:** 42
 
 ### Recent Family Stories
 - **Pat's PhD Graduation Party** - Patrick Ruff, Robert Thomas. Summer 2013. _(Issue #99)_
