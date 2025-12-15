@@ -110,50 +110,23 @@ async function submitStory(event) {
         return;
     }
 
-    // Show loading
-    submitBtn.disabled = true;
-    loading.classList.add('show');
+    // Redirect to GitHub issue creation with pre-filled data
+    const githubUrl = buildGitHubIssueUrl({
+        title,
+        author,
+        mentions,
+        otherPeople,
+        decade,
+        specificDate,
+        story
+    });
 
-    try {
-        // Create GitHub issue via API
-        const issueBody = buildIssueBody({
-            title,
-            author,
-            mentions,
-            otherPeople,
-            decade,
-            specificDate,
-            story
-        });
-
-        const response = await fetch('https://api.github.com/repos/patruff/rufftree/issues', {
-            method: 'POST',
-            headers: {
-                'Content-Type': 'application/json',
-            },
-            body: JSON.stringify({
-                title: '[Story] ' + title,
-                body: issueBody,
-                labels: ['family-story', 'story:pending']
-            })
-        });
-
-        if (!response.ok) {
-            throw new Error('Failed to submit story (HTTP ' + response.status + ')');
-        }
-
-        // Success! Redirect to thank you page
-        window.location.href = 'thank_you.html?author=' + encodeURIComponent(author) + '&title=' + encodeURIComponent(title);
-
-    } catch (error) {
-        console.error('Error submitting story:', error);
-        showError('Failed to submit story. Please try again or contact the family archive administrator.');
-        submitBtn.disabled = false;
-        loading.classList.remove('show');
-    }
+    // Redirect to GitHub
+    window.location.href = githubUrl;
 }
 
-function buildIssueBody({ title, author, mentions, otherPeople, decade, specificDate, story }) {
+function buildGitHubIssueUrl({ title, author, mentions, otherPeople, decade, specificDate, story }) {
+    // Build the issue body in markdown format matching the YAML template structure
     let body = '### Story Title\n\n' + title + '\n\n';
     body += '### Your Name (Author)\n\n' + author + '\n\n';
 
@@ -179,7 +152,15 @@ function buildIssueBody({ title, author, mentions, otherPeople, decade, specific
     body += '### Your Story\n\n' + story + '\n\n';
     body += '### Additional Context (Optional)\n\n_No response_';
 
-    return body;
+    // Build GitHub issue URL with pre-filled data
+    const baseUrl = 'https://github.com/patruff/rufftree/issues/new';
+    const params = new URLSearchParams({
+        title: '[Story] ' + title,
+        body: body,
+        labels: 'family-story,story:pending'
+    });
+
+    return baseUrl + '?' + params.toString();
 }
 
 // Initialize
