@@ -5,10 +5,10 @@ A Retrieval Augmented Generation (RAG) system for Ruff family documents using Go
 ## 🆕 Recent Additions
 
 ### Recently Added People
+- **Michelle Ruff** - Child of John Ruff. Added on December 16, 2025. _(Issue #107)_
 - **Cheri Ruff** - Occupation unknown from Location unknown. Updated on December 15, 2025. _(Issue #103)_
-- **Israel Eleazar** - Occupation unknown from Location unknown. Added on December 15, 2025. _(Issue #102)_
 
-> **Total People in Family Tree:** 43
+> **Total People in Family Tree:** 44
 
 ### Recent Family Stories
 - **Pat's PhD Graduation Party** - Patrick Ruff, Robert Thomas. Summer 2013. _(Issue #99)_

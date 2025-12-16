@@ -809,7 +809,8 @@
           "winifred"
         ],
         "childrenIds": [
-          "sherry_1765783551198"
+          "sherry_1765783551198",
+          "michelle_1765851094851"
         ],
         "generation": "Generation X",
         "from_pat": -1,
@@ -1154,7 +1155,7 @@
         "childrenIds": [],
         "_relationshipUpdates": {},
         "dob": "unknown",
-        "completion_percentage": 37.5
+        "completion_percentage": 43.8
       },
       "israel_1765786476687": {
         "id": "israel_1765786476687",
@@ -1183,6 +1184,36 @@
         "parentIds": [],
         "siblingIds": [],
         "childrenIds": [],
+        "dob": "unknown",
+        "completion_percentage": 37.5
+      },
+      "michelle_1765851094851": {
+        "id": "michelle_1765851094851",
+        "name": "Michelle Ruff",
+        "firstName": "Michelle",
+        "lastName": "Ruff",
+        "decadeBorn": "1980s",
+        "dod": "alive",
+        "hairColor": "brunette",
+        "height": "tall",
+        "attributes": [
+          "Funny",
+          "Friendly"
+        ],
+        "personality": {
+          "openness": 50,
+          "conscientiousness": 50,
+          "extraversion": 73,
+          "agreeableness": 50,
+          "neuroticism": 50
+        },
+        "spouseId": null,
+        "parentIds": [
+          "john"
+        ],
+        "siblingIds": [],
+        "childrenIds": [],
+        "_relationshipUpdates": {},
         "dob": "unknown",
         "completion_percentage": 31.2
       }
