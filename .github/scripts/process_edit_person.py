@@ -231,7 +231,10 @@ info = {
     'home_city': updated_person.get('home_city', ''),
     'home_state': updated_person.get('home_state', ''),
     'changes': len(changes),
-    'action': 'updated'
+    'action': 'updated',
+    'spouseId': updated_person.get('spouseId'),
+    'parentIds': updated_person.get('parentIds', []),
+    'childrenIds': updated_person.get('childrenIds', [])
 }
 
 with open('/tmp/person_info.json', 'w') as f:

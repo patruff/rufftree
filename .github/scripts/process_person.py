@@ -217,7 +217,10 @@ info = {
     'occupation': person.get('occupation', 'Occupation unknown'),
     'home_city': person.get('home_city', ''),
     'home_state': person.get('home_state', ''),
-    'action': 'added'
+    'action': 'added',
+    'spouseId': person.get('spouseId'),
+    'parentIds': person.get('parentIds', []),
+    'childrenIds': person.get('childrenIds', [])
 }
 
 with open('/tmp/person_info.json', 'w') as f:
