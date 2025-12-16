@@ -792,7 +792,7 @@
         "name": "John Ruff",
         "dob": "1938",
         "dod": "alive",
-        "spouseId": null,
+        "spouseId": "emily_ruff",
         "parentIds": [
           "grandfather_ruff",
           "grandmother_ruff"
@@ -809,7 +809,8 @@
           "winifred"
         ],
         "childrenIds": [
-          "sherry_1765783551198"
+          "sherry_1765783551198",
+          "michelle_1765851094851"
         ],
         "generation": "Generation X",
         "from_pat": -1,
@@ -818,7 +819,7 @@
           "Irish": 55,
           "English": 20
         },
-        "completion_percentage": 18.8
+        "completion_percentage": 25.0
       },
       "mary_ruff": {
         "id": "mary_ruff",
@@ -1149,12 +1150,15 @@
         },
         "spouseId": "israel_1765786476687",
         "parentIds": [
-          "john"
+          "john",
+          "emily_ruff"
         ],
-        "siblingIds": [],
+        "siblingIds": [
+          "michelle_1765851094851"
+        ],
         "childrenIds": [],
         "_relationshipUpdates": {},
-        "completion_percentage": 37.5
+        "completion_percentage": 43.8
       },
       "israel_1765786476687": {
         "id": "israel_1765786476687",
@@ -1184,7 +1188,54 @@
         "parentIds": [],
         "siblingIds": [],
         "childrenIds": [],
-        "completion_percentage": 31.2
+        "completion_percentage": 37.5
+      },
+      "michelle_1765851094851": {
+        "id": "michelle_1765851094851",
+        "name": "Michelle Ruff",
+        "firstName": "Michelle",
+        "lastName": "Ruff",
+        "decadeBorn": "1960s",
+        "dob": "1965",
+        "dod": "alive",
+        "hairColor": "brunette",
+        "height": "tall",
+        "attributes": [
+          "Funny",
+          "Friendly"
+        ],
+        "personality": {
+          "openness": 50,
+          "conscientiousness": 50,
+          "extraversion": 73,
+          "agreeableness": 50,
+          "neuroticism": 50
+        },
+        "spouseId": null,
+        "parentIds": [
+          "john",
+          "emily_ruff"
+        ],
+        "siblingIds": [
+          "sherry_1765783551198"
+        ],
+        "childrenIds": [],
+        "_relationshipUpdates": {},
+        "completion_percentage": 43.8
+      },
+      "emily_ruff": {
+        "id": "emily_ruff",
+        "name": "Emily Ruff",
+        "dob": "1940",
+        "dod": "alive",
+        "parentIds": [],
+        "childrenIds": [
+          "sherry_1765783551198",
+          "michelle_1765851094851"
+        ],
+        "siblingIds": [],
+        "spouseId": "john",
+        "completion_percentage": 12.5
       }
     }
   },
