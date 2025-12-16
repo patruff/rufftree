@@ -36,18 +36,36 @@ print(f"✅ README loaded ({len(readme)} chars)")
 # Prepare values
 person_name = person['name']
 issue_number = person['issue_number']
-occupation = person['occupation']
-home_city = person['home_city']
-home_state = person['home_state']
-location = f"{home_city}, {home_state}" if home_city and home_state else home_city or home_state or "Location unknown"
 action = person.get('action', 'added')  # Default to 'added' for backwards compatibility
 action_verb = 'Updated' if action == 'updated' else 'Added'
+
+# Generate relationship description
+relationship_text = None
+if person.get('spouseId'):
+    spouse_id = person['spouseId']
+    if spouse_id in family_data['family']['people']:
+        spouse_name = family_data['family']['people'][spouse_id]['name']
+        relationship_text = f"Spouse of {spouse_name}"
+elif person.get('parentIds'):
+    # Pick first parent
+    parent_id = person['parentIds'][0]
+    if parent_id in family_data['family']['people']:
+        parent_name = family_data['family']['people'][parent_id]['name']
+        relationship_text = f"Child of {parent_name}"
+elif person.get('childrenIds'):
+    # Pick first child
+    child_id = person['childrenIds'][0]
+    if child_id in family_data['family']['people']:
+        child_name = family_data['family']['people'][child_id]['name']
+        relationship_text = f"Parent of {child_name}"
+
+if not relationship_text:
+    relationship_text = "No immediate family listed"
 
 print(f"\n📝 Updating README with:")
 print(f"   Action: {action_verb}")
 print(f"   Name: {person_name}")
-print(f"   Occupation: {occupation}")
-print(f"   Location: {location}")
+print(f"   Relationship: {relationship_text}")
 print(f"   Date: {date_str}")
 print(f"   Issue: #{issue_number}")
 
@@ -61,7 +79,7 @@ def update_people_section(match):
 
     people_lines = [line for line in old_content.strip().split('\n') if line.strip() and not line.startswith('>')]
 
-    new_entry = f"- **{person_name}** - {occupation} from {location}. {action_verb} on {date_str}. _(Issue #{issue_number})_"
+    new_entry = f"- **{person_name}** - {relationship_text}. {action_verb} on {date_str}. _(Issue #{issue_number})_"
 
     second_person = ""
     if people_lines and not people_lines[0].startswith('- _('):
