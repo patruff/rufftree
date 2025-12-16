@@ -5,10 +5,10 @@ A Retrieval Augmented Generation (RAG) system for Ruff family documents using Go
 ## 🆕 Recent Additions
 
 ### Recently Added People
+- **Emily Ruff** - Spouse of John Ruff. Added on December 16, 2025. _(Issue #108)_
 - **Michelle Ruff** - Child of John Ruff. Added on December 16, 2025. _(Issue #107)_
-- **Cheri Ruff** - Occupation unknown from Location unknown. Updated on December 15, 2025. _(Issue #103)_
 
-> **Total People in Family Tree:** 44
+> **Total People in Family Tree:** 45
 
 ### Recent Family Stories
 - **Pat's PhD Graduation Party** - Patrick Ruff, Robert Thomas. Summer 2013. _(Issue #99)_

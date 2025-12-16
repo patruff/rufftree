@@ -792,7 +792,7 @@
         "name": "John Ruff",
         "dob": "1965",
         "dod": "alive",
-        "spouseId": null,
+        "spouseId": "emily_ruff",
         "parentIds": [
           "grandfather_ruff",
           "grandmother_ruff"
@@ -819,7 +819,7 @@
           "Irish": 55,
           "English": 20
         },
-        "completion_percentage": 18.8
+        "completion_percentage": 25.0
       },
       "mary_ruff": {
         "id": "mary_ruff",
@@ -1149,7 +1149,8 @@
         },
         "spouseId": "israel_1765786476687",
         "parentIds": [
-          "john"
+          "john",
+          "emily_ruff"
         ],
         "siblingIds": [],
         "childrenIds": [],
@@ -1209,13 +1210,28 @@
         },
         "spouseId": null,
         "parentIds": [
-          "john"
+          "john",
+          "emily_ruff"
         ],
         "siblingIds": [],
         "childrenIds": [],
         "_relationshipUpdates": {},
         "dob": "unknown",
         "completion_percentage": 31.2
+      },
+      "emily_ruff": {
+        "id": "emily_ruff",
+        "name": "Emily Ruff",
+        "dob": "unknown",
+        "dod": "alive",
+        "parentIds": [],
+        "childrenIds": [
+          "sherry_1765783551198",
+          "michelle_1765851094851"
+        ],
+        "siblingIds": [],
+        "spouseId": "john",
+        "completion_percentage": 12.5
       }
     }
   },
