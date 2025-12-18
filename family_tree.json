@@ -87,7 +87,7 @@
           "patrick_child2"
         ],
         "childrenIds": [],
-        "generation": "Generation Alpha",
+        "generation": "Gen Alpha",
         "from_pat": 2,
         "ethnicity": {
           "German": 17,
@@ -113,7 +113,7 @@
           "patrick_child1"
         ],
         "childrenIds": [],
-        "generation": "Generation Z",
+        "generation": "Gen Z",
         "from_pat": 1,
         "ethnicity": {
           "German": 17,
@@ -198,7 +198,7 @@
           "benjamin"
         ],
         "childrenIds": [],
-        "generation": "Generation Z",
+        "generation": "Gen Z",
         "from_pat": 1,
         "ethnicity": {
           "German": 32,
@@ -224,7 +224,7 @@
           "benjamin"
         ],
         "childrenIds": [],
-        "generation": "Generation Z",
+        "generation": "Gen Z",
         "from_pat": 1,
         "ethnicity": {
           "German": 32,
@@ -250,7 +250,7 @@
           "cameron"
         ],
         "childrenIds": [],
-        "generation": "Generation Alpha",
+        "generation": "Gen Alpha",
         "from_pat": 2,
         "ethnicity": {
           "German": 32,
@@ -332,7 +332,7 @@
           "darcy"
         ],
         "childrenIds": [],
-        "generation": "Generation Z",
+        "generation": "Gen Z",
         "from_pat": 1,
         "ethnicity": {
           "German": 17,
@@ -358,7 +358,7 @@
           "eloise"
         ],
         "childrenIds": [],
-        "generation": "Generation Alpha",
+        "generation": "Gen Alpha",
         "from_pat": 2,
         "ethnicity": {
           "German": 17,
@@ -444,7 +444,7 @@
           "scout"
         ],
         "childrenIds": [],
-        "generation": "Generation Z",
+        "generation": "Gen Z",
         "from_pat": 1,
         "ethnicity": {
           "German": 17,
@@ -471,7 +471,7 @@
           "scout"
         ],
         "childrenIds": [],
-        "generation": "Generation Z",
+        "generation": "Gen Z",
         "from_pat": 1,
         "ethnicity": {
           "German": 17,
@@ -498,7 +498,7 @@
           "scout"
         ],
         "childrenIds": [],
-        "generation": "Generation Alpha",
+        "generation": "Gen Alpha",
         "from_pat": 2,
         "ethnicity": {
           "German": 17,
@@ -525,7 +525,7 @@
           "tripp"
         ],
         "childrenIds": [],
-        "generation": "Generation Alpha",
+        "generation": "Gen Alpha",
         "from_pat": 2,
         "ethnicity": {
           "German": 17,
@@ -742,7 +742,7 @@
           "winifred"
         ],
         "childrenIds": [],
-        "generation": "Baby Boomer",
+        "generation": "Silent Generation",
         "from_pat": -2,
         "ethnicity": {
           "German": 25,
@@ -775,7 +775,7 @@
           "winifred"
         ],
         "childrenIds": [],
-        "generation": "Baby Boomer",
+        "generation": "Silent Generation",
         "from_pat": -2,
         "ethnicity": {
           "German": 25,
@@ -810,7 +810,7 @@
           "winifred"
         ],
         "childrenIds": [],
-        "generation": "Baby Boomer",
+        "generation": "Silent Generation",
         "from_pat": -2,
         "ethnicity": {
           "German": 25,
@@ -855,7 +855,7 @@
           "johnny_ruff",
           "jason_ruff"
         ],
-        "generation": "Generation X",
+        "generation": "Silent Generation",
         "from_pat": -1,
         "ethnicity": {
           "German": 25,
@@ -1051,7 +1051,7 @@
           "anita"
         ],
         "childrenIds": [],
-        "generation": "Generation X",
+        "generation": "Silent Generation",
         "from_pat": -1,
         "ethnicity": {
           "German": 25,
@@ -1230,7 +1230,8 @@
         "home_city": "Washington",
         "state": "DC",
         "home_state": "DC",
-        "zip": "20024"
+        "zip": "20024",
+        "generation": "Gen X"
       },
       "sherry_1765783551198": {
         "id": "sherry_1765783551198",
@@ -1268,7 +1269,8 @@
         "_relationshipUpdates": {},
         "completion_percentage": 43.8,
         "notes": "Children: Miles, Bella, Skyler, Tristan, Kailea Taylor",
-        "maidenName": "Ruff"
+        "maidenName": "Ruff",
+        "generation": "Baby Boomer"
       },
       "israel_1765786476687": {
         "id": "israel_1765786476687",
@@ -1310,7 +1312,8 @@
         "state": "DE",
         "home_state": "DE",
         "zip": "19709",
-        "notes": "Children: Miles, Bella, Skyler, Tristan, Kailea Taylor"
+        "notes": "Children: Miles, Bella, Skyler, Tristan, Kailea Taylor",
+        "generation": "Baby Boomer"
       },
       "michelle_1765851094851": {
         "id": "michelle_1765851094851",
@@ -1346,7 +1349,8 @@
         "_relationshipUpdates": {},
         "completion_percentage": 43.8,
         "notes": "Joshua/Stella - UD, Nic - Full Sails U FL",
-        "maidenName": "Ruff"
+        "maidenName": "Ruff",
+        "generation": "Gen X"
       },
       "emily_ruff": {
         "id": "emily_ruff",
@@ -1362,7 +1366,8 @@
         ],
         "siblingIds": [],
         "spouseId": "john",
-        "completion_percentage": 12.5
+        "completion_percentage": 12.5,
+        "generation": "Silent Generation"
       },
       "tom_abbott": {
         "id": "tom_abbott",
@@ -1386,7 +1391,8 @@
           "khristina_abbott",
           "gianni_gola",
           "tommy_abbott"
-        ]
+        ],
+        "generation": "Greatest Generation"
       },
       "annemarie_thompson": {
         "id": "annemarie_thompson",
@@ -1404,7 +1410,8 @@
         ],
         "parentIds": [
           "tommy_abbott"
-        ]
+        ],
+        "generation": "Gen X"
       },
       "mary_elizabeth_abbott": {
         "id": "mary_elizabeth_abbott",
@@ -1423,7 +1430,8 @@
         "parentIds": [
           "tom_abbott",
           "annemarie_thompson"
-        ]
+        ],
+        "generation": "Silent Generation"
       },
       "khristina_abbott": {
         "id": "khristina_abbott",
@@ -1442,7 +1450,8 @@
         "parentIds": [
           "tom_abbott",
           "annemarie_thompson"
-        ]
+        ],
+        "generation": "Silent Generation"
       },
       "tommy_abbott": {
         "id": "tommy_abbott",
@@ -1462,7 +1471,8 @@
         "parentIds": [
           "tom_abbott",
           "annemarie_thompson"
-        ]
+        ],
+        "generation": "Silent Generation"
       },
       "john_blackwood": {
         "id": "john_blackwood",
@@ -1482,7 +1492,8 @@
         "spouseId": "karen_ruff",
         "childrenIds": [
           "jenny"
-        ]
+        ],
+        "generation": "Baby Boomer"
       },
       "karen_ruff": {
         "id": "karen_ruff",
@@ -1494,7 +1505,8 @@
         "spouseId": "john_blackwood",
         "childrenIds": [
           "jenny"
-        ]
+        ],
+        "generation": "Baby Boomer"
       },
       "bob_cathell": {
         "id": "bob_cathell",
@@ -1517,7 +1529,8 @@
         "childrenIds": [
           "bobby_cathell_jr"
         ],
-        "lineage": 1
+        "lineage": 1,
+        "generation": "Silent Generation"
       },
       "paddi_h": {
         "id": "paddi_h",
@@ -1526,7 +1539,8 @@
         "dob": "1943-02-02",
         "notes": "Bobby III UD medicine; Paddi - lpaddi66@gmail.com",
         "maidenName": "Haley",
-        "spouseId": "bobby_cathell_jr"
+        "spouseId": "bobby_cathell_jr",
+        "generation": "Silent Generation"
       },
       "curtis_cathell": {
         "id": "curtis_cathell",
@@ -1546,7 +1560,8 @@
         ],
         "siblingIds": [
           "bobby_cathell_jr"
-        ]
+        ],
+        "generation": "Silent Generation"
       },
       "meredith_chakales": {
         "id": "meredith_chakales",
@@ -1554,7 +1569,8 @@
         "dod": "alive",
         "dob": "1936-06-08",
         "maidenName": "Chakales",
-        "spouseId": "curtis_cathell"
+        "spouseId": "curtis_cathell",
+        "generation": "Silent Generation"
       },
       "emily_jean_cathell": {
         "id": "emily_jean_cathell",
@@ -1595,7 +1611,8 @@
         ],
         "siblingIds": [
           "bobby_cathell_jr"
-        ]
+        ],
+        "generation": "Gen X"
       },
       "rachel_marie_cathell": {
         "id": "rachel_marie_cathell",
@@ -1632,7 +1649,8 @@
         ],
         "siblingIds": [
           "bobby_cathell_jr"
-        ]
+        ],
+        "generation": "Silent Generation"
       },
       "linda_dibiaso": {
         "id": "linda_dibiaso",
@@ -1641,7 +1659,8 @@
         "dob": "1936-11-29",
         "notes": "Karli UDmarketing, Linda- lcathell27@comcast.net L740-0162",
         "maidenName": "DiBiaso",
-        "spouseId": "scott_cathell"
+        "spouseId": "scott_cathell",
+        "generation": "Silent Generation"
       },
       "chris_dilbeck": {
         "id": "chris_dilbeck",
@@ -1664,7 +1683,8 @@
         "parentIds": [
           "fred_ruff",
           "andy_greismeyer"
-        ]
+        ],
+        "generation": "Gen X"
       },
       "brigitte_wolter": {
         "id": "brigitte_wolter",
@@ -1688,7 +1708,8 @@
         ],
         "childrenIds": [
           "justin_tyler_ruff"
-        ]
+        ],
+        "generation": "Gen X"
       },
       "bob_esposito": {
         "id": "bob_esposito",
@@ -1705,7 +1726,8 @@
         "home_state": "DE",
         "zip": "19701",
         "notes": "Children: Derek Anthony, Vincent Michael",
-        "spouseId": "noreen_napolski"
+        "spouseId": "noreen_napolski",
+        "generation": "Gen X"
       },
       "noreen_napolski": {
         "id": "noreen_napolski",
@@ -1718,7 +1740,8 @@
         "parentIds": [
           "bridget",
           "rick_napolski"
-        ]
+        ],
+        "generation": "Gen X"
       },
       "horst_fischer": {
         "id": "horst_fischer",
@@ -1740,7 +1763,8 @@
           "joseph_michael_pichler_fischer"
         ],
         "marriedIntoFamily": "Ruff",
-        "lineageFounder": "Fischer"
+        "lineageFounder": "Fischer",
+        "generation": "Silent Generation"
       },
       "andrea_fischer": {
         "id": "andrea_fischer",
@@ -1756,7 +1780,8 @@
         "parentIds": [
           "anne_ruff",
           "horst_fischer"
-        ]
+        ],
+        "generation": "Millennial"
       },
       "joseph_michael_pichler_fischer": {
         "id": "joseph_michael_pichler_fischer",
@@ -1771,7 +1796,8 @@
           "jessica_ruff",
           "paul_thompson",
           "shannon_haughey"
-        ]
+        ],
+        "generation": "Millennial"
       },
       "michael_fischer": {
         "id": "michael_fischer",
@@ -1791,7 +1817,8 @@
         "spouseId": "christina_gibson",
         "childrenIds": [
           "bryan_bradley"
-        ]
+        ],
+        "generation": "Silent Generation"
       },
       "christina_gibson": {
         "id": "christina_gibson",
@@ -1803,7 +1830,8 @@
         "spouseId": "michael_fischer",
         "childrenIds": [
           "bryan_bradley"
-        ]
+        ],
+        "generation": "Silent Generation"
       },
       "patricia_thompson_gavin": {
         "id": "patricia_thompson_gavin",
@@ -1825,7 +1853,8 @@
         "parentIds": [
           "paul_thompson",
           "shannon_haughey"
-        ]
+        ],
+        "generation": "Millennial"
       },
       "jordan_molitor_gola": {
         "id": "jordan_molitor_gola",
@@ -1842,7 +1871,8 @@
         "dob": "2010-07-14",
         "parentIds": [
           "patricia_thompson_gavin"
-        ]
+        ],
+        "generation": "Gen Z"
       },
       "gianni_gola": {
         "id": "gianni_gola",
@@ -1852,7 +1882,8 @@
         "parentIds": [
           "tom_abbott",
           "annemarie_thompson"
-        ]
+        ],
+        "generation": "Silent Generation"
       },
       "tim_gola_sr": {
         "id": "tim_gola_sr",
@@ -1865,7 +1896,8 @@
         "state": "DE",
         "home_state": "DE",
         "zip": "19702",
-        "spouseId": "rose_marie_thompson"
+        "spouseId": "rose_marie_thompson",
+        "generation": "Millennial"
       },
       "rose_marie_thompson": {
         "id": "rose_marie_thompson",
@@ -1877,7 +1909,8 @@
         "parentIds": [
           "paul_thompson",
           "shannon_haughey"
-        ]
+        ],
+        "generation": "Millennial"
       },
       "scott_mahoney": {
         "id": "scott_mahoney",
@@ -1896,7 +1929,8 @@
         "spouseId": "theresa_thompson",
         "childrenIds": [
           "sam_oldham"
-        ]
+        ],
+        "generation": "Millennial"
       },
       "theresa_thompson": {
         "id": "theresa_thompson",
@@ -1912,7 +1946,8 @@
         "parentIds": [
           "paul_thompson",
           "shannon_haughey"
-        ]
+        ],
+        "generation": "Millennial"
       },
       "jordan_molitor": {
         "id": "jordan_molitor",
@@ -1947,7 +1982,8 @@
         "childrenIds": [
           "noreen_napolski",
           "ricky_napolski"
-        ]
+        ],
+        "generation": "Baby Boomer"
       },
       "ricky_napolski": {
         "id": "ricky_napolski",
@@ -1967,7 +2003,8 @@
         "parentIds": [
           "bridget",
           "rick_napolski"
-        ]
+        ],
+        "generation": "Gen X"
       },
       "tara_gagnon": {
         "id": "tara_gagnon",
@@ -1976,7 +2013,8 @@
         "dob": "1976-04-22",
         "notes": "Children: Nicholas",
         "maidenName": "Gagnon",
-        "spouseId": "ricky_napolski"
+        "spouseId": "ricky_napolski",
+        "generation": "Gen X"
       },
       "sam_oldham": {
         "id": "sam_oldham",
@@ -1994,7 +2032,8 @@
         "parentIds": [
           "scott_mahoney",
           "theresa_thompson"
-        ]
+        ],
+        "generation": "Gen Z"
       },
       "barry_ruff": {
         "id": "barry_ruff",
@@ -2045,7 +2084,8 @@
         "parentIds": [
           "fred_ruff",
           "andy_greismeyer"
-        ]
+        ],
+        "generation": "Gen X"
       },
       "lisa_amoriso": {
         "id": "lisa_amoriso",
@@ -2054,7 +2094,8 @@
         "dob": "1978-10-19",
         "notes": "Pam's: Alex & Jay; Pam - googilboo7@aol.com",
         "maidenName": "Amoriso",
-        "spouseId": "dennis_ruff"
+        "spouseId": "dennis_ruff",
+        "generation": "Gen X"
       },
       "eric_ruff": {
         "id": "eric_ruff",
@@ -2126,7 +2167,8 @@
           "freddy_ruff",
           "dennis_ruff",
           "tommy"
-        ]
+        ],
+        "generation": "Baby Boomer"
       },
       "andy_greismeyer": {
         "id": "andy_greismeyer",
@@ -2141,7 +2183,8 @@
           "freddy_ruff",
           "dennis_ruff",
           "tommy"
-        ]
+        ],
+        "generation": "Baby Boomer"
       },
       "freddy_ruff": {
         "id": "freddy_ruff",
@@ -2162,7 +2205,8 @@
         "parentIds": [
           "fred_ruff",
           "andy_greismeyer"
-        ]
+        ],
+        "generation": "Gen X"
       },
       "kathy_nichols": {
         "id": "kathy_nichols",
@@ -2171,7 +2215,8 @@
         "dob": "1978-08-29",
         "notes": "Children: Kathy's: Jillian & Chelsea Nichols",
         "maidenName": "Nichols",
-        "spouseId": "freddy_ruff"
+        "spouseId": "freddy_ruff",
+        "generation": "Gen X"
       },
       "jade_ruff": {
         "id": "jade_ruff",
@@ -2231,7 +2276,8 @@
         "parentIds": [
           "john",
           "emmalea_haber"
-        ]
+        ],
+        "generation": "Gen X"
       },
       "joella_jones": {
         "id": "joella_jones",
@@ -2240,7 +2286,8 @@
         "dob": "1966-02-27",
         "notes": "Children: engaged 901118 wedding Aug '19 Colorado",
         "maidenName": "Jones",
-        "spouseId": "jason_ruff"
+        "spouseId": "jason_ruff",
+        "generation": "Gen X"
       },
       "jeremy_ruff": {
         "id": "jeremy_ruff",
@@ -2302,7 +2349,8 @@
           "patrick",
           "sarah",
           "philip_ruff"
-        ]
+        ],
+        "generation": "Baby Boomer"
       },
       "emmalea_haber": {
         "id": "emmalea_haber",
@@ -2317,7 +2365,8 @@
           "johnny_ruff",
           "sherry_1765783551198",
           "jason_ruff"
-        ]
+        ],
+        "generation": "Silent Generation"
       },
       "john_colin_ruff": {
         "id": "john_colin_ruff",
@@ -2328,7 +2377,8 @@
         "email": "ruffnit914@aol.com",
         "spouseId": "justin_tyler_ruff",
         "lineage": 2,
-        "suffix": "Jr"
+        "suffix": "Jr",
+        "generation": "Gen Z"
       },
       "justin_tyler_ruff": {
         "id": "justin_tyler_ruff",
@@ -2339,7 +2389,8 @@
         "parentIds": [
           "chris_dilbeck",
           "brigitte_wolter"
-        ]
+        ],
+        "generation": "Gen Z"
       },
       "johnny_ruff": {
         "id": "johnny_ruff",
@@ -2359,7 +2410,8 @@
         "parentIds": [
           "john",
           "emmalea_haber"
-        ]
+        ],
+        "generation": "Gen X"
       },
       "jamie_dyer": {
         "id": "jamie_dyer",
@@ -2367,7 +2419,8 @@
         "dod": "alive",
         "dob": "1966-08-02",
         "maidenName": "Dyer",
-        "spouseId": "johnny_ruff"
+        "spouseId": "johnny_ruff",
+        "generation": "Gen X"
       },
       "joseph_ruff": {
         "id": "joseph_ruff",
@@ -2430,7 +2483,8 @@
         "spouseId": "ashley_hamstead",
         "parentIds": [
           "jessica_ruff"
-        ]
+        ],
+        "generation": "Millennial"
       },
       "ashley_hamstead": {
         "id": "ashley_hamstead",
@@ -2438,7 +2492,8 @@
         "dod": "alive",
         "dob": "1987-10-22",
         "maidenName": "Hamstead",
-        "spouseId": "philip_ruff"
+        "spouseId": "philip_ruff",
+        "generation": "Millennial"
       },
       "ron_ruff": {
         "id": "ron_ruff",
@@ -2521,7 +2576,8 @@
         "dod": "alive",
         "dob": "1942-03-17",
         "maidenName": "Walker",
-        "spouseId": "tommy"
+        "spouseId": "tommy",
+        "generation": "Silent Generation"
       },
       "jack_schnatterer": {
         "id": "jack_schnatterer",
@@ -2606,7 +2662,8 @@
         "home_state": "DE",
         "zip": "19805",
         "notes": "Children: Joshua Ruff",
-        "spouseId": "jessica_ruff"
+        "spouseId": "jessica_ruff",
+        "generation": "Baby Boomer"
       },
       "james_jim_stretch_thompson": {
         "id": "james_jim_stretch_thompson",
@@ -2630,7 +2687,8 @@
           "shannon_haughey"
         ],
         "lineage": 1,
-        "suffix": "Sr"
+        "suffix": "Sr",
+        "generation": "Millennial"
       },
       "james_lee_thompson": {
         "id": "james_lee_thompson",
@@ -2650,7 +2708,8 @@
           "james_jim_stretch_thompson"
         ],
         "lineage": 2,
-        "suffix": "Jr"
+        "suffix": "Jr",
+        "generation": "Gen Z"
       },
       "jack_thompson": {
         "id": "jack_thompson",
@@ -2690,7 +2749,8 @@
         "parentIds": [
           "paul_thompson",
           "shannon_haughey"
-        ]
+        ],
+        "generation": "Baby Boomer"
       },
       "shannon_haughey": {
         "id": "shannon_haughey",
@@ -2709,7 +2769,8 @@
           "joseph_michael_pichler_fischer",
           "paul_thompson",
           "patricia_thompson_gavin"
-        ]
+        ],
+        "generation": "Baby Boomer"
       },
       "roy_thompson": {
         "id": "roy_thompson",
@@ -2732,7 +2793,8 @@
           "shannon_haughey"
         ],
         "lineage": 1,
-        "suffix": "Sr"
+        "suffix": "Sr",
+        "generation": "Silent Generation"
       },
       "roy_david_thompson": {
         "id": "roy_david_thompson",
@@ -2776,7 +2838,8 @@
           "sherry_1765783551198",
           "israel_1765786476687",
           "james_jim_stretch_thompson"
-        ]
+        ],
+        "generation": "Millennial"
       },
       "scott_varner": {
         "id": "scott_varner",
@@ -2791,7 +2854,8 @@
         "home_state": "DE",
         "zip": "19805",
         "notes": "Joshua/Stella - UD, Nic - Full Sails U FL",
-        "spouseId": "michelle_1765851094851"
+        "spouseId": "michelle_1765851094851",
+        "generation": "Gen X"
       },
       "rainer_richard_wolter": {
         "id": "rainer_richard_wolter",
@@ -2810,7 +2874,8 @@
         "spouseId": "joe_baker",
         "parentIds": [
           "anita"
-        ]
+        ],
+        "generation": "Gen X"
       },
       "stephen_zippe": {
         "id": "stephen_zippe",
@@ -2819,7 +2884,8 @@
         "dob": "1975-01-05",
         "notes": "Children: Sublet 2 yr contract Save the Children North Laos thru 420",
         "maidenName": "Zippe",
-        "spouseId": "kristina_wolter"
+        "spouseId": "kristina_wolter",
+        "generation": "Gen X"
       },
       "joe_baker": {
         "id": "joe_baker",
@@ -2828,7 +2894,8 @@
         "dob": "1978-02-27",
         "notes": "engaged wedding 70619 WI; Joe \u2013 josephbaker@gmail.com",
         "maidenName": "Baker",
-        "spouseId": "rainer_richard_wolter"
+        "spouseId": "rainer_richard_wolter",
+        "generation": "Gen X"
       },
       "bobby_cathell_jr": {
         "id": "bobby_cathell_jr",
@@ -2847,7 +2914,8 @@
           "curtis_cathell"
         ],
         "spouseId": "paddi_h",
-        "lineage": 2
+        "lineage": 2,
+        "generation": "Gen X"
       }
     }
   },
