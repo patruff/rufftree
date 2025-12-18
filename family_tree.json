@@ -1516,7 +1516,8 @@
         "suffix": "Sr",
         "childrenIds": [
           "bobby_cathell_jr"
-        ]
+        ],
+        "lineage": 1
       },
       "paddi_h": {
         "id": "paddi_h",
@@ -2845,7 +2846,8 @@
           "scott_cathell",
           "curtis_cathell"
         ],
-        "spouseId": "paddi_h"
+        "spouseId": "paddi_h",
+        "lineage": 2
       }
     }
   },
