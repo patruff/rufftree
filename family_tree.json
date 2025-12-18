@@ -33,7 +33,7 @@
           "Scottish": 8,
           "Polish": 8
         },
-        "completion_percentage": 31.2,
+        "completion_percentage": 85.7,
         "phone": "302 353-8986",
         "email": "patruff@gmail.com",
         "address": "442 W 57th St",
@@ -43,7 +43,8 @@
         "state": "NY",
         "home_state": "NY",
         "zip": "10019",
-        "notes": "Jenny's email - jenny727@gmail.com"
+        "notes": "Jenny's email - jenny727@gmail.com",
+        "_calculated_age": 40
       },
       "jenny": {
         "id": "jenny",
@@ -69,9 +70,10 @@
         "ethnicity": {
           "Chinese": 100
         },
-        "completion_percentage": 31.2,
+        "completion_percentage": 64.3,
         "notes": "Jenny's email - jenny727@gmail.com",
-        "maidenName": "Wang"
+        "maidenName": "Wang",
+        "_calculated_age": 39
       },
       "patrick_child1": {
         "id": "patrick_child1",
@@ -97,7 +99,8 @@
           "Polish": 4,
           "Chinese": 50
         },
-        "completion_percentage": 12.5
+        "completion_percentage": 35.7,
+        "_calculated_age": 5
       },
       "patrick_child2": {
         "id": "patrick_child2",
@@ -123,7 +126,8 @@
           "Polish": 4,
           "Chinese": 50
         },
-        "completion_percentage": 12.5
+        "completion_percentage": 35.7,
+        "_calculated_age": 13
       },
       "joe_jr": {
         "id": "joe_jr",
@@ -156,9 +160,10 @@
           "Scottish": 8,
           "Polish": 8
         },
-        "completion_percentage": 37.5,
+        "completion_percentage": 64.3,
         "lineage": 2,
-        "suffix": "Jr"
+        "suffix": "Jr",
+        "_calculated_age": 42
       },
       "katie": {
         "id": "katie",
@@ -181,7 +186,8 @@
           "German": 30,
           "English": 30
         },
-        "completion_percentage": 18.8
+        "completion_percentage": 50.0,
+        "_calculated_age": 41
       },
       "kaylin": {
         "id": "kaylin",
@@ -207,7 +213,8 @@
           "Scottish": 4,
           "Polish": 4
         },
-        "completion_percentage": 12.5
+        "completion_percentage": 35.7,
+        "_calculated_age": 17
       },
       "cameron": {
         "id": "cameron",
@@ -233,7 +240,8 @@
           "Scottish": 4,
           "Polish": 4
         },
-        "completion_percentage": 12.5
+        "completion_percentage": 35.7,
+        "_calculated_age": 15
       },
       "benjamin": {
         "id": "benjamin",
@@ -259,7 +267,8 @@
           "Scottish": 4,
           "Polish": 4
         },
-        "completion_percentage": 12.5
+        "completion_percentage": 35.7,
+        "_calculated_age": 12
       },
       "sarah": {
         "id": "sarah",
@@ -294,7 +303,8 @@
           "Scottish": 8,
           "Polish": 8
         },
-        "completion_percentage": 50.0
+        "completion_percentage": 64.3,
+        "_calculated_age": 38
       },
       "kevin_boilon": {
         "id": "kevin_boilon",
@@ -316,7 +326,8 @@
           "French": 60,
           "Irish": 40
         },
-        "completion_percentage": 25.0
+        "completion_percentage": 57.1,
+        "_calculated_age": 39
       },
       "eloise": {
         "id": "eloise",
@@ -342,7 +353,8 @@
           "Polish": 4,
           "French": 30
         },
-        "completion_percentage": 12.5
+        "completion_percentage": 35.7,
+        "_calculated_age": 13
       },
       "darcy": {
         "id": "darcy",
@@ -368,7 +380,8 @@
           "Polish": 4,
           "French": 30
         },
-        "completion_percentage": 12.5
+        "completion_percentage": 35.7,
+        "_calculated_age": 10
       },
       "phil": {
         "id": "phil",
@@ -402,7 +415,8 @@
           "Scottish": 8,
           "Polish": 8
         },
-        "completion_percentage": 37.5
+        "completion_percentage": 64.3,
+        "_calculated_age": 36
       },
       "ashley": {
         "id": "ashley",
@@ -426,7 +440,8 @@
           "Scottish": 30,
           "Irish": 30
         },
-        "completion_percentage": 18.8
+        "completion_percentage": 50.0,
+        "_calculated_age": 34
       },
       "logan": {
         "id": "logan",
@@ -453,7 +468,8 @@
           "Scottish": 19,
           "Polish": 4
         },
-        "completion_percentage": 12.5
+        "completion_percentage": 35.7,
+        "_calculated_age": 15
       },
       "aiden": {
         "id": "aiden",
@@ -480,7 +496,8 @@
           "Scottish": 19,
           "Polish": 4
         },
-        "completion_percentage": 12.5
+        "completion_percentage": 35.7,
+        "_calculated_age": 13
       },
       "tripp": {
         "id": "tripp",
@@ -507,7 +524,8 @@
           "Scottish": 19,
           "Polish": 4
         },
-        "completion_percentage": 12.5
+        "completion_percentage": 35.7,
+        "_calculated_age": 10
       },
       "scout": {
         "id": "scout",
@@ -534,7 +552,8 @@
           "Scottish": 19,
           "Polish": 4
         },
-        "completion_percentage": 12.5
+        "completion_percentage": 35.7,
+        "_calculated_age": 7
       },
       "joe_sr": {
         "id": "joe_sr",
@@ -571,9 +590,10 @@
           "Irish": 55,
           "English": 20
         },
-        "completion_percentage": 31.2,
+        "completion_percentage": 57.1,
         "lineage": 1,
-        "suffix": "Sr"
+        "suffix": "Sr",
+        "_calculated_age": 73
       },
       "debbie": {
         "id": "debbie",
@@ -608,9 +628,10 @@
           "Polish": 15,
           "Irish": 10
         },
-        "completion_percentage": 43.8,
+        "completion_percentage": 64.3,
         "marriedName": "Ruff",
-        "notes": "son Logan; Ashley - ashleyruff60@gmail.com"
+        "notes": "son Logan; Ashley - ashleyruff60@gmail.com",
+        "_calculated_age": 63
       },
       "annette": {
         "id": "annette",
@@ -637,7 +658,8 @@
           "Polish": 30,
           "Irish": 20
         },
-        "completion_percentage": 18.8
+        "completion_percentage": 57.1,
+        "_calculated_age": 90
       },
       "stan_sr": {
         "id": "stan_sr",
@@ -661,9 +683,10 @@
           "English": 30,
           "Scottish": 30
         },
-        "completion_percentage": 15.0,
+        "completion_percentage": 57.1,
         "lineage": 1,
-        "suffix": "Sr"
+        "suffix": "Sr",
+        "_calculated_age": 92
       },
       "grandfather_ruff": {
         "id": "grandfather_ruff",
@@ -691,7 +714,8 @@
           "German": 50,
           "Irish": 50
         },
-        "completion_percentage": 10.0
+        "completion_percentage": 50.0,
+        "_calculated_age": 95
       },
       "grandmother_ruff": {
         "id": "grandmother_ruff",
@@ -719,7 +743,8 @@
           "Irish": 60,
           "English": 40
         },
-        "completion_percentage": 10.0
+        "completion_percentage": 50.0,
+        "_calculated_age": 93
       },
       "yogi": {
         "id": "yogi",
@@ -745,15 +770,16 @@
         ],
         "childrenIds": [],
         "generation": "Silent Generation",
-        "from_pat": -2,
+        "from_pat": -3,
         "ethnicity": {
           "German": 25,
           "Irish": 55,
           "English": 20
         },
-        "completion_percentage": 12.5,
+        "completion_percentage": 35.7,
         "lineage": 1,
-        "suffix": "Sr"
+        "suffix": "Sr",
+        "_calculated_age": 89
       },
       "freddie": {
         "id": "freddie",
@@ -778,13 +804,14 @@
         ],
         "childrenIds": [],
         "generation": "Silent Generation",
-        "from_pat": -2,
+        "from_pat": -3,
         "ethnicity": {
           "German": 25,
           "Irish": 55,
           "English": 20
         },
-        "completion_percentage": 12.5
+        "completion_percentage": 35.7,
+        "_calculated_age": 85
       },
       "tommy": {
         "id": "tommy",
@@ -811,13 +838,13 @@
           "winifred"
         ],
         "childrenIds": [],
-        "from_pat": -2,
+        "from_pat": -3,
         "ethnicity": {
           "German": 25,
           "Irish": 55,
           "English": 20
         },
-        "completion_percentage": 12.5,
+        "completion_percentage": 71.4,
         "phone": "302 397-4048",
         "email": "ruffcol17@comcast",
         "address": "122 Champlain Av",
@@ -827,7 +854,8 @@
         "state": "DE",
         "home_state": "DE",
         "zip": "19804",
-        "generation": "Silent Generation"
+        "generation": "Silent Generation",
+        "_calculated_age": 83
       },
       "john": {
         "id": "john",
@@ -857,13 +885,13 @@
           "jason_ruff"
         ],
         "generation": "Silent Generation",
-        "from_pat": -1,
+        "from_pat": -3,
         "ethnicity": {
           "German": 25,
           "Irish": 55,
           "English": 20
         },
-        "completion_percentage": 25.0,
+        "completion_percentage": 78.6,
         "phone": "302 227-4045",
         "email": "emmalearuff@gmail.com",
         "address": "303 Sandalwood St",
@@ -874,7 +902,8 @@
         "zip": "19971",
         "notes": "Children: Michelle, Johnny, Cheri, Jason, Em - 302 897-9815",
         "lineage": 1,
-        "suffix": "Sr"
+        "suffix": "Sr",
+        "_calculated_age": 87
       },
       "mary_ruff": {
         "id": "mary_ruff",
@@ -910,7 +939,7 @@
           "Irish": 55,
           "English": 20
         },
-        "completion_percentage": 12.5,
+        "completion_percentage": 71.4,
         "marriedName": "Cathell",
         "maidenName": "Ruff",
         "phone": "302 998-5325",
@@ -921,7 +950,8 @@
         "state": "DE",
         "home_state": "DE",
         "zip": "19808",
-        "notes": "Children: Bobby, Gene, Scott, Curtis"
+        "notes": "Children: Bobby, Gene, Scott, Curtis",
+        "_calculated_age": 79
       },
       "bridget": {
         "id": "bridget",
@@ -955,9 +985,10 @@
           "Irish": 55,
           "English": 20
         },
-        "completion_percentage": 12.5,
+        "completion_percentage": 50.0,
         "notes": "Children: Noreen, Ricky",
-        "maidenName": "Ruff"
+        "maidenName": "Ruff",
+        "_calculated_age": 77
       },
       "anne_ruff": {
         "id": "anne_ruff",
@@ -991,9 +1022,10 @@
           "Irish": 55,
           "English": 20
         },
-        "completion_percentage": 12.5,
+        "completion_percentage": 50.0,
         "notes": "Children: Andrea, Michael",
-        "maidenName": "Ruff"
+        "maidenName": "Ruff",
+        "_calculated_age": 71
       },
       "anita": {
         "id": "anita",
@@ -1028,7 +1060,8 @@
           "Irish": 55,
           "English": 20
         },
-        "completion_percentage": 12.5
+        "completion_percentage": 42.9,
+        "_calculated_age": 75
       },
       "winifred": {
         "id": "winifred",
@@ -1053,15 +1086,16 @@
         ],
         "childrenIds": [],
         "generation": "Silent Generation",
-        "from_pat": -1,
+        "from_pat": -3,
         "ethnicity": {
           "German": 25,
           "Irish": 55,
           "English": 20
         },
-        "completion_percentage": 12.5,
+        "completion_percentage": 42.9,
         "notes": "Children: Alexandria Nicole, Gabriella Marie",
-        "maidenName": "Ruff"
+        "maidenName": "Ruff",
+        "_calculated_age": 81
       },
       "stan_miller": {
         "id": "stan_miller",
@@ -1089,9 +1123,10 @@
           "Polish": 15,
           "Irish": 10
         },
-        "completion_percentage": 18.8,
+        "completion_percentage": 42.9,
         "lineage": 2,
-        "suffix": "Jr"
+        "suffix": "Jr",
+        "_calculated_age": 61
       },
       "beth_bradley": {
         "id": "beth_bradley",
@@ -1120,8 +1155,9 @@
           "Polish": 15,
           "Irish": 10
         },
-        "completion_percentage": 31.2,
-        "marriedName": "Bradley"
+        "completion_percentage": 42.9,
+        "marriedName": "Bradley",
+        "_calculated_age": 67
       },
       "bryan_bradley": {
         "id": "bryan_bradley",
@@ -1142,7 +1178,8 @@
           "Welsh": 30,
           "Irish": 20
         },
-        "completion_percentage": 6.2
+        "completion_percentage": 42.9,
+        "_calculated_age": 69
       },
       "lynn_miller": {
         "id": "lynn_miller",
@@ -1169,7 +1206,8 @@
           "Polish": 15,
           "Irish": 10
         },
-        "completion_percentage": 12.5
+        "completion_percentage": 35.7,
+        "_calculated_age": 65
       },
       "jenny_father": {
         "id": "jenny_father",
@@ -1187,9 +1225,10 @@
         "ethnicity": {
           "Chinese": 100
         },
-        "completion_percentage": 12.5,
+        "completion_percentage": 42.9,
         "lineage": 1,
-        "suffix": "Sr"
+        "suffix": "Sr",
+        "_calculated_age": 65
       },
       "jenny_mother": {
         "id": "jenny_mother",
@@ -1207,9 +1246,10 @@
         "ethnicity": {
           "Chinese": 100
         },
-        "completion_percentage": 12.5,
+        "completion_percentage": 42.9,
         "lineage": 2,
-        "suffix": "Jr"
+        "suffix": "Jr",
+        "_calculated_age": 63
       },
       "kristina_wolter": {
         "id": "kristina_wolter",
@@ -1222,7 +1262,7 @@
         "childrenIds": [],
         "siblingIds": [],
         "spouseId": "stephen_zippe",
-        "completion_percentage": 6.2,
+        "completion_percentage": 64.3,
         "notes": "Children: selling Farm Spring '19; Children: Sublet 2 yr contract Save the Children North Laos thru 420",
         "phone": "610 914-9393",
         "email": "kristina.wolter@gmail.com",
@@ -1233,7 +1273,9 @@
         "state": "DC",
         "home_state": "DC",
         "zip": "20024",
-        "generation": "Gen X"
+        "generation": "Gen X",
+        "_calculated_age": 50,
+        "from_pat": -1
       },
       "sherry_1765783551198": {
         "id": "sherry_1765783551198",
@@ -1269,10 +1311,12 @@
           "tristan_thompson"
         ],
         "_relationshipUpdates": {},
-        "completion_percentage": 43.8,
+        "completion_percentage": 42.9,
         "notes": "Children: Miles, Bella, Skyler, Tristan, Kailea Taylor",
         "maidenName": "Ruff",
-        "generation": "Baby Boomer"
+        "generation": "Baby Boomer",
+        "_calculated_age": 62,
+        "from_pat": -2
       },
       "israel_1765786476687": {
         "id": "israel_1765786476687",
@@ -1304,7 +1348,7 @@
         "childrenIds": [
           "tristan_thompson"
         ],
-        "completion_percentage": 37.5,
+        "completion_percentage": 64.3,
         "phone": "302 449-2455",
         "email": "eleazar.ic@verizon.net",
         "address": "20 Palmer Dr",
@@ -1315,7 +1359,9 @@
         "home_state": "DE",
         "zip": "19709",
         "notes": "Children: Miles, Bella, Skyler, Tristan, Kailea Taylor",
-        "generation": "Baby Boomer"
+        "generation": "Baby Boomer",
+        "_calculated_age": 65,
+        "from_pat": -2
       },
       "michelle_1765851094851": {
         "id": "michelle_1765851094851",
@@ -1349,10 +1395,12 @@
         ],
         "childrenIds": [],
         "_relationshipUpdates": {},
-        "completion_percentage": 43.8,
+        "completion_percentage": 35.7,
         "notes": "Joshua/Stella - UD, Nic - Full Sails U FL",
         "maidenName": "Ruff",
-        "generation": "Gen X"
+        "generation": "Gen X",
+        "_calculated_age": 60,
+        "from_pat": -1
       },
       "emily_ruff": {
         "id": "emily_ruff",
@@ -1368,8 +1416,10 @@
         ],
         "siblingIds": [],
         "spouseId": "john",
-        "completion_percentage": 12.5,
-        "generation": "Silent Generation"
+        "completion_percentage": 42.9,
+        "generation": "Silent Generation",
+        "_calculated_age": 85,
+        "from_pat": -3
       },
       "tom_abbott": {
         "id": "tom_abbott",
@@ -1395,7 +1445,10 @@
         ],
         "generation": "Gen X",
         "lineageFounder": "Abbott",
-        "marriedIntoFamily": "Thompson"
+        "marriedIntoFamily": "Thompson",
+        "_calculated_age": 56,
+        "completion_percentage": 64.3,
+        "from_pat": -1
       },
       "annemarie_thompson": {
         "id": "annemarie_thompson",
@@ -1415,7 +1468,10 @@
           "tommy_abbott"
         ],
         "generation": "Gen X",
-        "marriedName": "Abbott"
+        "marriedName": "Abbott",
+        "_calculated_age": 55,
+        "completion_percentage": 42.9,
+        "from_pat": -1
       },
       "mary_elizabeth_abbott": {
         "id": "mary_elizabeth_abbott",
@@ -1435,7 +1491,10 @@
           "tom_abbott",
           "annemarie_thompson"
         ],
-        "generation": "Gen Z"
+        "generation": "Gen Z",
+        "_calculated_age": 28,
+        "completion_percentage": 57.1,
+        "from_pat": 1
       },
       "khristina_abbott": {
         "id": "khristina_abbott",
@@ -1455,7 +1514,10 @@
           "tom_abbott",
           "annemarie_thompson"
         ],
-        "generation": "Gen Z"
+        "generation": "Gen Z",
+        "_calculated_age": 28,
+        "completion_percentage": 57.1,
+        "from_pat": 1
       },
       "tommy_abbott": {
         "id": "tommy_abbott",
@@ -1476,7 +1538,10 @@
           "tom_abbott",
           "annemarie_thompson"
         ],
-        "generation": "Gen Z"
+        "generation": "Gen Z",
+        "_calculated_age": 28,
+        "completion_percentage": 57.1,
+        "from_pat": 1
       },
       "john_blackwood": {
         "id": "john_blackwood",
@@ -1497,7 +1562,10 @@
         "childrenIds": [
           "jenny"
         ],
-        "generation": "Baby Boomer"
+        "generation": "Baby Boomer",
+        "_calculated_age": 67,
+        "completion_percentage": 64.3,
+        "from_pat": -2
       },
       "karen_ruff": {
         "id": "karen_ruff",
@@ -1510,7 +1578,10 @@
         "childrenIds": [
           "jenny"
         ],
-        "generation": "Baby Boomer"
+        "generation": "Baby Boomer",
+        "_calculated_age": 67,
+        "completion_percentage": 35.7,
+        "from_pat": -2
       },
       "bob_cathell": {
         "id": "bob_cathell",
@@ -1534,7 +1605,10 @@
           "bobby_cathell_jr"
         ],
         "lineage": 1,
-        "generation": "Silent Generation"
+        "generation": "Silent Generation",
+        "_calculated_age": 82,
+        "completion_percentage": 64.3,
+        "from_pat": -3
       },
       "paddi_h": {
         "id": "paddi_h",
@@ -1544,7 +1618,10 @@
         "notes": "Bobby III UD medicine; Paddi - lpaddi66@gmail.com",
         "maidenName": "Haley",
         "spouseId": "bobby_cathell_jr",
-        "generation": "Silent Generation"
+        "generation": "Silent Generation",
+        "_calculated_age": 82,
+        "completion_percentage": 28.6,
+        "from_pat": -3
       },
       "curtis_cathell": {
         "id": "curtis_cathell",
@@ -1565,7 +1642,10 @@
         "siblingIds": [
           "bobby_cathell_jr"
         ],
-        "generation": "Silent Generation"
+        "generation": "Silent Generation",
+        "_calculated_age": 89,
+        "completion_percentage": 57.1,
+        "from_pat": -3
       },
       "meredith_chakales": {
         "id": "meredith_chakales",
@@ -1574,7 +1654,10 @@
         "dob": "1936-06-08",
         "maidenName": "Chakales",
         "spouseId": "curtis_cathell",
-        "generation": "Silent Generation"
+        "generation": "Silent Generation",
+        "_calculated_age": 89,
+        "completion_percentage": 28.6,
+        "from_pat": -3
       },
       "emily_jean_cathell": {
         "id": "emily_jean_cathell",
@@ -1589,7 +1672,8 @@
         "state": "DE",
         "home_state": "DE",
         "zip": "19808",
-        "notes": "School Counselor; Cora Jean, Sean, Elias Molitor"
+        "notes": "School Counselor; Cora Jean, Sean, Elias Molitor",
+        "completion_percentage": 42.9
       },
       "gene_cathell": {
         "id": "gene_cathell",
@@ -1616,7 +1700,10 @@
         "siblingIds": [
           "bobby_cathell_jr"
         ],
-        "generation": "Gen X"
+        "generation": "Gen X",
+        "_calculated_age": 53,
+        "completion_percentage": 64.3,
+        "from_pat": -1
       },
       "rachel_marie_cathell": {
         "id": "rachel_marie_cathell",
@@ -1631,7 +1718,8 @@
         "state": "MD",
         "home_state": "MD",
         "zip": "21921",
-        "notes": "son - Louis Joseph"
+        "notes": "son - Louis Joseph",
+        "completion_percentage": 35.7
       },
       "scott_cathell": {
         "id": "scott_cathell",
@@ -1654,7 +1742,10 @@
         "siblingIds": [
           "bobby_cathell_jr"
         ],
-        "generation": "Silent Generation"
+        "generation": "Silent Generation",
+        "_calculated_age": 89,
+        "completion_percentage": 64.3,
+        "from_pat": -3
       },
       "linda_dibiaso": {
         "id": "linda_dibiaso",
@@ -1664,7 +1755,10 @@
         "notes": "Karli UDmarketing, Linda- lcathell27@comcast.net L740-0162",
         "maidenName": "DiBiaso",
         "spouseId": "scott_cathell",
-        "generation": "Silent Generation"
+        "generation": "Silent Generation",
+        "_calculated_age": 89,
+        "completion_percentage": 28.6,
+        "from_pat": -3
       },
       "chris_dilbeck": {
         "id": "chris_dilbeck",
@@ -1688,7 +1782,10 @@
           "fred_ruff",
           "andy_greismeyer"
         ],
-        "generation": "Gen X"
+        "generation": "Gen X",
+        "_calculated_age": 47,
+        "completion_percentage": 71.4,
+        "from_pat": -1
       },
       "brigitte_wolter": {
         "id": "brigitte_wolter",
@@ -1713,7 +1810,10 @@
         "childrenIds": [
           "justin_tyler_ruff"
         ],
-        "generation": "Gen X"
+        "generation": "Gen X",
+        "_calculated_age": 47,
+        "completion_percentage": 71.4,
+        "from_pat": -1
       },
       "bob_esposito": {
         "id": "bob_esposito",
@@ -1731,7 +1831,10 @@
         "zip": "19701",
         "notes": "Children: Derek Anthony, Vincent Michael",
         "spouseId": "noreen_napolski",
-        "generation": "Gen X"
+        "generation": "Gen X",
+        "_calculated_age": 49,
+        "completion_percentage": 57.1,
+        "from_pat": -1
       },
       "noreen_napolski": {
         "id": "noreen_napolski",
@@ -1745,7 +1848,10 @@
           "bridget",
           "rick_napolski"
         ],
-        "generation": "Gen X"
+        "generation": "Gen X",
+        "_calculated_age": 49,
+        "completion_percentage": 35.7,
+        "from_pat": -1
       },
       "horst_fischer": {
         "id": "horst_fischer",
@@ -1768,7 +1874,10 @@
         ],
         "marriedIntoFamily": "Ruff",
         "lineageFounder": "Fischer",
-        "generation": "Silent Generation"
+        "generation": "Silent Generation",
+        "_calculated_age": 91,
+        "completion_percentage": 57.1,
+        "from_pat": -3
       },
       "andrea_fischer": {
         "id": "andrea_fischer",
@@ -1785,7 +1894,10 @@
           "anne_ruff",
           "horst_fischer"
         ],
-        "generation": "Millennial"
+        "generation": "Millennial",
+        "_calculated_age": 43,
+        "completion_percentage": 42.9,
+        "from_pat": 0
       },
       "joseph_michael_pichler_fischer": {
         "id": "joseph_michael_pichler_fischer",
@@ -1801,7 +1913,10 @@
           "paul_thompson",
           "shannon_haughey"
         ],
-        "generation": "Millennial"
+        "generation": "Millennial",
+        "_calculated_age": 43,
+        "completion_percentage": 42.9,
+        "from_pat": 0
       },
       "michael_fischer": {
         "id": "michael_fischer",
@@ -1822,7 +1937,10 @@
         "childrenIds": [
           "bryan_bradley"
         ],
-        "generation": "Silent Generation"
+        "generation": "Silent Generation",
+        "_calculated_age": 97,
+        "completion_percentage": 64.3,
+        "from_pat": -3
       },
       "christina_gibson": {
         "id": "christina_gibson",
@@ -1835,7 +1953,10 @@
         "childrenIds": [
           "bryan_bradley"
         ],
-        "generation": "Silent Generation"
+        "generation": "Silent Generation",
+        "_calculated_age": 97,
+        "completion_percentage": 35.7,
+        "from_pat": -3
       },
       "patricia_thompson_gavin": {
         "id": "patricia_thompson_gavin",
@@ -1858,7 +1979,10 @@
           "paul_thompson",
           "shannon_haughey"
         ],
-        "generation": "Millennial"
+        "generation": "Millennial",
+        "_calculated_age": 43,
+        "completion_percentage": 64.3,
+        "from_pat": 0
       },
       "jordan_molitor_gola": {
         "id": "jordan_molitor_gola",
@@ -1866,7 +1990,8 @@
         "dod": "alive",
         "dob": "10-25",
         "phone": "302 510-3848",
-        "email": "rosemariethompson239@gmail.com"
+        "email": "rosemariethompson239@gmail.com",
+        "completion_percentage": 28.6
       },
       "richard_julian_gola": {
         "id": "richard_julian_gola",
@@ -1876,7 +2001,10 @@
         "parentIds": [
           "patricia_thompson_gavin"
         ],
-        "generation": "Gen Z"
+        "generation": "Gen Z",
+        "_calculated_age": 15,
+        "completion_percentage": 28.6,
+        "from_pat": 1
       },
       "gianni_gola": {
         "id": "gianni_gola",
@@ -1887,7 +2015,10 @@
           "tom_abbott",
           "annemarie_thompson"
         ],
-        "generation": "Gen Z"
+        "generation": "Gen Z",
+        "_calculated_age": 28,
+        "completion_percentage": 28.6,
+        "from_pat": 1
       },
       "tim_gola_sr": {
         "id": "tim_gola_sr",
@@ -1901,7 +2032,10 @@
         "home_state": "DE",
         "zip": "19702",
         "spouseId": "rose_marie_thompson",
-        "generation": "Millennial"
+        "generation": "Millennial",
+        "_calculated_age": 43,
+        "completion_percentage": 42.9,
+        "from_pat": 0
       },
       "rose_marie_thompson": {
         "id": "rose_marie_thompson",
@@ -1914,7 +2048,10 @@
           "paul_thompson",
           "shannon_haughey"
         ],
-        "generation": "Millennial"
+        "generation": "Millennial",
+        "_calculated_age": 43,
+        "completion_percentage": 35.7,
+        "from_pat": 0
       },
       "scott_mahoney": {
         "id": "scott_mahoney",
@@ -1934,7 +2071,10 @@
         "childrenIds": [
           "sam_oldham"
         ],
-        "generation": "Millennial"
+        "generation": "Millennial",
+        "_calculated_age": 43,
+        "completion_percentage": 64.3,
+        "from_pat": 0
       },
       "theresa_thompson": {
         "id": "theresa_thompson",
@@ -1951,7 +2091,10 @@
           "paul_thompson",
           "shannon_haughey"
         ],
-        "generation": "Millennial"
+        "generation": "Millennial",
+        "_calculated_age": 43,
+        "completion_percentage": 42.9,
+        "from_pat": 0
       },
       "jordan_molitor": {
         "id": "jordan_molitor",
@@ -1966,7 +2109,8 @@
         "state": "DE",
         "home_state": "DE",
         "zip": "19808",
-        "notes": "Mom - Rose Thompson Gola"
+        "notes": "Mom - Rose Thompson Gola",
+        "completion_percentage": 42.9
       },
       "rick_napolski": {
         "id": "rick_napolski",
@@ -1987,7 +2131,10 @@
           "noreen_napolski",
           "ricky_napolski"
         ],
-        "generation": "Baby Boomer"
+        "generation": "Baby Boomer",
+        "_calculated_age": 77,
+        "completion_percentage": 57.1,
+        "from_pat": -2
       },
       "ricky_napolski": {
         "id": "ricky_napolski",
@@ -2008,7 +2155,10 @@
           "bridget",
           "rick_napolski"
         ],
-        "generation": "Gen X"
+        "generation": "Gen X",
+        "_calculated_age": 49,
+        "completion_percentage": 57.1,
+        "from_pat": -1
       },
       "tara_gagnon": {
         "id": "tara_gagnon",
@@ -2018,7 +2168,10 @@
         "notes": "Children: Nicholas",
         "maidenName": "Gagnon",
         "spouseId": "ricky_napolski",
-        "generation": "Gen X"
+        "generation": "Gen X",
+        "_calculated_age": 49,
+        "completion_percentage": 28.6,
+        "from_pat": -1
       },
       "sam_oldham": {
         "id": "sam_oldham",
@@ -2037,7 +2190,10 @@
           "scott_mahoney",
           "theresa_thompson"
         ],
-        "generation": "Gen Z"
+        "generation": "Gen Z",
+        "_calculated_age": 15,
+        "completion_percentage": 50.0,
+        "from_pat": 1
       },
       "barry_ruff": {
         "id": "barry_ruff",
@@ -2058,7 +2214,8 @@
         "parentIds": [
           "eric_ruff",
           "pam_king"
-        ]
+        ],
+        "completion_percentage": 57.1
       },
       "olga_musarsky": {
         "id": "olga_musarsky",
@@ -2067,7 +2224,8 @@
         "dob": "05-31",
         "notes": "Children: Alexandra Emily",
         "maidenName": "Musarsky",
-        "spouseId": "barry_ruff"
+        "spouseId": "barry_ruff",
+        "completion_percentage": 21.4
       },
       "dennis_ruff": {
         "id": "dennis_ruff",
@@ -2089,7 +2247,10 @@
           "fred_ruff",
           "andy_greismeyer"
         ],
-        "generation": "Gen X"
+        "generation": "Gen X",
+        "_calculated_age": 47,
+        "completion_percentage": 64.3,
+        "from_pat": -1
       },
       "lisa_amoriso": {
         "id": "lisa_amoriso",
@@ -2099,7 +2260,10 @@
         "notes": "Pam's: Alex & Jay; Pam - googilboo7@aol.com",
         "maidenName": "Amoriso",
         "spouseId": "dennis_ruff",
-        "generation": "Gen X"
+        "generation": "Gen X",
+        "_calculated_age": 47,
+        "completion_percentage": 28.6,
+        "from_pat": -1
       },
       "eric_ruff": {
         "id": "eric_ruff",
@@ -2121,7 +2285,8 @@
         "parentIds": [
           "eric_ruff",
           "pam_king"
-        ]
+        ],
+        "completion_percentage": 50.0
       },
       "pam_king": {
         "id": "pam_king",
@@ -2134,7 +2299,8 @@
         "childrenIds": [
           "barry_ruff",
           "eric_ruff"
-        ]
+        ],
+        "completion_percentage": 28.6
       },
       "eugene_martin_80_years_ruff": {
         "id": "eugene_martin_80_years_ruff",
@@ -2149,7 +2315,8 @@
         "home_state": "DE",
         "zip": "19808",
         "lineage": 2,
-        "suffix": "Jr"
+        "suffix": "Jr",
+        "completion_percentage": 35.7
       },
       "fred_ruff": {
         "id": "fred_ruff",
@@ -2172,7 +2339,10 @@
           "dennis_ruff",
           "tommy"
         ],
-        "generation": "Baby Boomer"
+        "generation": "Baby Boomer",
+        "_calculated_age": 75,
+        "completion_percentage": 57.1,
+        "from_pat": -2
       },
       "andy_greismeyer": {
         "id": "andy_greismeyer",
@@ -2188,7 +2358,10 @@
           "dennis_ruff",
           "tommy"
         ],
-        "generation": "Baby Boomer"
+        "generation": "Baby Boomer",
+        "_calculated_age": 75,
+        "completion_percentage": 35.7,
+        "from_pat": -2
       },
       "freddy_ruff": {
         "id": "freddy_ruff",
@@ -2210,7 +2383,10 @@
           "fred_ruff",
           "andy_greismeyer"
         ],
-        "generation": "Gen X"
+        "generation": "Gen X",
+        "_calculated_age": 47,
+        "completion_percentage": 64.3,
+        "from_pat": -1
       },
       "kathy_nichols": {
         "id": "kathy_nichols",
@@ -2220,7 +2396,10 @@
         "notes": "Children: Kathy's: Jillian & Chelsea Nichols",
         "maidenName": "Nichols",
         "spouseId": "freddy_ruff",
-        "generation": "Gen X"
+        "generation": "Gen X",
+        "_calculated_age": 47,
+        "completion_percentage": 28.6,
+        "from_pat": -1
       },
       "jade_ruff": {
         "id": "jade_ruff",
@@ -2243,7 +2422,8 @@
         ],
         "parentIds": [
           "jade_ruff"
-        ]
+        ],
+        "completion_percentage": 50.0
       },
       "jagger_ruff": {
         "id": "jagger_ruff",
@@ -2259,7 +2439,8 @@
         "zip": "19804",
         "parentIds": [
           "jade_ruff"
-        ]
+        ],
+        "completion_percentage": 42.9
       },
       "jason_ruff": {
         "id": "jason_ruff",
@@ -2281,7 +2462,10 @@
           "john",
           "emmalea_haber"
         ],
-        "generation": "Gen X"
+        "generation": "Gen X",
+        "_calculated_age": 59,
+        "completion_percentage": 64.3,
+        "from_pat": -1
       },
       "joella_jones": {
         "id": "joella_jones",
@@ -2291,7 +2475,10 @@
         "notes": "Children: engaged 901118 wedding Aug '19 Colorado",
         "maidenName": "Jones",
         "spouseId": "jason_ruff",
-        "generation": "Gen X"
+        "generation": "Gen X",
+        "_calculated_age": 59,
+        "completion_percentage": 28.6,
+        "from_pat": -1
       },
       "jeremy_ruff": {
         "id": "jeremy_ruff",
@@ -2316,7 +2503,8 @@
         ],
         "childrenIds": [
           "jeremy_ruff"
-        ]
+        ],
+        "completion_percentage": 64.3
       },
       "natale_thompson": {
         "id": "natale_thompson",
@@ -2328,7 +2516,8 @@
         "spouseId": "jeremy_ruff",
         "childrenIds": [
           "jeremy_ruff"
-        ]
+        ],
+        "completion_percentage": 28.6
       },
       "natale_thompson_2019": {
         "id": "natale_thompson_2019",
@@ -2336,7 +2525,8 @@
         "dod": "alive",
         "dob": "04-01",
         "maidenName": "2019",
-        "spouseId": "jeremy_ruff"
+        "spouseId": "jeremy_ruff",
+        "completion_percentage": 21.4
       },
       "jessica_ruff": {
         "id": "jessica_ruff",
@@ -2354,7 +2544,10 @@
           "sarah",
           "philip_ruff"
         ],
-        "generation": "Baby Boomer"
+        "generation": "Baby Boomer",
+        "_calculated_age": 66,
+        "completion_percentage": 50.0,
+        "from_pat": -2
       },
       "emmalea_haber": {
         "id": "emmalea_haber",
@@ -2370,7 +2563,10 @@
           "sherry_1765783551198",
           "jason_ruff"
         ],
-        "generation": "Silent Generation"
+        "generation": "Silent Generation",
+        "_calculated_age": 87,
+        "completion_percentage": 35.7,
+        "from_pat": -3
       },
       "john_colin_ruff": {
         "id": "john_colin_ruff",
@@ -2382,7 +2578,10 @@
         "spouseId": "justin_tyler_ruff",
         "lineage": 2,
         "suffix": "Jr",
-        "generation": "Gen Z"
+        "generation": "Gen Z",
+        "_calculated_age": 19,
+        "completion_percentage": 42.9,
+        "from_pat": 1
       },
       "justin_tyler_ruff": {
         "id": "justin_tyler_ruff",
@@ -2394,7 +2593,10 @@
           "chris_dilbeck",
           "brigitte_wolter"
         ],
-        "generation": "Gen Z"
+        "generation": "Gen Z",
+        "_calculated_age": 19,
+        "completion_percentage": 35.7,
+        "from_pat": 1
       },
       "johnny_ruff": {
         "id": "johnny_ruff",
@@ -2415,7 +2617,10 @@
           "john",
           "emmalea_haber"
         ],
-        "generation": "Gen X"
+        "generation": "Gen X",
+        "_calculated_age": 59,
+        "completion_percentage": 64.3,
+        "from_pat": -1
       },
       "jamie_dyer": {
         "id": "jamie_dyer",
@@ -2424,7 +2629,10 @@
         "dob": "1966-08-02",
         "maidenName": "Dyer",
         "spouseId": "johnny_ruff",
-        "generation": "Gen X"
+        "generation": "Gen X",
+        "_calculated_age": 59,
+        "completion_percentage": 28.6,
+        "from_pat": -1
       },
       "joseph_ruff": {
         "id": "joseph_ruff",
@@ -2443,7 +2651,8 @@
         "notes": "son Logan; Ashley - ashleyruff60@gmail.com",
         "spouseId": "debbie",
         "lineage": 1,
-        "suffix": "Sr"
+        "suffix": "Sr",
+        "completion_percentage": 50.0
       },
       "joseph_jr_ruff": {
         "id": "joseph_jr_ruff",
@@ -2460,7 +2669,8 @@
         "home_state": "DE",
         "zip": "19805",
         "lineage": 2,
-        "suffix": "Jr"
+        "suffix": "Jr",
+        "completion_percentage": 42.9
       },
       "philip_ruff": {
         "id": "philip_ruff",
@@ -2479,7 +2689,10 @@
         "parentIds": [
           "jessica_ruff"
         ],
-        "generation": "Millennial"
+        "generation": "Millennial",
+        "_calculated_age": 38,
+        "completion_percentage": 64.3,
+        "from_pat": 0
       },
       "ashley_hamstead": {
         "id": "ashley_hamstead",
@@ -2488,7 +2701,10 @@
         "dob": "1987-10-22",
         "maidenName": "Hamstead",
         "spouseId": "philip_ruff",
-        "generation": "Millennial"
+        "generation": "Millennial",
+        "_calculated_age": 38,
+        "completion_percentage": 28.6,
+        "from_pat": 0
       },
       "ron_ruff": {
         "id": "ron_ruff",
@@ -2507,7 +2723,8 @@
         "spouseId": "dolores_fetchko",
         "childrenIds": [
           "dolores_fetchko"
-        ]
+        ],
+        "completion_percentage": 57.1
       },
       "dolores_fetchko": {
         "id": "dolores_fetchko",
@@ -2523,7 +2740,8 @@
         ],
         "childrenIds": [
           "dolores_fetchko"
-        ]
+        ],
+        "completion_percentage": 35.7
       },
       "sarah_ruff": {
         "id": "sarah_ruff",
@@ -2538,7 +2756,8 @@
         "state": "MD",
         "home_state": "MD",
         "zip": "21224",
-        "notes": "RN, studying Physician's Assistant graduate 6/19"
+        "notes": "RN, studying Physician's Assistant graduate 6/19",
+        "completion_percentage": 42.9
       },
       "tom_ruff": {
         "id": "tom_ruff",
@@ -2554,7 +2773,8 @@
         "home_state": "DE",
         "zip": "19711",
         "notes": "Children: Brandy Leigh, Hunter Thomas",
-        "spouseId": "janeen_brown"
+        "spouseId": "janeen_brown",
+        "completion_percentage": 50.0
       },
       "janeen_brown": {
         "id": "janeen_brown",
@@ -2563,7 +2783,8 @@
         "dob": "05-31",
         "notes": "Children: Brandy Leigh, Hunter Thomas",
         "maidenName": "Brown",
-        "spouseId": "tom_ruff"
+        "spouseId": "tom_ruff",
+        "completion_percentage": 21.4
       },
       "colleen_walker": {
         "id": "colleen_walker",
@@ -2572,7 +2793,10 @@
         "dob": "1942-03-17",
         "maidenName": "Walker",
         "spouseId": "tommy",
-        "generation": "Silent Generation"
+        "generation": "Silent Generation",
+        "_calculated_age": 83,
+        "completion_percentage": 28.6,
+        "from_pat": -3
       },
       "jack_schnatterer": {
         "id": "jack_schnatterer",
@@ -2592,7 +2816,8 @@
         "parentIds": [
           "john_schnatterer",
           "chris_ruff"
-        ]
+        ],
+        "completion_percentage": 50.0
       },
       "jesse_schnatterer": {
         "id": "jesse_schnatterer",
@@ -2608,7 +2833,8 @@
         "state": "DE",
         "home_state": "DE",
         "zip": "19805",
-        "notes": "Wilmington Universary Customer Service; Yoga Instructor"
+        "notes": "Wilmington Universary Customer Service; Yoga Instructor",
+        "completion_percentage": 42.9
       },
       "john_schnatterer": {
         "id": "john_schnatterer",
@@ -2628,7 +2854,8 @@
         "spouseId": "chris_ruff",
         "childrenIds": [
           "jack_schnatterer"
-        ]
+        ],
+        "completion_percentage": 57.1
       },
       "chris_ruff": {
         "id": "chris_ruff",
@@ -2640,7 +2867,8 @@
         "spouseId": "john_schnatterer",
         "childrenIds": [
           "jack_schnatterer"
-        ]
+        ],
+        "completion_percentage": 28.6
       },
       "chuck_slavin": {
         "id": "chuck_slavin",
@@ -2658,7 +2886,10 @@
         "zip": "19805",
         "notes": "Children: Joshua Ruff",
         "spouseId": "jessica_ruff",
-        "generation": "Baby Boomer"
+        "generation": "Baby Boomer",
+        "_calculated_age": 66,
+        "completion_percentage": 57.1,
+        "from_pat": -2
       },
       "james_jim_stretch_thompson": {
         "id": "james_jim_stretch_thompson",
@@ -2683,7 +2914,10 @@
         ],
         "lineage": 1,
         "suffix": "Sr",
-        "generation": "Millennial"
+        "generation": "Millennial",
+        "_calculated_age": 43,
+        "completion_percentage": 57.1,
+        "from_pat": 0
       },
       "james_lee_thompson": {
         "id": "james_lee_thompson",
@@ -2704,7 +2938,10 @@
         ],
         "lineage": 2,
         "suffix": "Jr",
-        "generation": "Gen Z"
+        "generation": "Gen Z",
+        "_calculated_age": 15,
+        "completion_percentage": 57.1,
+        "from_pat": 1
       },
       "jack_thompson": {
         "id": "jack_thompson",
@@ -2713,14 +2950,16 @@
         "dob": "06-10",
         "phone": "302 668-8580",
         "email": "babyhaughey6@comcast.net",
-        "spouseId": "joseph_arthur_thompson"
+        "spouseId": "joseph_arthur_thompson",
+        "completion_percentage": 35.7
       },
       "joseph_arthur_thompson": {
         "id": "joseph_arthur_thompson",
         "name": "Joseph Arthur Thompson",
         "dod": "alive",
         "dob": "10-20",
-        "spouseId": "jack_thompson"
+        "spouseId": "jack_thompson",
+        "completion_percentage": 21.4
       },
       "paul_thompson": {
         "id": "paul_thompson",
@@ -2745,7 +2984,10 @@
           "paul_thompson",
           "shannon_haughey"
         ],
-        "generation": "Baby Boomer"
+        "generation": "Baby Boomer",
+        "_calculated_age": 71,
+        "completion_percentage": 57.1,
+        "from_pat": -2
       },
       "shannon_haughey": {
         "id": "shannon_haughey",
@@ -2765,7 +3007,10 @@
           "paul_thompson",
           "patricia_thompson_gavin"
         ],
-        "generation": "Baby Boomer"
+        "generation": "Baby Boomer",
+        "_calculated_age": 71,
+        "completion_percentage": 35.7,
+        "from_pat": -2
       },
       "roy_thompson": {
         "id": "roy_thompson",
@@ -2791,7 +3036,10 @@
         "suffix": "Sr",
         "generation": "Silent Generation",
         "lineageFounder": "Thompson",
-        "marriedIntoFamily": "Ruff"
+        "marriedIntoFamily": "Ruff",
+        "_calculated_age": 81,
+        "completion_percentage": 64.3,
+        "from_pat": -3
       },
       "roy_david_thompson": {
         "id": "roy_david_thompson",
@@ -2809,7 +3057,8 @@
         "notes": "Mom -Liana Dash",
         "spouseId": "sabreana_beard",
         "lineage": 2,
-        "suffix": "Jr"
+        "suffix": "Jr",
+        "completion_percentage": 50.0
       },
       "sabreana_beard": {
         "id": "sabreana_beard",
@@ -2818,7 +3067,8 @@
         "dob": "11-06",
         "notes": "Mom -Liana Dash",
         "maidenName": "Beard",
-        "spouseId": "roy_david_thompson"
+        "spouseId": "roy_david_thompson",
+        "completion_percentage": 21.4
       },
       "tristan_thompson": {
         "id": "tristan_thompson",
@@ -2836,7 +3086,10 @@
           "israel_1765786476687",
           "james_jim_stretch_thompson"
         ],
-        "generation": "Millennial"
+        "generation": "Millennial",
+        "_calculated_age": 36,
+        "completion_percentage": 42.9,
+        "from_pat": 0
       },
       "scott_varner": {
         "id": "scott_varner",
@@ -2852,7 +3105,10 @@
         "zip": "19805",
         "notes": "Joshua/Stella - UD, Nic - Full Sails U FL",
         "spouseId": "michelle_1765851094851",
-        "generation": "Gen X"
+        "generation": "Gen X",
+        "_calculated_age": 60,
+        "completion_percentage": 50.0,
+        "from_pat": -1
       },
       "rainer_richard_wolter": {
         "id": "rainer_richard_wolter",
@@ -2872,7 +3128,10 @@
         "parentIds": [
           "anita"
         ],
-        "generation": "Gen X"
+        "generation": "Gen X",
+        "_calculated_age": 47,
+        "completion_percentage": 64.3,
+        "from_pat": -1
       },
       "stephen_zippe": {
         "id": "stephen_zippe",
@@ -2882,7 +3141,10 @@
         "notes": "Children: Sublet 2 yr contract Save the Children North Laos thru 420",
         "maidenName": "Zippe",
         "spouseId": "kristina_wolter",
-        "generation": "Gen X"
+        "generation": "Gen X",
+        "_calculated_age": 50,
+        "completion_percentage": 28.6,
+        "from_pat": -1
       },
       "joe_baker": {
         "id": "joe_baker",
@@ -2892,7 +3154,10 @@
         "notes": "engaged wedding 70619 WI; Joe \u2013 josephbaker@gmail.com",
         "maidenName": "Baker",
         "spouseId": "rainer_richard_wolter",
-        "generation": "Gen X"
+        "generation": "Gen X",
+        "_calculated_age": 47,
+        "completion_percentage": 28.6,
+        "from_pat": -1
       },
       "bobby_cathell_jr": {
         "id": "bobby_cathell_jr",
@@ -2912,7 +3177,10 @@
         ],
         "spouseId": "paddi_h",
         "lineage": 2,
-        "generation": "Gen X"
+        "generation": "Gen X",
+        "_calculated_age": 53,
+        "completion_percentage": 35.7,
+        "from_pat": -1
       }
     }
   },
