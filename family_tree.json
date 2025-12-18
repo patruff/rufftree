@@ -889,7 +889,8 @@
         "childrenIds": [
           "scott_cathell",
           "curtis_cathell",
-          "gene_cathell"
+          "gene_cathell",
+          "bobby_cathell_jr"
         ],
         "generation": "Baby Boomer",
         "from_pat": -2,
@@ -1481,7 +1482,7 @@
       },
       "bob_cathell": {
         "id": "bob_cathell",
-        "name": "Bob Cathell",
+        "name": "Bob Cathell Sr",
         "dod": "alive",
         "dob": "1943-08-20",
         "phone": "302 276-5351",
@@ -1495,16 +1496,20 @@
         "notes": "Bobby III UD medicine; Paddi - lpaddi66@gmail.com",
         "spouseId": "mary_ruff",
         "marriedIntoFamily": "Ruff",
-        "lineageFounder": "Cathell"
+        "lineageFounder": "Cathell",
+        "suffix": "Sr",
+        "childrenIds": [
+          "bobby_cathell_jr"
+        ]
       },
       "paddi_h": {
         "id": "paddi_h",
-        "name": "Paddi H",
+        "name": "Paddi Haley Cathell",
         "dod": "alive",
         "dob": "1943-02-02",
         "notes": "Bobby III UD medicine; Paddi - lpaddi66@gmail.com",
-        "maidenName": "H",
-        "spouseId": "bob_cathell"
+        "maidenName": "Haley",
+        "spouseId": "bobby_cathell_jr"
       },
       "curtis_cathell": {
         "id": "curtis_cathell",
@@ -1521,6 +1526,9 @@
         "spouseId": "meredith_chakales",
         "parentIds": [
           "mary_ruff"
+        ],
+        "siblingIds": [
+          "bobby_cathell_jr"
         ]
       },
       "meredith_chakales": {
@@ -1567,6 +1575,9 @@
         "parentIds": [
           "mary_ruff",
           "bob_cathell"
+        ],
+        "siblingIds": [
+          "bobby_cathell_jr"
         ]
       },
       "rachel_marie_cathell": {
@@ -1601,6 +1612,9 @@
         "spouseId": "linda_dibiaso",
         "parentIds": [
           "mary_ruff"
+        ],
+        "siblingIds": [
+          "bobby_cathell_jr"
         ]
       },
       "linda_dibiaso": {
@@ -2782,6 +2796,24 @@
         "notes": "engaged wedding 70619 WI; Joe \u2013 josephbaker@gmail.com",
         "maidenName": "Baker",
         "spouseId": "rainer_richard_wolter"
+      },
+      "bobby_cathell_jr": {
+        "id": "bobby_cathell_jr",
+        "name": "Bobby Cathell Jr",
+        "suffix": "Jr",
+        "dob": "1972",
+        "dod": "alive",
+        "parentIds": [
+          "mary_ruff",
+          "bob_cathell"
+        ],
+        "childrenIds": [],
+        "siblingIds": [
+          "gene_cathell",
+          "scott_cathell",
+          "curtis_cathell"
+        ],
+        "spouseId": "paddi_h"
       }
     }
   },
