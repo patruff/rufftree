@@ -268,7 +268,7 @@
         "dod": "alive",
         "occupation": "Nurse",
         "phone": "302-750-3828",
-        "maidenName": "Sarah Ruff",
+        "maidenName": "Ruff",
         "notes": "Baby of the family, was a graduate student in lab with Lorraine Symington",
         "spouseId": "kevin_boilon",
         "parentIds": [
@@ -577,10 +577,10 @@
       },
       "debbie": {
         "id": "debbie",
-        "name": "Debbie Ruff",
+        "name": "Debbie Miller",
         "dob": "1962",
         "dod": "alive",
-        "maidenName": "Debbie Miller",
+        "maidenName": "Miller",
         "occupation": "Teacher",
         "phone": "302-530-1232",
         "spouseId": "joe_sr",
@@ -608,7 +608,9 @@
           "Polish": 15,
           "Irish": 10
         },
-        "completion_percentage": 43.8
+        "completion_percentage": 43.8,
+        "marriedName": "Ruff",
+        "notes": "son Logan; Ashley - ashleyruff60@gmail.com"
       },
       "annette": {
         "id": "annette",
@@ -1093,10 +1095,10 @@
       },
       "beth_bradley": {
         "id": "beth_bradley",
-        "name": "Beth Miller Bradley",
+        "name": "Beth Miller",
         "dob": "1958",
         "dod": "alive",
-        "maidenName": "Beth Miller",
+        "maidenName": "Miller",
         "notes": "Known as the best aunt in the world, very youthful, healthy and fun to be around",
         "spouseId": "bryan_bradley",
         "parentIds": [
@@ -1118,7 +1120,8 @@
           "Polish": 15,
           "Irish": 10
         },
-        "completion_percentage": 31.2
+        "completion_percentage": 31.2,
+        "marriedName": "Bradley"
       },
       "bryan_bradley": {
         "id": "bryan_bradley",
@@ -2438,18 +2441,9 @@
         "home_state": "DE",
         "zip": "19734",
         "notes": "son Logan; Ashley - ashleyruff60@gmail.com",
-        "spouseId": "debbie_miller",
+        "spouseId": "debbie",
         "lineage": 1,
         "suffix": "Sr"
-      },
-      "debbie_miller": {
-        "id": "debbie_miller",
-        "name": "Debbie Miller",
-        "dod": "alive",
-        "dob": "07-31",
-        "notes": "son Logan; Ashley - ashleyruff60@gmail.com",
-        "maidenName": "Miller",
-        "spouseId": "joseph_ruff"
       },
       "joseph_jr_ruff": {
         "id": "joseph_jr_ruff",
