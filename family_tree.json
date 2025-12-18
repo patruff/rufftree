@@ -156,7 +156,9 @@
           "Scottish": 8,
           "Polish": 8
         },
-        "completion_percentage": 37.5
+        "completion_percentage": 37.5,
+        "lineage": 2,
+        "suffix": "Jr"
       },
       "katie": {
         "id": "katie",
@@ -569,7 +571,9 @@
           "Irish": 55,
           "English": 20
         },
-        "completion_percentage": 31.2
+        "completion_percentage": 31.2,
+        "lineage": 1,
+        "suffix": "Sr"
       },
       "debbie": {
         "id": "debbie",
@@ -655,7 +659,9 @@
           "English": 30,
           "Scottish": 30
         },
-        "completion_percentage": 15.0
+        "completion_percentage": 15.0,
+        "lineage": 1,
+        "suffix": "Sr"
       },
       "grandfather_ruff": {
         "id": "grandfather_ruff",
@@ -722,7 +728,7 @@
         "parentIds": [
           "grandfather_ruff",
           "grandmother_ruff",
-          "mary_ruff_cathell"
+          "mary_ruff"
         ],
         "siblingIds": [
           "freddie",
@@ -743,7 +749,9 @@
           "Irish": 55,
           "English": 20
         },
-        "completion_percentage": 12.5
+        "completion_percentage": 12.5,
+        "lineage": 1,
+        "suffix": "Sr"
       },
       "freddie": {
         "id": "freddie",
@@ -863,14 +871,16 @@
         "state": "DE",
         "home_state": "DE",
         "zip": "19971",
-        "notes": "Children: Michelle, Johnny, Cheri, Jason, Em - 302 897-9815"
+        "notes": "Children: Michelle, Johnny, Cheri, Jason, Em - 302 897-9815",
+        "lineage": 1,
+        "suffix": "Sr"
       },
       "mary_ruff": {
         "id": "mary_ruff",
         "name": "Mary Ruff",
         "dob": "1946",
         "dod": "alive",
-        "spouseId": null,
+        "spouseId": "bob_cathell",
         "parentIds": [
           "grandfather_ruff",
           "grandmother_ruff"
@@ -886,7 +896,12 @@
           "anita",
           "winifred"
         ],
-        "childrenIds": [],
+        "childrenIds": [
+          "scott_cathell",
+          "curtis_cathell",
+          "gene_cathell",
+          "bobby_cathell_jr"
+        ],
         "generation": "Baby Boomer",
         "from_pat": -2,
         "ethnicity": {
@@ -894,7 +909,18 @@
           "Irish": 55,
           "English": 20
         },
-        "completion_percentage": 12.5
+        "completion_percentage": 12.5,
+        "marriedName": "Cathell",
+        "maidenName": "Ruff",
+        "phone": "302 998-5325",
+        "address": "4502 Sharon Dr",
+        "address2": "Klair Estates",
+        "city": "Wilmington",
+        "home_city": "Wilmington",
+        "state": "DE",
+        "home_state": "DE",
+        "zip": "19808",
+        "notes": "Children: Bobby, Gene, Scott, Curtis"
       },
       "bridget": {
         "id": "bridget",
@@ -1062,7 +1088,9 @@
           "Polish": 15,
           "Irish": 10
         },
-        "completion_percentage": 18.8
+        "completion_percentage": 18.8,
+        "lineage": 2,
+        "suffix": "Jr"
       },
       "beth_bradley": {
         "id": "beth_bradley",
@@ -1157,7 +1185,9 @@
         "ethnicity": {
           "Chinese": 100
         },
-        "completion_percentage": 12.5
+        "completion_percentage": 12.5,
+        "lineage": 1,
+        "suffix": "Sr"
       },
       "jenny_mother": {
         "id": "jenny_mother",
@@ -1175,7 +1205,9 @@
         "ethnicity": {
           "Chinese": 100
         },
-        "completion_percentage": 12.5
+        "completion_percentage": 12.5,
+        "lineage": 2,
+        "suffix": "Jr"
       },
       "kristina_wolter": {
         "id": "kristina_wolter",
@@ -1336,7 +1368,7 @@
         "id": "tom_abbott",
         "name": "Tom Abbott",
         "dod": "alive",
-        "dob": "08-19",
+        "dob": "1914-08-19",
         "phone": "302 995-1365",
         "email": "annlea302@aol.com",
         "address": "4604 Springers Ln",
@@ -1360,7 +1392,7 @@
         "id": "annemarie_thompson",
         "name": "Annemarie Thompson",
         "dod": "alive",
-        "dob": "10-02",
+        "dob": "1970-10-02",
         "notes": "Children: Mary Elizabeth, Tommy, Khristina, Gianni Thompson",
         "maidenName": "Thompson",
         "spouseId": "tom_abbott",
@@ -1466,9 +1498,9 @@
       },
       "bob_cathell": {
         "id": "bob_cathell",
-        "name": "Bob Cathell",
+        "name": "Bob Cathell Sr",
         "dod": "alive",
-        "dob": "08-20",
+        "dob": "1943-08-20",
         "phone": "302 276-5351",
         "email": "Rcathell@ldrdfifth.com",
         "address": "12 Hummingbird Ln",
@@ -1478,16 +1510,23 @@
         "home_state": "DE",
         "zip": "19720",
         "notes": "Bobby III UD medicine; Paddi - lpaddi66@gmail.com",
-        "spouseId": "paddi_h"
+        "spouseId": "mary_ruff",
+        "marriedIntoFamily": "Ruff",
+        "lineageFounder": "Cathell",
+        "suffix": "Sr",
+        "childrenIds": [
+          "bobby_cathell_jr"
+        ],
+        "lineage": 1
       },
       "paddi_h": {
         "id": "paddi_h",
-        "name": "Paddi H",
+        "name": "Paddi Haley Cathell",
         "dod": "alive",
-        "dob": "02-02",
+        "dob": "1943-02-02",
         "notes": "Bobby III UD medicine; Paddi - lpaddi66@gmail.com",
-        "maidenName": "H",
-        "spouseId": "bob_cathell"
+        "maidenName": "Haley",
+        "spouseId": "bobby_cathell_jr"
       },
       "curtis_cathell": {
         "id": "curtis_cathell",
@@ -1503,7 +1542,10 @@
         "zip": "19804",
         "spouseId": "meredith_chakales",
         "parentIds": [
-          "mary_ruff_cathell"
+          "mary_ruff"
+        ],
+        "siblingIds": [
+          "bobby_cathell_jr"
         ]
       },
       "meredith_chakales": {
@@ -1533,7 +1575,7 @@
         "id": "gene_cathell",
         "name": "Gene Cathell",
         "dod": "alive",
-        "dob": "02-29",
+        "dob": "1972-02-29",
         "phone": "302 998-5325",
         "email": "bluegenesefc1@gmail.com",
         "address": "4502 Sharon Dr",
@@ -1546,26 +1588,13 @@
         "notes": "Children: Emily",
         "childrenIds": [
           "emily_ruff"
-        ]
-      },
-      "mary_ruff_cathell": {
-        "id": "mary_ruff_cathell",
-        "name": "Mary Ruff Cathell",
-        "dod": "alive",
-        "dob": "03-19",
-        "phone": "302 998-5325",
-        "address": "4502 Sharon Dr",
-        "address2": "Klair Estates",
-        "city": "Wilmington",
-        "home_city": "Wilmington",
-        "state": "DE",
-        "home_state": "DE",
-        "zip": "19808",
-        "notes": "Children: Bobby, Gene, Scott, Curtis",
-        "childrenIds": [
-          "yogi",
-          "scott_cathell",
-          "curtis_cathell"
+        ],
+        "parentIds": [
+          "mary_ruff",
+          "bob_cathell"
+        ],
+        "siblingIds": [
+          "bobby_cathell_jr"
         ]
       },
       "rachel_marie_cathell": {
@@ -1599,7 +1628,10 @@
         "notes": "Karli UDmarketing, Linda- lcathell27@comcast.net L740-0162",
         "spouseId": "linda_dibiaso",
         "parentIds": [
-          "mary_ruff_cathell"
+          "mary_ruff"
+        ],
+        "siblingIds": [
+          "bobby_cathell_jr"
         ]
       },
       "linda_dibiaso": {
@@ -1692,7 +1724,7 @@
         "id": "horst_fischer",
         "name": "Horst Fischer",
         "dod": "alive",
-        "dob": "1954-07-01",
+        "dob": "1934-07-01",
         "phone": "302 999-8888",
         "address": "4403 Sharon Dr",
         "address2": "Klair Estates",
@@ -1706,7 +1738,9 @@
         "childrenIds": [
           "andrea_fischer",
           "joseph_michael_pichler_fischer"
-        ]
+        ],
+        "marriedIntoFamily": "Ruff",
+        "lineageFounder": "Fischer"
       },
       "andrea_fischer": {
         "id": "andrea_fischer",
@@ -2068,7 +2102,9 @@
         "home_city": "Wilmington",
         "state": "DE",
         "home_state": "DE",
-        "zip": "19808"
+        "zip": "19808",
+        "lineage": 2,
+        "suffix": "Jr"
       },
       "fred_ruff": {
         "id": "fred_ruff",
@@ -2290,7 +2326,9 @@
         "dob": "2006-04-04",
         "phone": "302 376-6329",
         "email": "ruffnit914@aol.com",
-        "spouseId": "justin_tyler_ruff"
+        "spouseId": "justin_tyler_ruff",
+        "lineage": 2,
+        "suffix": "Jr"
       },
       "justin_tyler_ruff": {
         "id": "justin_tyler_ruff",
@@ -2346,7 +2384,9 @@
         "home_state": "DE",
         "zip": "19734",
         "notes": "son Logan; Ashley - ashleyruff60@gmail.com",
-        "spouseId": "debbie_miller"
+        "spouseId": "debbie_miller",
+        "lineage": 1,
+        "suffix": "Sr"
       },
       "debbie_miller": {
         "id": "debbie_miller",
@@ -2370,7 +2410,9 @@
         "home_city": "Wilmington",
         "state": "DE",
         "home_state": "DE",
-        "zip": "19805"
+        "zip": "19805",
+        "lineage": 2,
+        "suffix": "Jr"
       },
       "philip_ruff": {
         "id": "philip_ruff",
@@ -2586,7 +2628,9 @@
         "parentIds": [
           "paul_thompson",
           "shannon_haughey"
-        ]
+        ],
+        "lineage": 1,
+        "suffix": "Sr"
       },
       "james_lee_thompson": {
         "id": "james_lee_thompson",
@@ -2604,7 +2648,9 @@
         "notes": "fund raising for non-profit organization",
         "parentIds": [
           "james_jim_stretch_thompson"
-        ]
+        ],
+        "lineage": 2,
+        "suffix": "Jr"
       },
       "jack_thompson": {
         "id": "jack_thompson",
@@ -2684,7 +2730,9 @@
         "parentIds": [
           "paul_thompson",
           "shannon_haughey"
-        ]
+        ],
+        "lineage": 1,
+        "suffix": "Sr"
       },
       "roy_david_thompson": {
         "id": "roy_david_thompson",
@@ -2700,7 +2748,9 @@
         "home_state": "CA",
         "zip": "92592",
         "notes": "Mom -Liana Dash",
-        "spouseId": "sabreana_beard"
+        "spouseId": "sabreana_beard",
+        "lineage": 2,
+        "suffix": "Jr"
       },
       "sabreana_beard": {
         "id": "sabreana_beard",
@@ -2779,6 +2829,25 @@
         "notes": "engaged wedding 70619 WI; Joe \u2013 josephbaker@gmail.com",
         "maidenName": "Baker",
         "spouseId": "rainer_richard_wolter"
+      },
+      "bobby_cathell_jr": {
+        "id": "bobby_cathell_jr",
+        "name": "Bobby Cathell Jr",
+        "suffix": "Jr",
+        "dob": "1972",
+        "dod": "alive",
+        "parentIds": [
+          "mary_ruff",
+          "bob_cathell"
+        ],
+        "childrenIds": [],
+        "siblingIds": [
+          "gene_cathell",
+          "scott_cathell",
+          "curtis_cathell"
+        ],
+        "spouseId": "paddi_h",
+        "lineage": 2
       }
     }
   },
