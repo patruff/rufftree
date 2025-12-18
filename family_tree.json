@@ -969,7 +969,11 @@
           "anne_ruff",
           "winifred"
         ],
-        "childrenIds": [],
+        "childrenIds": [
+          "kristina_wolter",
+          "brigitte_wolter",
+          "rainer_richard_wolter"
+        ],
         "generation": "Baby Boomer",
         "from_pat": -2,
         "ethnicity": {
@@ -1531,7 +1535,7 @@
         "id": "chris_dilbeck",
         "name": "Chris Dilbeck",
         "dod": "alive",
-        "dob": "01-03",
+        "dob": "1978-01-03",
         "phone": "610 329-8656C",
         "email": "gitta2t@gmail.com",
         "address": "436 Liberty Dr",
@@ -1547,7 +1551,7 @@
         "id": "brigitte_wolter",
         "name": "Brigitte Wolter",
         "dod": "alive",
-        "dob": "12-13",
+        "dob": "1978-12-13",
         "notes": "Children: Zachary, Tyler; Children: selling Farm Spring '19",
         "maidenName": "Wolter",
         "spouseId": "chris_dilbeck",
@@ -1559,7 +1563,10 @@
         "home_city": "RitzARDSTAW #N",
         "state": "PA",
         "home_state": "PA",
-        "zip": "19608"
+        "zip": "19608",
+        "parentIds": [
+          "anita"
+        ]
       },
       "bob_esposito": {
         "id": "bob_esposito",
@@ -1591,7 +1598,7 @@
         "id": "horst_fischer",
         "name": "Horst Fischer",
         "dod": "alive",
-        "dob": "07-01",
+        "dob": "1954-07-01",
         "phone": "302 999-8888",
         "address": "4403 Sharon Dr",
         "address2": "Klair Estates",
@@ -1749,7 +1756,7 @@
         "id": "rick_napolski",
         "name": "Rick Napolski",
         "dod": "alive",
-        "dob": "Unknown",
+        "dob": "1948",
         "phone": "302 998-5667",
         "address": "2440 Hartley Pl",
         "address2": "Maplecrest",
@@ -2042,7 +2049,7 @@
         "id": "emmalea_haber",
         "name": "Emmalea Haber",
         "dod": "alive",
-        "dob": "05-30",
+        "dob": "1938-05-30",
         "notes": "Children: Michelle, Johnny, Cheri, Jason, Em - 302 897-9815",
         "maidenName": "Haber",
         "spouseId": "john"
@@ -2220,7 +2227,7 @@
         "id": "colleen_walker",
         "name": "Colleen Walker",
         "dod": "alive",
-        "dob": "03-17",
+        "dob": "1942-03-17",
         "maidenName": "Walker",
         "spouseId": "tommy"
       },
@@ -2367,7 +2374,7 @@
         "id": "roy_thompson",
         "name": "Roy Thompson",
         "dod": "alive",
-        "dob": "06-30",
+        "dob": "1944-06-30",
         "phone": "951 303-8164",
         "email": "sabreana@sbcglobal.net",
         "address": "1213 New St",
@@ -2421,7 +2428,7 @@
         "id": "scott_varner",
         "name": "Scott Varner",
         "dod": "alive",
-        "dob": "02-07",
+        "dob": "1965-02-07",
         "phone": "302 376-6528",
         "email": "michelle.varner@verizon.net",
         "address": "2 Obsidian Way",
@@ -2436,7 +2443,7 @@
         "id": "rainer_richard_wolter",
         "name": "Rainer Richard Wolter",
         "dod": "alive",
-        "dob": "07-03",
+        "dob": "1978-07-03",
         "notes": "Children: selling Farm Spring '19; engaged wedding 70619 WI; Joe \u2013 josephbaker@gmail.com",
         "phone": "917 528-0878",
         "email": "wolterrainer@gmail.com",
@@ -2446,13 +2453,16 @@
         "state": "WI",
         "home_state": "WI",
         "zip": "53207",
-        "spouseId": "joe_baker"
+        "spouseId": "joe_baker",
+        "parentIds": [
+          "anita"
+        ]
       },
       "stephen_zippe": {
         "id": "stephen_zippe",
         "name": "Stephen Zippe",
         "dod": "alive",
-        "dob": "01-05",
+        "dob": "1975-01-05",
         "notes": "Children: Sublet 2 yr contract Save the Children North Laos thru 420",
         "maidenName": "Zippe",
         "spouseId": "kristina_wolter"
@@ -2461,7 +2471,7 @@
         "id": "joe_baker",
         "name": "Joe Baker",
         "dod": "alive",
-        "dob": "02-27",
+        "dob": "1978-02-27",
         "notes": "engaged wedding 70619 WI; Joe \u2013 josephbaker@gmail.com",
         "maidenName": "Baker",
         "spouseId": "rainer_richard_wolter"
