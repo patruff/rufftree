@@ -355,7 +355,7 @@
       "phil": {
         "id": "phil",
         "name": "Phil Ruff",
-        "dob": "1990",
+        "dob": "1989",
         "dod": "alive",
         "occupation": "Electrician",
         "phone": "302-397-4048",
@@ -521,7 +521,7 @@
       "joe_sr": {
         "id": "joe_sr",
         "name": "Joe Ruff Sr.",
-        "dob": "1960",
+        "dob": "1952",
         "dod": "alive",
         "occupation": "Laborer",
         "spouseId": "debbie",
@@ -697,7 +697,7 @@
       "yogi": {
         "id": "yogi",
         "name": "Eugene 'Yogi' Ruff",
-        "dob": "1955",
+        "dob": "1936",
         "dod": "alive",
         "spouseId": null,
         "parentIds": [
@@ -728,7 +728,7 @@
       "freddie": {
         "id": "freddie",
         "name": "Freddie 'Beaver' Ruff",
-        "dob": "1958",
+        "dob": "1940",
         "dod": "alive",
         "spouseId": null,
         "parentIds": [
@@ -759,7 +759,7 @@
       "tommy": {
         "id": "tommy",
         "name": "Tommy Ruff",
-        "dob": "1963",
+        "dob": "1942",
         "dod": "alive",
         "spouseId": null,
         "parentIds": [
@@ -790,7 +790,7 @@
       "john": {
         "id": "john",
         "name": "John Ruff",
-        "dob": "1965",
+        "dob": "1938",
         "dod": "alive",
         "spouseId": "emily_ruff",
         "parentIds": [
@@ -824,7 +824,7 @@
       "mary_ruff": {
         "id": "mary_ruff",
         "name": "Mary Ruff",
-        "dob": "1957",
+        "dob": "1946",
         "dod": "alive",
         "spouseId": null,
         "parentIds": [
@@ -855,7 +855,7 @@
       "bridget": {
         "id": "bridget",
         "name": "Bridget Ruff",
-        "dob": "1959",
+        "dob": "1948",
         "dod": "alive",
         "spouseId": null,
         "parentIds": [
@@ -886,7 +886,7 @@
       "anne_ruff": {
         "id": "anne_ruff",
         "name": "Anne Ruff",
-        "dob": "1961",
+        "dob": "1954",
         "dod": "alive",
         "spouseId": null,
         "parentIds": [
@@ -917,7 +917,7 @@
       "anita": {
         "id": "anita",
         "name": "Anita Ruff",
-        "dob": "1964",
+        "dob": "1950",
         "dod": "alive",
         "spouseId": null,
         "parentIds": [
@@ -948,7 +948,7 @@
       "winifred": {
         "id": "winifred",
         "name": "Winifred Ruff",
-        "dob": "1966",
+        "dob": "1944",
         "dod": "alive",
         "spouseId": null,
         "parentIds": [
@@ -1117,7 +1117,7 @@
       "kristina_wolter": {
         "id": "kristina_wolter",
         "name": "Kristina Wolter",
-        "dob": "unknown",
+        "dob": "1975",
         "dod": "alive",
         "parentIds": [
           "anita"
@@ -1132,7 +1132,8 @@
         "name": "Cheri Ruff",
         "firstName": "Cheri",
         "lastName": "Ruff",
-        "decadeBorn": "1980s",
+        "decadeBorn": "1960s",
+        "dob": "1963",
         "dod": "alive",
         "hairColor": "blonde",
         "height": "tall",
@@ -1152,10 +1153,11 @@
           "john",
           "emily_ruff"
         ],
-        "siblingIds": [],
+        "siblingIds": [
+          "michelle_1765851094851"
+        ],
         "childrenIds": [],
         "_relationshipUpdates": {},
-        "dob": "unknown",
         "completion_percentage": 43.8
       },
       "israel_1765786476687": {
@@ -1163,7 +1165,8 @@
         "name": "Israel Eleazar",
         "firstName": "Israel",
         "lastName": "Eleazar",
-        "decadeBorn": "1970s",
+        "decadeBorn": "1960s",
+        "dob": "1960",
         "dod": "alive",
         "hairColor": "black",
         "height": "medium",
@@ -1185,7 +1188,6 @@
         "parentIds": [],
         "siblingIds": [],
         "childrenIds": [],
-        "dob": "unknown",
         "completion_percentage": 37.5
       },
       "michelle_1765851094851": {
@@ -1193,7 +1195,8 @@
         "name": "Michelle Ruff",
         "firstName": "Michelle",
         "lastName": "Ruff",
-        "decadeBorn": "1980s",
+        "decadeBorn": "1960s",
+        "dob": "1965",
         "dod": "alive",
         "hairColor": "brunette",
         "height": "tall",
@@ -1213,16 +1216,17 @@
           "john",
           "emily_ruff"
         ],
-        "siblingIds": [],
+        "siblingIds": [
+          "sherry_1765783551198"
+        ],
         "childrenIds": [],
         "_relationshipUpdates": {},
-        "dob": "unknown",
-        "completion_percentage": 31.2
+        "completion_percentage": 43.8
       },
       "emily_ruff": {
         "id": "emily_ruff",
         "name": "Emily Ruff",
-        "dob": "unknown",
+        "dob": "1940",
         "dod": "alive",
         "parentIds": [],
         "childrenIds": [
