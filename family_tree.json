@@ -722,7 +722,7 @@
         "parentIds": [
           "grandfather_ruff",
           "grandmother_ruff",
-          "mary_ruff_cathell"
+          "mary_ruff"
         ],
         "siblingIds": [
           "freddie",
@@ -870,7 +870,7 @@
         "name": "Mary Ruff",
         "dob": "1946",
         "dod": "alive",
-        "spouseId": null,
+        "spouseId": "bob_cathell",
         "parentIds": [
           "grandfather_ruff",
           "grandmother_ruff"
@@ -886,7 +886,11 @@
           "anita",
           "winifred"
         ],
-        "childrenIds": [],
+        "childrenIds": [
+          "scott_cathell",
+          "curtis_cathell",
+          "gene_cathell"
+        ],
         "generation": "Baby Boomer",
         "from_pat": -2,
         "ethnicity": {
@@ -894,7 +898,18 @@
           "Irish": 55,
           "English": 20
         },
-        "completion_percentage": 12.5
+        "completion_percentage": 12.5,
+        "marriedName": "Cathell",
+        "maidenName": "Ruff",
+        "phone": "302 998-5325",
+        "address": "4502 Sharon Dr",
+        "address2": "Klair Estates",
+        "city": "Wilmington",
+        "home_city": "Wilmington",
+        "state": "DE",
+        "home_state": "DE",
+        "zip": "19808",
+        "notes": "Children: Bobby, Gene, Scott, Curtis"
       },
       "bridget": {
         "id": "bridget",
@@ -1336,7 +1351,7 @@
         "id": "tom_abbott",
         "name": "Tom Abbott",
         "dod": "alive",
-        "dob": "08-19",
+        "dob": "1914-08-19",
         "phone": "302 995-1365",
         "email": "annlea302@aol.com",
         "address": "4604 Springers Ln",
@@ -1360,7 +1375,7 @@
         "id": "annemarie_thompson",
         "name": "Annemarie Thompson",
         "dod": "alive",
-        "dob": "10-02",
+        "dob": "1970-10-02",
         "notes": "Children: Mary Elizabeth, Tommy, Khristina, Gianni Thompson",
         "maidenName": "Thompson",
         "spouseId": "tom_abbott",
@@ -1468,7 +1483,7 @@
         "id": "bob_cathell",
         "name": "Bob Cathell",
         "dod": "alive",
-        "dob": "08-20",
+        "dob": "1943-08-20",
         "phone": "302 276-5351",
         "email": "Rcathell@ldrdfifth.com",
         "address": "12 Hummingbird Ln",
@@ -1478,13 +1493,15 @@
         "home_state": "DE",
         "zip": "19720",
         "notes": "Bobby III UD medicine; Paddi - lpaddi66@gmail.com",
-        "spouseId": "paddi_h"
+        "spouseId": "mary_ruff",
+        "marriedIntoFamily": "Ruff",
+        "lineageFounder": "Cathell"
       },
       "paddi_h": {
         "id": "paddi_h",
         "name": "Paddi H",
         "dod": "alive",
-        "dob": "02-02",
+        "dob": "1943-02-02",
         "notes": "Bobby III UD medicine; Paddi - lpaddi66@gmail.com",
         "maidenName": "H",
         "spouseId": "bob_cathell"
@@ -1503,7 +1520,7 @@
         "zip": "19804",
         "spouseId": "meredith_chakales",
         "parentIds": [
-          "mary_ruff_cathell"
+          "mary_ruff"
         ]
       },
       "meredith_chakales": {
@@ -1533,7 +1550,7 @@
         "id": "gene_cathell",
         "name": "Gene Cathell",
         "dod": "alive",
-        "dob": "02-29",
+        "dob": "1972-02-29",
         "phone": "302 998-5325",
         "email": "bluegenesefc1@gmail.com",
         "address": "4502 Sharon Dr",
@@ -1546,26 +1563,10 @@
         "notes": "Children: Emily",
         "childrenIds": [
           "emily_ruff"
-        ]
-      },
-      "mary_ruff_cathell": {
-        "id": "mary_ruff_cathell",
-        "name": "Mary Ruff Cathell",
-        "dod": "alive",
-        "dob": "03-19",
-        "phone": "302 998-5325",
-        "address": "4502 Sharon Dr",
-        "address2": "Klair Estates",
-        "city": "Wilmington",
-        "home_city": "Wilmington",
-        "state": "DE",
-        "home_state": "DE",
-        "zip": "19808",
-        "notes": "Children: Bobby, Gene, Scott, Curtis",
-        "childrenIds": [
-          "yogi",
-          "scott_cathell",
-          "curtis_cathell"
+        ],
+        "parentIds": [
+          "mary_ruff",
+          "bob_cathell"
         ]
       },
       "rachel_marie_cathell": {
@@ -1599,7 +1600,7 @@
         "notes": "Karli UDmarketing, Linda- lcathell27@comcast.net L740-0162",
         "spouseId": "linda_dibiaso",
         "parentIds": [
-          "mary_ruff_cathell"
+          "mary_ruff"
         ]
       },
       "linda_dibiaso": {
@@ -1692,7 +1693,7 @@
         "id": "horst_fischer",
         "name": "Horst Fischer",
         "dod": "alive",
-        "dob": "1954-07-01",
+        "dob": "1934-07-01",
         "phone": "302 999-8888",
         "address": "4403 Sharon Dr",
         "address2": "Klair Estates",
@@ -1706,7 +1707,9 @@
         "childrenIds": [
           "andrea_fischer",
           "joseph_michael_pichler_fischer"
-        ]
+        ],
+        "marriedIntoFamily": "Ruff",
+        "lineageFounder": "Fischer"
       },
       "andrea_fischer": {
         "id": "andrea_fischer",
