@@ -268,7 +268,7 @@
         "dod": "alive",
         "occupation": "Nurse",
         "phone": "302-750-3828",
-        "maidenName": "Sarah Ruff",
+        "maidenName": "Ruff",
         "notes": "Baby of the family, was a graduate student in lab with Lorraine Symington",
         "spouseId": "kevin_boilon",
         "parentIds": [
@@ -577,10 +577,10 @@
       },
       "debbie": {
         "id": "debbie",
-        "name": "Debbie Ruff",
+        "name": "Debbie Miller",
         "dob": "1962",
         "dod": "alive",
-        "maidenName": "Debbie Miller",
+        "maidenName": "Miller",
         "occupation": "Teacher",
         "phone": "302-530-1232",
         "spouseId": "joe_sr",
@@ -608,7 +608,9 @@
           "Polish": 15,
           "Irish": 10
         },
-        "completion_percentage": 43.8
+        "completion_percentage": 43.8,
+        "marriedName": "Ruff",
+        "notes": "son Logan; Ashley - ashleyruff60@gmail.com"
       },
       "annette": {
         "id": "annette",
@@ -793,7 +795,6 @@
         "parentIds": [
           "grandfather_ruff",
           "grandmother_ruff",
-          "tom_abbott",
           "annemarie_thompson",
           "fred_ruff",
           "andy_greismeyer"
@@ -810,7 +811,6 @@
           "winifred"
         ],
         "childrenIds": [],
-        "generation": "Silent Generation",
         "from_pat": -2,
         "ethnicity": {
           "German": 25,
@@ -826,7 +826,8 @@
         "home_city": "Wilmington",
         "state": "DE",
         "home_state": "DE",
-        "zip": "19804"
+        "zip": "19804",
+        "generation": "Silent Generation"
       },
       "john": {
         "id": "john",
@@ -1094,10 +1095,10 @@
       },
       "beth_bradley": {
         "id": "beth_bradley",
-        "name": "Beth Miller Bradley",
+        "name": "Beth Miller",
         "dob": "1958",
         "dod": "alive",
-        "maidenName": "Beth Miller",
+        "maidenName": "Miller",
         "notes": "Known as the best aunt in the world, very youthful, healthy and fun to be around",
         "spouseId": "bryan_bradley",
         "parentIds": [
@@ -1119,7 +1120,8 @@
           "Polish": 15,
           "Irish": 10
         },
-        "completion_percentage": 31.2
+        "completion_percentage": 31.2,
+        "marriedName": "Bradley"
       },
       "bryan_bradley": {
         "id": "bryan_bradley",
@@ -1373,7 +1375,7 @@
         "id": "tom_abbott",
         "name": "Tom Abbott",
         "dod": "alive",
-        "dob": "1914-08-19",
+        "dob": "1969-08-19",
         "phone": "302 995-1365",
         "email": "annlea302@aol.com",
         "address": "4604 Springers Ln",
@@ -1387,12 +1389,13 @@
         "spouseId": "annemarie_thompson",
         "childrenIds": [
           "mary_elizabeth_abbott",
-          "tommy",
           "khristina_abbott",
           "gianni_gola",
           "tommy_abbott"
         ],
-        "generation": "Greatest Generation"
+        "generation": "Gen X",
+        "lineageFounder": "Abbott",
+        "marriedIntoFamily": "Thompson"
       },
       "annemarie_thompson": {
         "id": "annemarie_thompson",
@@ -1411,13 +1414,14 @@
         "parentIds": [
           "tommy_abbott"
         ],
-        "generation": "Gen X"
+        "generation": "Gen X",
+        "marriedName": "Abbott"
       },
       "mary_elizabeth_abbott": {
         "id": "mary_elizabeth_abbott",
         "name": "Mary Elizabeth Abbott",
         "dod": "alive",
-        "dob": "1942-03-19",
+        "dob": "1997-03-19",
         "phone": "302 893-3729",
         "email": "mabbott6262@gmail.com",
         "address": "2631 Newell Dr",
@@ -1431,13 +1435,13 @@
           "tom_abbott",
           "annemarie_thompson"
         ],
-        "generation": "Silent Generation"
+        "generation": "Gen Z"
       },
       "khristina_abbott": {
         "id": "khristina_abbott",
         "name": "Khristina Abbott",
         "dod": "alive",
-        "dob": "1942-07-01",
+        "dob": "1997-07-01",
         "phone": "302 893-5593",
         "email": "Khristinaelle@gmail.com",
         "address": "1502 Bartleson Rd",
@@ -1451,13 +1455,13 @@
           "tom_abbott",
           "annemarie_thompson"
         ],
-        "generation": "Silent Generation"
+        "generation": "Gen Z"
       },
       "tommy_abbott": {
         "id": "tommy_abbott",
         "name": "Tommy Abbott",
         "dod": "alive",
-        "dob": "1942",
+        "dob": "1997",
         "phone": "302 388-0589",
         "email": "Tabbott302@gmail.com",
         "address": "222 W Humphrey St",
@@ -1472,7 +1476,7 @@
           "tom_abbott",
           "annemarie_thompson"
         ],
-        "generation": "Silent Generation"
+        "generation": "Gen Z"
       },
       "john_blackwood": {
         "id": "john_blackwood",
@@ -1878,12 +1882,12 @@
         "id": "gianni_gola",
         "name": "Gianni Gola",
         "dod": "alive",
-        "dob": "1942-04-19",
+        "dob": "1997-04-19",
         "parentIds": [
           "tom_abbott",
           "annemarie_thompson"
         ],
-        "generation": "Silent Generation"
+        "generation": "Gen Z"
       },
       "tim_gola_sr": {
         "id": "tim_gola_sr",
@@ -2437,18 +2441,9 @@
         "home_state": "DE",
         "zip": "19734",
         "notes": "son Logan; Ashley - ashleyruff60@gmail.com",
-        "spouseId": "debbie_miller",
+        "spouseId": "debbie",
         "lineage": 1,
         "suffix": "Sr"
-      },
-      "debbie_miller": {
-        "id": "debbie_miller",
-        "name": "Debbie Miller",
-        "dod": "alive",
-        "dob": "07-31",
-        "notes": "son Logan; Ashley - ashleyruff60@gmail.com",
-        "maidenName": "Miller",
-        "spouseId": "joseph_ruff"
       },
       "joseph_jr_ruff": {
         "id": "joseph_jr_ruff",
@@ -2794,7 +2789,9 @@
         ],
         "lineage": 1,
         "suffix": "Sr",
-        "generation": "Silent Generation"
+        "generation": "Silent Generation",
+        "lineageFounder": "Thompson",
+        "marriedIntoFamily": "Ruff"
       },
       "roy_david_thompson": {
         "id": "roy_david_thompson",
