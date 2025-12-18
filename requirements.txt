@@ -11,6 +11,7 @@ google-api-python-client>=2.100.0
 # Document handling
 PyPDF2>=3.0.0
 python-docx>=0.8.11
+openpyxl>=3.0.0  # For Excel file handling
 
 # Testing dependencies
 pytest>=7.4.0
