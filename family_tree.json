@@ -156,7 +156,9 @@
           "Scottish": 8,
           "Polish": 8
         },
-        "completion_percentage": 37.5
+        "completion_percentage": 37.5,
+        "lineage": 2,
+        "suffix": "Jr"
       },
       "katie": {
         "id": "katie",
@@ -569,7 +571,9 @@
           "Irish": 55,
           "English": 20
         },
-        "completion_percentage": 31.2
+        "completion_percentage": 31.2,
+        "lineage": 1,
+        "suffix": "Sr"
       },
       "debbie": {
         "id": "debbie",
@@ -655,7 +659,9 @@
           "English": 30,
           "Scottish": 30
         },
-        "completion_percentage": 15.0
+        "completion_percentage": 15.0,
+        "lineage": 1,
+        "suffix": "Sr"
       },
       "grandfather_ruff": {
         "id": "grandfather_ruff",
@@ -743,7 +749,9 @@
           "Irish": 55,
           "English": 20
         },
-        "completion_percentage": 12.5
+        "completion_percentage": 12.5,
+        "lineage": 1,
+        "suffix": "Sr"
       },
       "freddie": {
         "id": "freddie",
@@ -863,7 +871,9 @@
         "state": "DE",
         "home_state": "DE",
         "zip": "19971",
-        "notes": "Children: Michelle, Johnny, Cheri, Jason, Em - 302 897-9815"
+        "notes": "Children: Michelle, Johnny, Cheri, Jason, Em - 302 897-9815",
+        "lineage": 1,
+        "suffix": "Sr"
       },
       "mary_ruff": {
         "id": "mary_ruff",
@@ -1078,7 +1088,9 @@
           "Polish": 15,
           "Irish": 10
         },
-        "completion_percentage": 18.8
+        "completion_percentage": 18.8,
+        "lineage": 2,
+        "suffix": "Jr"
       },
       "beth_bradley": {
         "id": "beth_bradley",
@@ -1173,7 +1185,9 @@
         "ethnicity": {
           "Chinese": 100
         },
-        "completion_percentage": 12.5
+        "completion_percentage": 12.5,
+        "lineage": 1,
+        "suffix": "Sr"
       },
       "jenny_mother": {
         "id": "jenny_mother",
@@ -1191,7 +1205,9 @@
         "ethnicity": {
           "Chinese": 100
         },
-        "completion_percentage": 12.5
+        "completion_percentage": 12.5,
+        "lineage": 2,
+        "suffix": "Jr"
       },
       "kristina_wolter": {
         "id": "kristina_wolter",
@@ -2085,7 +2101,9 @@
         "home_city": "Wilmington",
         "state": "DE",
         "home_state": "DE",
-        "zip": "19808"
+        "zip": "19808",
+        "lineage": 2,
+        "suffix": "Jr"
       },
       "fred_ruff": {
         "id": "fred_ruff",
@@ -2307,7 +2325,9 @@
         "dob": "2006-04-04",
         "phone": "302 376-6329",
         "email": "ruffnit914@aol.com",
-        "spouseId": "justin_tyler_ruff"
+        "spouseId": "justin_tyler_ruff",
+        "lineage": 2,
+        "suffix": "Jr"
       },
       "justin_tyler_ruff": {
         "id": "justin_tyler_ruff",
@@ -2363,7 +2383,9 @@
         "home_state": "DE",
         "zip": "19734",
         "notes": "son Logan; Ashley - ashleyruff60@gmail.com",
-        "spouseId": "debbie_miller"
+        "spouseId": "debbie_miller",
+        "lineage": 1,
+        "suffix": "Sr"
       },
       "debbie_miller": {
         "id": "debbie_miller",
@@ -2387,7 +2409,9 @@
         "home_city": "Wilmington",
         "state": "DE",
         "home_state": "DE",
-        "zip": "19805"
+        "zip": "19805",
+        "lineage": 2,
+        "suffix": "Jr"
       },
       "philip_ruff": {
         "id": "philip_ruff",
@@ -2603,7 +2627,9 @@
         "parentIds": [
           "paul_thompson",
           "shannon_haughey"
-        ]
+        ],
+        "lineage": 1,
+        "suffix": "Sr"
       },
       "james_lee_thompson": {
         "id": "james_lee_thompson",
@@ -2621,7 +2647,9 @@
         "notes": "fund raising for non-profit organization",
         "parentIds": [
           "james_jim_stretch_thompson"
-        ]
+        ],
+        "lineage": 2,
+        "suffix": "Jr"
       },
       "jack_thompson": {
         "id": "jack_thompson",
@@ -2701,7 +2729,9 @@
         "parentIds": [
           "paul_thompson",
           "shannon_haughey"
-        ]
+        ],
+        "lineage": 1,
+        "suffix": "Sr"
       },
       "roy_david_thompson": {
         "id": "roy_david_thompson",
@@ -2717,7 +2747,9 @@
         "home_state": "CA",
         "zip": "92592",
         "notes": "Mom -Liana Dash",
-        "spouseId": "sabreana_beard"
+        "spouseId": "sabreana_beard",
+        "lineage": 2,
+        "suffix": "Jr"
       },
       "sabreana_beard": {
         "id": "sabreana_beard",
