@@ -9,7 +9,7 @@
         "dob": "1985",
         "dod": "alive",
         "occupation": "Developer/Scientist",
-        "spouseId": "jenny_wang",
+        "spouseId": "jenny",
         "parentIds": [
           "joe_sr",
           "debbie"
@@ -51,7 +51,7 @@
         "dod": "alive",
         "occupation": "Lawyer",
         "phone": "302-463-1675",
-        "spouseId": "patrick_ruff",
+        "spouseId": "patrick",
         "parentIds": [
           "jenny_father",
           "jenny_mother"
@@ -1194,7 +1194,7 @@
           "agreeableness": 65,
           "neuroticism": 50
         },
-        "spouseId": "israel_eleazar",
+        "spouseId": "israel_1765786476687",
         "parentIds": [
           "john",
           "emily_ruff"
@@ -1232,7 +1232,7 @@
           "agreeableness": 65,
           "neuroticism": 50
         },
-        "spouseId": "cheri_ruff",
+        "spouseId": "sherry_1765783551198",
         "parentIds": [],
         "siblingIds": [],
         "childrenIds": [],
@@ -1759,7 +1759,7 @@
         "home_state": "DE",
         "zip": "19808",
         "notes": "Children: Noreen, Ricky",
-        "spouseId": "bridget_ruff"
+        "spouseId": "bridget_1765786492406"
       },
       "ricky_napolski": {
         "id": "ricky_napolski",
@@ -2045,7 +2045,7 @@
         "dob": "05-30",
         "notes": "Children: Michelle, Johnny, Cheri, Jason, Em - 302 897-9815",
         "maidenName": "Haber",
-        "spouseId": "john_ruff"
+        "spouseId": "john"
       },
       "john_colin_ruff": {
         "id": "john_colin_ruff",
@@ -2222,7 +2222,7 @@
         "dod": "alive",
         "dob": "03-17",
         "maidenName": "Walker",
-        "spouseId": "tommy_ruff"
+        "spouseId": "tommy"
       },
       "jack_schnatterer": {
         "id": "jack_schnatterer",
@@ -2378,7 +2378,7 @@
         "home_state": "DE",
         "zip": "19808",
         "notes": "Children: Alexandria Nicole, Gabriella Marie",
-        "spouseId": "winifred_ruff"
+        "spouseId": "winifred_1765786544969"
       },
       "roy_david_thompson": {
         "id": "roy_david_thompson",
@@ -2430,7 +2430,7 @@
         "home_state": "DE",
         "zip": "19805",
         "notes": "Joshua/Stella - UD, Nic - Full Sails U FL",
-        "spouseId": "michelle_ruff"
+        "spouseId": "michelle_1765851094851"
       },
       "rainer_richard_wolter": {
         "id": "rainer_richard_wolter",
