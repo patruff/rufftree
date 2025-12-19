@@ -19,16 +19,31 @@ This guide shows you how to set up automatic deployment to Fly.io using GitHub A
 
 ### Step 3: Add Secrets to GitHub
 
+**IMPORTANT: You MUST add all 4 secrets before pushing code!**
+
 1. Go to your GitHub repo: `https://github.com/patruff/rufftree`
 2. Click **Settings** → **Secrets and variables** → **Actions**
 3. Click **New repository secret** and add these secrets:
 
 | Secret Name | Value | Where to Get |
 |-------------|-------|--------------|
-| `FLY_API_TOKEN` | Your Fly.io token | From Step 2 |
-| `XAI_API_KEY` | Your xAI API key | [console.x.ai](https://console.x.ai) |
-| `GOOGLE_GENAI_API_KEY` | Your Google AI key | Already have this |
-| `RUFFTREE_STORE_NAME` | `fileSearchStores/rufftreefamilydocuments-nrf1ymofronp` | Current store |
+| `FLY_API_TOKEN` | Your Fly.io token | From Step 2 above |
+| `XAI_API_KEY` | Your xAI API key | [console.x.ai](https://console.x.ai) - click API Keys |
+| `GOOGLE_GENAI_API_KEY` | Your Google AI key | [aistudio.google.com/apikey](https://aistudio.google.com/apikey) |
+| `RUFFTREE_STORE_NAME` | `fileSearchStores/rufftreefamilydocuments-nrf1ymofronp` | Exact value shown |
+
+**Double-check each secret:**
+- Click on the secret name after creating it
+- GitHub will show "Last updated" - make sure it's recent
+- If you see "XAI_API_KEY not set" in logs, the secret wasn't created properly
+
+**Getting xAI API Key:**
+1. Go to [console.x.ai](https://console.x.ai)
+2. Sign up/login
+3. Click "API Keys" in sidebar
+4. Click "Create API Key"
+5. Copy the key (starts with `xai-...`)
+6. Paste into GitHub secret
 
 ### Step 4: Create Fly.io App (One-Time CLI Setup)
 
@@ -111,24 +126,79 @@ Or visit directly: `https://rufftree-voice.fly.dev`
 
 ## Troubleshooting
 
+### ERROR: "XAI_API_KEY not set" in Logs
+
+**This is the most common issue!** If you see this in Fly.io logs, the secrets weren't set correctly.
+
+**Fix:**
+
+**Option 1 - GitHub Secrets (Recommended):**
+1. Go to `https://github.com/patruff/rufftree/settings/secrets/actions`
+2. Verify all 4 secrets exist:
+   - `FLY_API_TOKEN`
+   - `XAI_API_KEY`
+   - `GOOGLE_GENAI_API_KEY`
+   - `RUFFTREE_STORE_NAME`
+3. If missing, click "New repository secret" and add them
+4. Push a small code change to trigger re-deploy:
+   ```bash
+   git commit --allow-empty -m "Trigger redeploy with secrets"
+   git push origin main
+   ```
+5. Wait 2 minutes and check logs: `fly logs`
+6. You should see: `✅ XAI_API_KEY configured (xai-12345...)`
+
+**Option 2 - Fly CLI (Quick Fix):**
+```bash
+# Install Fly CLI if not installed
+curl -L https://fly.io/install.sh | sh
+
+# Login
+fly auth login
+
+# Set secrets manually
+fly secrets set XAI_API_KEY=your-xai-key-here
+fly secrets set GOOGLE_GENAI_API_KEY=your-google-key-here
+fly secrets set RUFFTREE_STORE_NAME=fileSearchStores/rufftreefamilydocuments-nrf1ymofronp
+
+# This triggers automatic redeploy - wait 1-2 minutes
+# Check logs
+fly logs
+```
+
+**Verify secrets are set:**
+```bash
+fly secrets list
+```
+
+You should see:
+```
+NAME                      DIGEST                           CREATED AT
+GOOGLE_GENAI_API_KEY      abc123...                        1m ago
+RUFFTREE_STORE_NAME       def456...                        1m ago
+XAI_API_KEY               ghi789...                        1m ago
+```
+
+**Check deployment logs:**
+```bash
+fly logs
+```
+
+**Correct output should show:**
+```
+✅ XAI_API_KEY configured (xai-12345...)
+✅ GOOGLE_GENAI_API_KEY configured (AIzaSyXXX...)
+✅ RUFFTREE_STORE_NAME: fileSearchStores/rufftreefamilydocuments-nrf1ymofronp
+✅ All environment variables configured correctly!
+```
+
 ### Deployment Failed
 
 1. Check GitHub Actions logs: `https://github.com/patruff/rufftree/actions`
 2. Common issues:
-   - Missing secrets: Add all 4 secrets in GitHub
+   - Missing secrets: Add all 4 secrets in GitHub (see above)
    - App name taken: Change `app = "rufftree-voice"` in `fly.toml`
    - Token expired: Generate new Fly.io token
-
-### Secrets Not Working
-
-If environment variables aren't being set:
-
-```bash
-# Manually set secrets (one-time fix)
-fly secrets set XAI_API_KEY=your-key
-fly secrets set GOOGLE_GENAI_API_KEY=your-key
-fly secrets set RUFFTREE_STORE_NAME=fileSearchStores/rufftreefamilydocuments-nrf1ymofronp
-```
 
 ### Check Current Secrets
 

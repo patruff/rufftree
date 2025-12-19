@@ -194,9 +194,31 @@ async def voice_websocket(websocket: WebSocket):
     await websocket.accept()
     print("✅ Client connected to voice WebSocket")
 
+    # Check for required API keys
     if not XAI_API_KEY:
+        error_msg = (
+            "XAI_API_KEY not configured on server. "
+            "Set secrets in GitHub (Settings → Secrets → Actions) or via Fly CLI: "
+            "fly secrets set XAI_API_KEY=your-key"
+        )
+        print(f"❌ {error_msg}")
         await websocket.send_json({
-            "error": "XAI_API_KEY not configured on server"
+            "type": "error",
+            "error": error_msg
+        })
+        await websocket.close()
+        return
+
+    if not GOOGLE_GENAI_API_KEY:
+        error_msg = (
+            "GOOGLE_GENAI_API_KEY not configured on server. "
+            "Set secrets in GitHub or via Fly CLI: "
+            "fly secrets set GOOGLE_GENAI_API_KEY=your-key"
+        )
+        print(f"❌ {error_msg}")
+        await websocket.send_json({
+            "type": "error",
+            "error": error_msg
         })
         await websocket.close()
         return
@@ -205,7 +227,7 @@ async def voice_websocket(websocket: WebSocket):
         # Connect to Grok Voice Agent API
         grok_url = "wss://api.x.ai/v1/realtime"
 
-        print(f"🔌 Connecting to Grok Voice Agent API...")
+        print(f"🔌 Connecting to Grok Voice Agent API at {grok_url}...")
         async with websockets.connect(
             uri=grok_url,
             ssl=True,
@@ -296,14 +318,42 @@ async def health():
 if __name__ == "__main__":
     import uvicorn
 
-    # Check required environment variables
-    if not XAI_API_KEY:
-        print("⚠️  WARNING: XAI_API_KEY not set")
-    if not GOOGLE_GENAI_API_KEY:
-        print("⚠️  WARNING: GOOGLE_GENAI_API_KEY not set")
-
     print("\n🎤 Starting Rufftree Voice Agent Server")
     print("=" * 50)
+
+    # Check required environment variables with detailed messages
+    missing_vars = []
+
+    if not XAI_API_KEY:
+        print("❌ ERROR: XAI_API_KEY not set")
+        print("   Get API key from: https://console.x.ai")
+        print("   Set with: fly secrets set XAI_API_KEY=your-key")
+        missing_vars.append("XAI_API_KEY")
+    else:
+        print(f"✅ XAI_API_KEY configured ({XAI_API_KEY[:10]}...)")
+
+    if not GOOGLE_GENAI_API_KEY:
+        print("❌ ERROR: GOOGLE_GENAI_API_KEY not set")
+        print("   Get API key from: https://aistudio.google.com/apikey")
+        print("   Set with: fly secrets set GOOGLE_GENAI_API_KEY=your-key")
+        missing_vars.append("GOOGLE_GENAI_API_KEY")
+    else:
+        print(f"✅ GOOGLE_GENAI_API_KEY configured ({GOOGLE_GENAI_API_KEY[:10]}...)")
+
+    print(f"✅ RUFFTREE_STORE_NAME: {RUFFTREE_STORE_NAME}")
+
+    if missing_vars:
+        print("\n⚠️  WARNING: Server starting but voice features will not work!")
+        print(f"   Missing variables: {', '.join(missing_vars)}")
+        print("   WebSocket connections will fail until secrets are set.")
+        print("\n   To fix:")
+        print("   1. Add secrets to GitHub: Settings → Secrets → Actions")
+        print("   2. Or set via Fly CLI: fly secrets set KEY=value")
+        print("   3. Redeploy to apply changes")
+    else:
+        print("\n✅ All environment variables configured correctly!")
+
+    print("\n" + "=" * 50)
     print("Voice interface: http://localhost:8000")
     print("Health check: http://localhost:8000/health")
     print("=" * 50 + "\n")
