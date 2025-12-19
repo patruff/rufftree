@@ -239,7 +239,7 @@ async def voice_websocket(websocket: WebSocket):
             session_config = {
                 "type": "session.update",
                 "session": {
-                    "voice": "Ara",
+                    "voice": "Rex",
                     "instructions": (
                         "You are a knowledgeable family history assistant for the Ruff family. "
                         "When users ask questions about family history, people, events, or stories, "
