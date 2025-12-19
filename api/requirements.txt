@@ -1,2 +1,0 @@
-# Minimal dependencies for Vercel serverless function
-google-genai>=0.2.0

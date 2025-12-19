@@ -1,0 +1,553 @@
+<!DOCTYPE html>
+<html lang="en">
+<head>
+    <meta charset="UTF-8">
+    <meta name="viewport" content="width=device-width, initial-scale=1.0">
+    <title>Ruff Family Voice Assistant</title>
+    <style>
+        * {
+            margin: 0;
+            padding: 0;
+            box-sizing: border-box;
+        }
+
+        body {
+            font-family: 'Segoe UI', Tahoma, Geneva, Verdana, sans-serif;
+            background: linear-gradient(135deg, #667eea 0%, #764ba2 100%);
+            min-height: 100vh;
+            padding: 20px;
+            color: #333;
+        }
+
+        .container {
+            max-width: 800px;
+            margin: 0 auto;
+            background: white;
+            border-radius: 20px;
+            padding: 40px;
+            box-shadow: 0 20px 60px rgba(0, 0, 0, 0.3);
+        }
+
+        header {
+            text-align: center;
+            margin-bottom: 40px;
+        }
+
+        h1 {
+            color: #667eea;
+            margin-bottom: 10px;
+            font-size: 2.5em;
+        }
+
+        .subtitle {
+            color: #666;
+            font-size: 1.1em;
+        }
+
+        nav {
+            display: flex;
+            gap: 15px;
+            justify-content: center;
+            margin-bottom: 30px;
+            flex-wrap: wrap;
+        }
+
+        nav a {
+            padding: 10px 20px;
+            background: #f8f9fa;
+            color: #667eea;
+            text-decoration: none;
+            border-radius: 8px;
+            transition: all 0.3s;
+            font-weight: 500;
+        }
+
+        nav a:hover {
+            background: #667eea;
+            color: white;
+        }
+
+        .voice-controls {
+            text-align: center;
+            margin: 40px 0;
+        }
+
+        .mic-button {
+            width: 150px;
+            height: 150px;
+            border-radius: 50%;
+            border: none;
+            background: linear-gradient(135deg, #667eea 0%, #764ba2 100%);
+            color: white;
+            font-size: 3em;
+            cursor: pointer;
+            transition: all 0.3s;
+            box-shadow: 0 10px 30px rgba(102, 126, 234, 0.4);
+            position: relative;
+        }
+
+        .mic-button:hover {
+            transform: scale(1.05);
+            box-shadow: 0 15px 40px rgba(102, 126, 234, 0.6);
+        }
+
+        .mic-button:active {
+            transform: scale(0.95);
+        }
+
+        .mic-button.active {
+            background: linear-gradient(135deg, #f093fb 0%, #f5576c 100%);
+            animation: pulse 1.5s infinite;
+        }
+
+        @keyframes pulse {
+            0%, 100% {
+                box-shadow: 0 0 0 0 rgba(245, 87, 108, 0.7);
+            }
+            50% {
+                box-shadow: 0 0 0 20px rgba(245, 87, 108, 0);
+            }
+        }
+
+        .mic-button.disabled {
+            background: #ccc;
+            cursor: not-allowed;
+        }
+
+        .status {
+            margin-top: 20px;
+            padding: 15px;
+            border-radius: 10px;
+            background: #f8f9fa;
+            color: #333;
+            font-weight: 500;
+        }
+
+        .status.connected {
+            background: #d4edda;
+            color: #155724;
+        }
+
+        .status.error {
+            background: #f8d7da;
+            color: #721c24;
+        }
+
+        .status.listening {
+            background: #fff3cd;
+            color: #856404;
+        }
+
+        .transcript-container {
+            margin-top: 30px;
+            padding: 25px;
+            background: #f8f9fa;
+            border-radius: 10px;
+            min-height: 200px;
+        }
+
+        .transcript-item {
+            margin-bottom: 15px;
+            padding: 15px;
+            border-radius: 8px;
+        }
+
+        .transcript-item.user {
+            background: #e3f2fd;
+            text-align: right;
+        }
+
+        .transcript-item.assistant {
+            background: #f3e5f5;
+            text-align: left;
+        }
+
+        .transcript-label {
+            font-weight: 600;
+            margin-bottom: 5px;
+            font-size: 0.9em;
+        }
+
+        .transcript-text {
+            line-height: 1.6;
+        }
+
+        .info-box {
+            background: #fff3cd;
+            border-left: 4px solid #ffc107;
+            padding: 15px 20px;
+            border-radius: 5px;
+            margin-bottom: 20px;
+        }
+
+        .info-box h3 {
+            color: #856404;
+            margin-bottom: 10px;
+        }
+
+        .info-box p {
+            color: #856404;
+            line-height: 1.6;
+        }
+
+        @media (max-width: 768px) {
+            .container {
+                padding: 20px;
+            }
+
+            h1 {
+                font-size: 1.8em;
+            }
+
+            .mic-button {
+                width: 120px;
+                height: 120px;
+                font-size: 2.5em;
+            }
+        }
+    </style>
+</head>
+<body>
+    <div class="container">
+        <header>
+            <h1>🎤 Ruff Family Voice Assistant</h1>
+            <p class="subtitle">Ask me anything about the family history - just speak!</p>
+        </header>
+
+        <nav>
+            <a href="index.html">🌳 Family Tree</a>
+            <a href="graph.html">📊 Family Graph</a>
+            <a href="queries.html">💬 Text Questions</a>
+            <a href="voice_query.html" style="background: #667eea; color: white;">🎤 Voice Assistant</a>
+        </nav>
+
+        <div class="info-box">
+            <h3>How to Use</h3>
+            <p>
+                1. Click "Enable Microphone" to grant permission<br>
+                2. Click the microphone button to start talking<br>
+                3. Ask any question about the Ruff family history<br>
+                4. The AI will search family documents and respond with voice!<br>
+                <br>
+                <strong>Example questions:</strong><br>
+                "What do you know about Joe Ruff?"<br>
+                "When did the family immigrate to America?"<br>
+                "Tell me about Patrick and Jenny's wedding"
+            </p>
+        </div>
+
+        <div class="voice-controls">
+            <button id="enableMicBtn" class="mic-button">
+                🎙️
+            </button>
+            <div id="status" class="status">
+                Click to enable microphone
+            </div>
+        </div>
+
+        <div class="transcript-container" id="transcriptContainer">
+            <div style="text-align: center; color: #999; padding: 40px;">
+                Your conversation will appear here...
+            </div>
+        </div>
+    </div>
+
+    <script>
+        let ws = null;
+        let audioContext = null;
+        let audioStream = null;
+        let audioWorkletNode = null;
+        let isConnected = false;
+        let isRecording = false;
+        let audioQueue = [];
+        let isPlaying = false;
+
+        const enableMicBtn = document.getElementById('enableMicBtn');
+        const statusDiv = document.getElementById('status');
+        const transcriptContainer = document.getElementById('transcriptContainer');
+
+        // Audio configuration
+        const SAMPLE_RATE = 24000;
+
+        // Connect to WebSocket
+        async function connectWebSocket() {
+            const wsProtocol = window.location.protocol === 'https:' ? 'wss:' : 'ws:';
+            const wsUrl = `${wsProtocol}//${window.location.host}/ws/voice`;
+
+            ws = new WebSocket(wsUrl);
+
+            ws.onopen = () => {
+                console.log('WebSocket connected');
+            };
+
+            ws.onmessage = async (event) => {
+                const data = JSON.parse(event.data);
+                handleServerMessage(data);
+            };
+
+            ws.onerror = (error) => {
+                console.error('WebSocket error:', error);
+                updateStatus('Connection error. Please refresh.', 'error');
+            };
+
+            ws.onclose = () => {
+                console.log('WebSocket closed');
+                isConnected = false;
+                updateStatus('Disconnected. Please refresh.', 'error');
+            };
+        }
+
+        // Handle messages from server
+        function handleServerMessage(data) {
+            const type = data.type;
+
+            if (type === 'connection.ready') {
+                isConnected = true;
+                updateStatus('Connected! Click microphone to speak', 'connected');
+                enableMicBtn.classList.remove('disabled');
+            } else if (type === 'error') {
+                updateStatus(`Error: ${data.error}`, 'error');
+            } else if (type === 'response.output_audio_transcript.delta') {
+                // Display assistant transcript
+                addToTranscript(data.delta, 'assistant');
+            } else if (type === 'response.output_audio.delta') {
+                // Queue audio for playback
+                if (data.delta) {
+                    audioQueue.push(data.delta);
+                    playAudioQueue();
+                }
+            } else if (type === 'input_audio_buffer.speech_started') {
+                updateStatus('Listening...', 'listening');
+            } else if (type === 'input_audio_buffer.speech_stopped') {
+                updateStatus('Processing...', 'connected');
+            } else if (type === 'conversation.item.input_audio_transcription.completed') {
+                // Display user transcript
+                addToTranscript(data.transcript, 'user');
+            }
+        }
+
+        // Initialize audio context and microphone
+        async function initializeAudio() {
+            try {
+                // Request microphone permission
+                audioStream = await navigator.mediaDevices.getUserMedia({
+                    audio: {
+                        sampleRate: SAMPLE_RATE,
+                        channelCount: 1,
+                        echoCancellation: true,
+                        noiseSuppression: true,
+                    }
+                });
+
+                // Create audio context
+                audioContext = new AudioContext({ sampleRate: SAMPLE_RATE });
+                const source = audioContext.createMediaStreamSource(audioStream);
+
+                // Create audio worklet for processing
+                await audioContext.audioWorklet.addModule(createAudioWorkletProcessor());
+
+                audioWorkletNode = new AudioWorkletNode(audioContext, 'audio-processor');
+                source.connect(audioWorkletNode);
+                audioWorkletNode.connect(audioContext.destination);
+
+                // Handle audio data from worklet
+                audioWorkletNode.port.onmessage = (event) => {
+                    if (isRecording && ws && ws.readyState === WebSocket.OPEN) {
+                        const audioData = event.data;
+                        const base64Audio = arrayBufferToBase64(audioData);
+
+                        ws.send(JSON.stringify({
+                            type: 'input_audio_buffer.append',
+                            audio: base64Audio
+                        }));
+                    }
+                };
+
+                // Connect to WebSocket
+                await connectWebSocket();
+
+                // Update UI
+                enableMicBtn.onclick = toggleRecording;
+                updateStatus('Connecting...', '');
+
+            } catch (error) {
+                console.error('Error initializing audio:', error);
+                updateStatus('Microphone permission denied or error occurred', 'error');
+            }
+        }
+
+        // Create audio worklet processor as a blob URL
+        function createAudioWorkletProcessor() {
+            const processorCode = `
+                class AudioProcessor extends AudioWorkletProcessor {
+                    constructor() {
+                        super();
+                        this.bufferSize = 2048;
+                        this.buffer = new Float32Array(this.bufferSize);
+                        this.bufferIndex = 0;
+                    }
+
+                    process(inputs, outputs, parameters) {
+                        const input = inputs[0];
+                        if (input.length > 0) {
+                            const inputChannel = input[0];
+                            for (let i = 0; i < inputChannel.length; i++) {
+                                this.buffer[this.bufferIndex++] = inputChannel[i];
+                                if (this.bufferIndex >= this.bufferSize) {
+                                    // Convert to Int16 and send
+                                    const int16Buffer = new Int16Array(this.bufferSize);
+                                    for (let j = 0; j < this.bufferSize; j++) {
+                                        int16Buffer[j] = Math.max(-32768, Math.min(32767, this.buffer[j] * 32768));
+                                    }
+                                    this.port.postMessage(int16Buffer.buffer);
+                                    this.bufferIndex = 0;
+                                }
+                            }
+                        }
+                        return true;
+                    }
+                }
+                registerProcessor('audio-processor', AudioProcessor);
+            `;
+
+            const blob = new Blob([processorCode], { type: 'application/javascript' });
+            return URL.createObjectURL(blob);
+        }
+
+        // Toggle recording
+        function toggleRecording() {
+            if (!isConnected) {
+                updateStatus('Please wait for connection...', '');
+                return;
+            }
+
+            isRecording = !isRecording;
+
+            if (isRecording) {
+                enableMicBtn.classList.add('active');
+                updateStatus('Listening... Speak now!', 'listening');
+            } else {
+                enableMicBtn.classList.remove('active');
+                updateStatus('Click microphone to speak', 'connected');
+            }
+        }
+
+        // Play audio queue
+        async function playAudioQueue() {
+            if (isPlaying || audioQueue.length === 0) return;
+
+            isPlaying = true;
+
+            while (audioQueue.length > 0) {
+                const base64Audio = audioQueue.shift();
+                await playAudioChunk(base64Audio);
+            }
+
+            isPlaying = false;
+        }
+
+        // Play a single audio chunk
+        function playAudioChunk(base64Audio) {
+            return new Promise((resolve) => {
+                try {
+                    const audioData = base64ToArrayBuffer(base64Audio);
+                    const int16Array = new Int16Array(audioData);
+                    const float32Array = new Float32Array(int16Array.length);
+
+                    // Convert Int16 to Float32
+                    for (let i = 0; i < int16Array.length; i++) {
+                        float32Array[i] = int16Array[i] / 32768.0;
+                    }
+
+                    // Create audio buffer
+                    const audioBuffer = audioContext.createBuffer(1, float32Array.length, SAMPLE_RATE);
+                    audioBuffer.getChannelData(0).set(float32Array);
+
+                    // Play audio
+                    const source = audioContext.createBufferSource();
+                    source.buffer = audioBuffer;
+                    source.connect(audioContext.destination);
+                    source.onended = resolve;
+                    source.start();
+
+                } catch (error) {
+                    console.error('Error playing audio:', error);
+                    resolve();
+                }
+            });
+        }
+
+        // Update status display
+        function updateStatus(message, className) {
+            statusDiv.textContent = message;
+            statusDiv.className = 'status ' + className;
+        }
+
+        // Add message to transcript
+        let lastTranscriptItem = null;
+        let lastTranscriptRole = null;
+
+        function addToTranscript(text, role) {
+            // If same role as last message, append to it
+            if (lastTranscriptRole === role && lastTranscriptItem) {
+                const textDiv = lastTranscriptItem.querySelector('.transcript-text');
+                textDiv.textContent += text;
+            } else {
+                // Create new transcript item
+                const item = document.createElement('div');
+                item.className = `transcript-item ${role}`;
+
+                const label = document.createElement('div');
+                label.className = 'transcript-label';
+                label.textContent = role === 'user' ? 'You:' : 'Assistant:';
+
+                const textDiv = document.createElement('div');
+                textDiv.className = 'transcript-text';
+                textDiv.textContent = text;
+
+                item.appendChild(label);
+                item.appendChild(textDiv);
+
+                // Clear placeholder text if exists
+                if (transcriptContainer.querySelector('div[style*="text-align: center"]')) {
+                    transcriptContainer.innerHTML = '';
+                }
+
+                transcriptContainer.appendChild(item);
+                lastTranscriptItem = item;
+                lastTranscriptRole = role;
+
+                // Scroll to bottom
+                transcriptContainer.scrollTop = transcriptContainer.scrollHeight;
+            }
+        }
+
+        // Utility: ArrayBuffer to Base64
+        function arrayBufferToBase64(buffer) {
+            let binary = '';
+            const bytes = new Uint8Array(buffer);
+            for (let i = 0; i < bytes.byteLength; i++) {
+                binary += String.fromCharCode(bytes[i]);
+            }
+            return btoa(binary);
+        }
+
+        // Utility: Base64 to ArrayBuffer
+        function base64ToArrayBuffer(base64) {
+            const binaryString = atob(base64);
+            const bytes = new Uint8Array(binaryString.length);
+            for (let i = 0; i < binaryString.length; i++) {
+                bytes[i] = binaryString.charCodeAt(i);
+            }
+            return bytes.buffer;
+        }
+
+        // Initialize on button click
+        enableMicBtn.onclick = () => {
+            enableMicBtn.classList.add('disabled');
+            updateStatus('Initializing...', '');
+            initializeAudio();
+        };
+    </script>
+</body>
+</html>
