@@ -16,46 +16,235 @@ on:
           - gemini-2.5-flash
           - gemini-2.5-pro
         default: 'gemini-2.5-flash'
+  # Trigger when query issue is opened or labeled
+  issues:
+    types: [labeled, opened]
 
 jobs:
   query:
     runs-on: ubuntu-latest
+    permissions:
+      contents: write
+      issues: write
 
     steps:
+      - name: Check if this is a query issue
+        id: check
+        env:
+          ISSUE_TITLE: ${{ github.event.issue.title }}
+          EVENT_NAME: ${{ github.event_name }}
+        run: |
+          # For workflow_dispatch, always run
+          if [[ "$EVENT_NAME" == "workflow_dispatch" ]]; then
+            echo "is_query=true" >> $GITHUB_OUTPUT
+            echo "is_manual=true" >> $GITHUB_OUTPUT
+            echo "✅ Manual workflow trigger"
+          # For issue events, check if it's a query issue
+          elif [[ "$ISSUE_TITLE" == *"[Query]"* ]]; then
+            echo "is_query=true" >> $GITHUB_OUTPUT
+            echo "is_manual=false" >> $GITHUB_OUTPUT
+            echo "✅ This is a query issue, will process"
+          else
+            echo "is_query=false" >> $GITHUB_OUTPUT
+            echo "is_manual=false" >> $GITHUB_OUTPUT
+            echo "⏭️  Not a query issue, skipping"
+          fi
+
       - name: Checkout repository
+        if: steps.check.outputs.is_query == 'true'
         uses: actions/checkout@v4
 
       - name: Set up Python
+        if: steps.check.outputs.is_query == 'true'
         uses: actions/setup-python@v4
         with:
           python-version: '3.11'
 
       - name: Install dependencies
+        if: steps.check.outputs.is_query == 'true'
         run: |
           pip install -r requirements.txt
 
+      - name: Extract query from issue
+        if: steps.check.outputs.is_query == 'true' && steps.check.outputs.is_manual == 'false'
+        id: extract
+        env:
+          ISSUE_BODY: ${{ github.event.issue.body }}
+          ISSUE_NUMBER: ${{ github.event.issue.number }}
+        run: |
+          python - <<'EOF'
+          import os
+          import re
+
+          issue_body = os.environ.get('ISSUE_BODY', '')
+          issue_number = os.environ.get('ISSUE_NUMBER', '')
+
+          print(f"Processing query issue #{issue_number}")
+
+          # Extract fields from issue body
+          def extract_field(pattern, body, default=''):
+              match = re.search(pattern, body, re.DOTALL)
+              if match:
+                  value = match.group(1).strip()
+                  if value and value.lower() != '_no response_':
+                      return value
+              return default
+
+          asker_name = extract_field(r'### Your Name\s*\n\n(.+?)(?:\n\n###|\Z)', issue_body, 'Anonymous')
+          question = extract_field(r'### Your Question\s*\n\n([\s\S]*?)(?:\n\n###|\Z)', issue_body, '')
+          context = extract_field(r'### Additional Context \(Optional\)\s*\n\n([\s\S]*?)(?:\n\n###|\Z)', issue_body, '')
+
+          # Extract mentioned people from checkboxes
+          mentions_section = re.search(r'### People This Question Is About \(Optional\)\s*\n\n([\s\S]*?)(?:\n\n###|\Z)', issue_body)
+          mentioned = []
+          if mentions_section:
+              for line in mentions_section.group(1).split('\n'):
+                  if '[X]' in line or '[x]' in line:
+                      name_match = re.search(r'\[x\]\s*(.+)', line, re.IGNORECASE)
+                      if name_match:
+                          name = name_match.group(1).strip()
+                          mentioned.append(name)
+
+          people_mentioned = ', '.join(mentioned) if mentioned else 'Not specified'
+
+          print(f"Asker: {asker_name}")
+          print(f"Question: {question}")
+          print(f"People mentioned: {people_mentioned}")
+          print(f"Context: {context}")
+
+          # Combine question with context if provided
+          full_query = question
+          if context:
+              full_query = f"{question}\n\nAdditional context: {context}"
+
+          # Write outputs
+          with open(os.environ['GITHUB_OUTPUT'], 'a') as f:
+              f.write(f"asker_name={asker_name}\n")
+              f.write(f"people_mentioned={people_mentioned}\n")
+
+          # Write query to temp file
+          with open('/tmp/query_text.txt', 'w') as f:
+              f.write(full_query)
+
+          print("✅ Query extracted successfully")
+          EOF
+
       - name: Run query
+        if: steps.check.outputs.is_query == 'true'
+        id: run_query
         env:
           GOOGLE_GENAI_API_KEY: ${{ secrets.GOOGLE_GENAI_API_KEY }}
           QUERY: ${{ inputs.query }}
           MODEL: ${{ inputs.model }}
+          IS_MANUAL: ${{ steps.check.outputs.is_manual }}
         run: |
-          echo "Running query: $QUERY"
-          echo "Using model: $MODEL"
-          python -c "
+          python - <<'EOF'
           import os
           from test_file_search import get_client, get_or_create_store, query_documents
 
           client = get_client()
           store_name = get_or_create_store(client)
 
-          query = os.getenv('QUERY')
-          model = os.getenv('MODEL', 'gemini-2.5-flash')
+          is_manual = os.getenv('IS_MANUAL', 'false')
+
+          # Get query from manual input or extracted from issue
+          if is_manual == 'true':
+              query = os.getenv('QUERY')
+              model = os.getenv('MODEL', 'gemini-2.5-flash')
+          else:
+              with open('/tmp/query_text.txt', 'r') as f:
+                  query = f.read()
+              model = 'gemini-2.5-flash'
 
           print(f'\n📝 Question: {query}')
           print('='*80)
 
           answer, citations = query_documents(client, store_name, query, model)
 
+          # For issue-based queries, save the results
+          if is_manual == 'false':
+              # Write answer to temp file
+              with open('/tmp/query_answer.txt', 'w') as f:
+                  f.write(answer)
+
+              # Write citations to temp file
+              with open('/tmp/query_citations.txt', 'w') as f:
+                  for i, citation in enumerate(citations, 1):
+                      f.write(f"{i}. {citation}\n")
+
           print('\n✅ Query completed!')
-          "
+          EOF
+
+      - name: Post answer to issue
+        if: steps.check.outputs.is_query == 'true' && steps.check.outputs.is_manual == 'false'
+        uses: actions/github-script@v7
+        env:
+          ASKER_NAME: ${{ steps.extract.outputs.asker_name }}
+          PEOPLE_MENTIONED: ${{ steps.extract.outputs.people_mentioned }}
+        with:
+          script: |
+            const fs = require('fs');
+
+            const askerName = process.env.ASKER_NAME || 'Anonymous';
+            const peopleMentioned = process.env.PEOPLE_MENTIONED || 'Not specified';
+
+            // Read answer and citations from temp files
+            const answer = fs.readFileSync('/tmp/query_answer.txt', 'utf8');
+            const citationsText = fs.readFileSync('/tmp/query_citations.txt', 'utf8');
+
+            // Read original question
+            const question = fs.readFileSync('/tmp/query_text.txt', 'utf8');
+
+            // Format citations for markdown
+            const citations = citationsText.trim() ? `\n\n### Sources:\n${citationsText}` : '';
+
+            // Post success comment
+            await github.rest.issues.createComment({
+              owner: context.repo.owner,
+              repo: context.repo.repo,
+              issue_number: context.issue.number,
+              body: `## ✅ Query Answered!
+
+            **Asked by:** ${askerName}
+            **People mentioned:** ${peopleMentioned}
+
+            ---
+
+            ### Question:
+            ${question}
+
+            ---
+
+            ### Answer:
+            ${answer}${citations}
+
+            ---
+            *This answer was automatically generated using AI search across family documents and stories.*`
+            });
+
+            // Remove pending label and add processed label
+            try {
+              await github.rest.issues.removeLabel({
+                owner: context.repo.owner,
+                repo: context.repo.repo,
+                issue_number: context.issue.number,
+                name: 'query:pending'
+              });
+            } catch (e) {
+              console.log('query:pending label not present');
+            }
+
+            await github.rest.issues.addLabels({
+              owner: context.repo.owner,
+              repo: context.repo.repo,
+              issue_number: context.issue.number,
+              labels: ['query:processed']
+            });
+
+            // Close the issue
+            await github.rest.issues.update({
+              owner: context.repo.owner,
+              repo: context.repo.repo,
+              issue_number: context.issue.number,
+              state: 'closed'
+            });

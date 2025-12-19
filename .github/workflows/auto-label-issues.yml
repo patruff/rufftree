@@ -72,6 +72,17 @@ jobs:
                 body: `🤖 **Automatic Processing Started**\n\nYour person update has been detected and will be processed automatically. The automation will:\n\n1. Extract the updated person data from this issue\n2. Update the person in the family tree JSON\n3. Recalculate generation and ethnicity data if needed\n4. Update profile completion percentage\n5. Close this issue when complete\n\nYou'll receive another comment when processing is finished. Thank you for keeping the family tree up to date! 👨‍👩‍👧‍👦`
               });
 
+            } else if (issueTitle.startsWith('[Query]')) {
+              console.log('Detected query issue - adding comment (labels already set by template)');
+
+              // Labels are already added by the issue template, just add an informative comment
+              await github.rest.issues.createComment({
+                owner: context.repo.owner,
+                repo: context.repo.repo,
+                issue_number: issueNumber,
+                body: `🤖 **Automatic Processing Started**\n\nYour question has been detected and will be answered automatically. The automation will:\n\n1. Extract your question from this issue\n2. Search through all family documents and stories using AI\n3. Generate an answer with citations from relevant sources\n4. Post the answer as a comment on this issue\n5. Close this issue when complete\n\nYou'll receive another comment with the answer shortly. Thank you for asking! 💡`
+              });
+
             } else {
-              console.log('Not a story or person issue - skipping auto-label');
+              console.log('Not a story, person, or query issue - skipping auto-label');
             }

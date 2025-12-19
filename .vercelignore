@@ -1,0 +1,49 @@
+# Python cache
+__pycache__/
+*.py[cod]
+*$py.class
+*.so
+.Python
+
+# Virtual environments
+venv/
+ENV/
+env/
+
+# IDE
+.vscode/
+.idea/
+
+# Git
+.git/
+.github/
+
+# Test files
+tests/
+*_test.py
+test_*.py
+
+# Data files (don't upload to Vercel)
+*.json
+!vercel.json
+!package.json
+*.csv
+*.pdf
+*.docx
+
+# Directories
+ruffdirectory/
+generated_people/
+
+# Scripts not needed for API
+*.sh
+Makefile
+
+# Environment files
+.env
+.env.local
+.env.example
+
+# Documentation
+*.md
+!README.md
