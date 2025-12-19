@@ -301,15 +301,15 @@
         </nav>
 
         <div class="section">
-            <h2>Submit a Question</h2>
+            <h2>Ask a Question - Get Instant Answers!</h2>
 
             <div class="info-box">
                 <h3>How This Works</h3>
-                <p>Submit your question about the Ruff family history below. Your question will be saved and answered using our AI-powered document search system that searches through family documents, photos, and records. Answers will include citations to source documents.</p>
+                <p>Ask any question about the Ruff family history below and get an instant AI-powered answer! The system searches through all family documents, stories, and records in real-time and provides answers with citations to source documents. Typical response time: 2-5 seconds.</p>
             </div>
 
             <div class="success-message" id="successMessage">
-                ✓ Your question has been submitted! Check back soon for an answer.
+                ✓ Your question has been answered! See the result below.
             </div>
 
             <form class="query-form" id="queryForm">
@@ -319,17 +319,30 @@
                 </div>
 
                 <div class="form-group">
-                    <label for="email">Email (optional, for notifications)</label>
-                    <input type="email" id="email" placeholder="your.email@example.com">
-                </div>
-
-                <div class="form-group">
                     <label for="question">Your Question *</label>
                     <textarea id="question" required placeholder="e.g., What do we know about the Ruff family's immigration to America? When did our ancestors settle in Pennsylvania?"></textarea>
                 </div>
 
-                <button type="submit" class="submit-btn">Submit Question</button>
+                <button type="submit" class="submit-btn" id="submitBtn">
+                    <span id="btnText">Ask Question</span>
+                    <span id="btnLoading" style="display: none;">⏳ Searching documents...</span>
+                </button>
             </form>
+
+            <!-- Real-time answer display -->
+            <div id="liveAnswer" style="display: none; margin-top: 30px;">
+                <div class="qa-item">
+                    <div class="question" id="liveQuestion"></div>
+                    <div class="answer" id="liveAnswerText"></div>
+                    <div class="citations" id="liveCitations" style="display: none;">
+                        <h4>Sources:</h4>
+                        <ul id="liveCitationsList"></ul>
+                    </div>
+                    <div class="metadata">
+                        <span id="liveMetadata"></span>
+                    </div>
+                </div>
+            </div>
         </div>
 
         <div class="section">
@@ -404,45 +417,96 @@
             }).join('');
         }
 
-        // Handle form submission
-        document.getElementById('queryForm').addEventListener('submit', function(e) {
+        // Handle form submission - Real-time query
+        document.getElementById('queryForm').addEventListener('submit', async function(e) {
             e.preventDefault();
 
-            const name = document.getElementById('name').value;
-            const email = document.getElementById('email').value;
+            const name = document.getElementById('name').value || 'Anonymous';
             const question = document.getElementById('question').value;
 
-            // Create GitHub Issue URL
-            const repoOwner = 'patruff';
-            const repoName = 'rufftree';
+            // Update UI to show loading state
+            const submitBtn = document.getElementById('submitBtn');
+            const btnText = document.getElementById('btnText');
+            const btnLoading = document.getElementById('btnLoading');
+            const liveAnswer = document.getElementById('liveAnswer');
 
-            const issueTitle = encodeURIComponent(`Family Archive Query: ${question.substring(0, 50)}${question.length > 50 ? '...' : ''}`);
-            const issueBody = encodeURIComponent(
-                `## Question\n${question}\n\n` +
-                `## Submitted By\n` +
-                `- Name: ${name || 'Anonymous'}\n` +
-                `- Email: ${email || 'Not provided'}\n` +
-                `- Date: ${new Date().toLocaleDateString()}\n\n` +
-                `---\n` +
-                `*This question was submitted via the Ruff Family Archive query form.*`
-            );
+            submitBtn.disabled = true;
+            btnText.style.display = 'none';
+            btnLoading.style.display = 'inline';
+            liveAnswer.style.display = 'none';
 
-            const githubIssueURL = `https://github.com/${repoOwner}/${repoName}/issues/new?title=${issueTitle}&body=${issueBody}&labels=family-query`;
+            try {
+                // Call Vercel serverless API
+                // NOTE: Update this URL after deploying to Vercel
+                const apiUrl = window.location.hostname === 'localhost'
+                    ? 'http://localhost:3000/api/query'
+                    : 'https://YOUR-VERCEL-DEPLOYMENT.vercel.app/api/query';
 
-            // Show success message
-            const successMessage = document.getElementById('successMessage');
-            successMessage.style.display = 'block';
+                const response = await fetch(apiUrl, {
+                    method: 'POST',
+                    headers: {
+                        'Content-Type': 'application/json',
+                    },
+                    body: JSON.stringify({
+                        query: question,
+                        name: name
+                    })
+                });
 
-            // Open GitHub issue in new tab
-            window.open(githubIssueURL, '_blank');
+                if (!response.ok) {
+                    throw new Error('Query failed');
+                }
 
-            // Reset form
-            this.reset();
+                const data = await response.json();
 
-            // Hide success message after 5 seconds
-            setTimeout(() => {
-                successMessage.style.display = 'none';
-            }, 5000);
+                if (data.success) {
+                    // Display the answer
+                    document.getElementById('liveQuestion').textContent = question;
+                    document.getElementById('liveAnswerText').textContent = data.answer;
+
+                    // Display citations if available
+                    if (data.citations && data.citations.length > 0) {
+                        const citationsList = document.getElementById('liveCitationsList');
+                        citationsList.innerHTML = data.citations.map(cite =>
+                            `<li>${cite}</li>`
+                        ).join('');
+                        document.getElementById('liveCitations').style.display = 'block';
+                    } else {
+                        document.getElementById('liveCitations').style.display = 'none';
+                    }
+
+                    // Display metadata
+                    const now = new Date();
+                    document.getElementById('liveMetadata').innerHTML = `
+                        📅 ${now.toLocaleDateString()} ${now.toLocaleTimeString()}
+                        ${name !== 'Anonymous' ? `<span>👤 Asked by ${name}</span>` : ''}
+                    `;
+
+                    // Show the answer
+                    liveAnswer.style.display = 'block';
+
+                    // Show success message
+                    const successMessage = document.getElementById('successMessage');
+                    successMessage.style.display = 'block';
+                    setTimeout(() => {
+                        successMessage.style.display = 'none';
+                    }, 5000);
+
+                    // Scroll to answer
+                    liveAnswer.scrollIntoView({ behavior: 'smooth', block: 'nearest' });
+                } else {
+                    throw new Error(data.error || 'Unknown error');
+                }
+
+            } catch (error) {
+                console.error('Query error:', error);
+                alert('Sorry, there was an error processing your question. Please try again or create a GitHub issue as a fallback.');
+            } finally {
+                // Reset button state
+                submitBtn.disabled = false;
+                btnText.style.display = 'inline';
+                btnLoading.style.display = 'none';
+            }
         });
 
         // Load Q&A on page load
