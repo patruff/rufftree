@@ -27,13 +27,53 @@ jobs:
 
       - name: Set secrets on Fly.io (if not already set)
         run: |
-          echo "Setting secrets..."
-          # Set secrets - this will trigger automatic deployment
-          flyctl secrets set \
-            XAI_API_KEY="${{ secrets.XAI_API_KEY }}" \
-            GOOGLE_GENAI_API_KEY="${{ secrets.GOOGLE_GENAI_API_KEY }}" \
-            RUFFTREE_STORE_NAME="${{ secrets.RUFFTREE_STORE_NAME }}" \
-            || echo "Secrets may already be set, continuing..."
+          echo "🔐 Setting secrets on Fly.io..."
+          echo ""
+          echo "Checking GitHub secrets availability:"
+          echo "  FLY_API_TOKEN: ${{ secrets.FLY_API_TOKEN != '' && '✅ Set' || '❌ NOT SET' }}"
+          echo "  XAI_API_KEY: ${{ secrets.XAI_API_KEY != '' && '✅ Set' || '❌ NOT SET' }}"
+          echo "  GOOGLE_GENAI_API_KEY: ${{ secrets.GOOGLE_GENAI_API_KEY != '' && '✅ Set' || '❌ NOT SET' }}"
+          echo "  RUFFTREE_STORE_NAME: ${{ secrets.RUFFTREE_STORE_NAME != '' && '✅ Set' || '❌ NOT SET' }}"
+          echo ""
+
+          # Check if XAI_API_KEY is actually available
+          if [ -z "${{ secrets.XAI_API_KEY }}" ]; then
+            echo "❌ ERROR: XAI_API_KEY secret is empty or not set in GitHub!"
+            echo "   Go to: https://github.com/patruff/rufftree/settings/secrets/actions"
+            echo "   Make sure XAI_API_KEY exists and has a value"
+            exit 1
+          fi
+
+          echo "Setting secrets with flyctl..."
+          echo ""
+
+          # Set each secret individually to see which ones fail
+          echo "Setting XAI_API_KEY..."
+          if flyctl secrets set "XAI_API_KEY=${{ secrets.XAI_API_KEY }}"; then
+            echo "  ✅ XAI_API_KEY set successfully"
+          else
+            echo "  ❌ Failed to set XAI_API_KEY"
+          fi
+
+          echo ""
+          echo "Setting GOOGLE_GENAI_API_KEY..."
+          if flyctl secrets set "GOOGLE_GENAI_API_KEY=${{ secrets.GOOGLE_GENAI_API_KEY }}"; then
+            echo "  ✅ GOOGLE_GENAI_API_KEY set successfully"
+          else
+            echo "  ❌ Failed to set GOOGLE_GENAI_API_KEY"
+          fi
+
+          echo ""
+          echo "Setting RUFFTREE_STORE_NAME..."
+          if flyctl secrets set "RUFFTREE_STORE_NAME=${{ secrets.RUFFTREE_STORE_NAME }}"; then
+            echo "  ✅ RUFFTREE_STORE_NAME set successfully"
+          else
+            echo "  ❌ Failed to set RUFFTREE_STORE_NAME"
+          fi
+
+          echo ""
+          echo "Verifying secrets are set on Fly.io..."
+          flyctl secrets list
         env:
           FLY_API_TOKEN: ${{ secrets.FLY_API_TOKEN }}
 

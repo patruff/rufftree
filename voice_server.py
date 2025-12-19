@@ -311,7 +311,59 @@ async def health():
     return {
         "status": "ok",
         "xai_configured": bool(XAI_API_KEY),
-        "genai_configured": bool(GOOGLE_GENAI_API_KEY)
+        "genai_configured": bool(GOOGLE_GENAI_API_KEY),
+        "store_configured": bool(RUFFTREE_STORE_NAME)
+    }
+
+
+@app.get("/debug/env")
+async def debug_env():
+    """Debug endpoint to check environment variables (DO NOT USE IN PRODUCTION!)"""
+    def mask_value(value: str) -> str:
+        """Mask sensitive values but show they exist."""
+        if not value:
+            return "<NOT SET>"
+        if len(value) > 14:
+            return f"{value[:10]}...{value[-4:]} (length: {len(value)})"
+        elif len(value) > 6:
+            return f"{value[:6]}... (length: {len(value)})"
+        else:
+            return f"***... (length: {len(value)})"
+
+    # Check specific environment variables
+    env_status = {
+        "XAI_API_KEY": {
+            "set": bool(os.getenv("XAI_API_KEY")),
+            "value_preview": mask_value(os.getenv("XAI_API_KEY", "")),
+            "raw_repr": repr(os.getenv("XAI_API_KEY")),
+        },
+        "GOOGLE_GENAI_API_KEY": {
+            "set": bool(os.getenv("GOOGLE_GENAI_API_KEY")),
+            "value_preview": mask_value(os.getenv("GOOGLE_GENAI_API_KEY", "")),
+            "raw_repr": repr(os.getenv("GOOGLE_GENAI_API_KEY")),
+        },
+        "RUFFTREE_STORE_NAME": {
+            "set": bool(os.getenv("RUFFTREE_STORE_NAME")),
+            "value": os.getenv("RUFFTREE_STORE_NAME", "<NOT SET>"),
+        },
+    }
+
+    # List all environment variables with API/KEY in name
+    related_vars = {}
+    for key, value in os.environ.items():
+        if any(term in key.upper() for term in ['KEY', 'API', 'XAI', 'GOOGLE', 'RUFFTREE', 'SECRET']):
+            related_vars[key] = {
+                "set": bool(value),
+                "preview": mask_value(value),
+                "length": len(value)
+            }
+
+    return {
+        "status": "debug",
+        "timestamp": "now",
+        "required_variables": env_status,
+        "all_related_variables": related_vars,
+        "warning": "THIS ENDPOINT EXPOSES SENSITIVE INFO - DISABLE IN PRODUCTION!"
     }
 
 
@@ -321,24 +373,50 @@ if __name__ == "__main__":
     print("\n🎤 Starting Rufftree Voice Agent Server")
     print("=" * 50)
 
+    # DEBUG: Print ALL environment variables to see what's being passed
+    print("\n🔍 DEBUG - Environment Variables:")
+    print("-" * 50)
+    all_env_vars = dict(os.environ)
+
+    # Print API key related variables
+    for key in sorted(all_env_vars.keys()):
+        if 'KEY' in key.upper() or 'API' in key.upper() or 'XAI' in key.upper() or 'GOOGLE' in key.upper() or 'RUFFTREE' in key.upper():
+            value = all_env_vars[key]
+            # Mask sensitive values but show if they exist
+            if len(value) > 0:
+                masked_value = f"{value[:10]}...{value[-4:]}" if len(value) > 14 else f"{value[:6]}..."
+                print(f"  {key} = {masked_value} (length: {len(value)})")
+            else:
+                print(f"  {key} = <EMPTY STRING>")
+
+    print("\n🔍 DEBUG - Direct os.getenv() calls:")
+    print("-" * 50)
+    print(f"  os.getenv('XAI_API_KEY') = {os.getenv('XAI_API_KEY', '<NOT SET>')[:20] if os.getenv('XAI_API_KEY') else '<NOT SET>'}")
+    print(f"  os.getenv('GOOGLE_GENAI_API_KEY') = {os.getenv('GOOGLE_GENAI_API_KEY', '<NOT SET>')[:20] if os.getenv('GOOGLE_GENAI_API_KEY') else '<NOT SET>'}")
+    print(f"  os.getenv('RUFFTREE_STORE_NAME') = {os.getenv('RUFFTREE_STORE_NAME', '<NOT SET>')}")
+    print("-" * 50)
+    print()
+
     # Check required environment variables with detailed messages
     missing_vars = []
 
     if not XAI_API_KEY:
         print("❌ ERROR: XAI_API_KEY not set")
+        print("   Raw value from os.getenv:", repr(os.getenv('XAI_API_KEY')))
         print("   Get API key from: https://console.x.ai")
         print("   Set with: fly secrets set XAI_API_KEY=your-key")
         missing_vars.append("XAI_API_KEY")
     else:
-        print(f"✅ XAI_API_KEY configured ({XAI_API_KEY[:10]}...)")
+        print(f"✅ XAI_API_KEY configured ({XAI_API_KEY[:10]}... length={len(XAI_API_KEY)})")
 
     if not GOOGLE_GENAI_API_KEY:
         print("❌ ERROR: GOOGLE_GENAI_API_KEY not set")
+        print("   Raw value from os.getenv:", repr(os.getenv('GOOGLE_GENAI_API_KEY')))
         print("   Get API key from: https://aistudio.google.com/apikey")
         print("   Set with: fly secrets set GOOGLE_GENAI_API_KEY=your-key")
         missing_vars.append("GOOGLE_GENAI_API_KEY")
     else:
-        print(f"✅ GOOGLE_GENAI_API_KEY configured ({GOOGLE_GENAI_API_KEY[:10]}...)")
+        print(f"✅ GOOGLE_GENAI_API_KEY configured ({GOOGLE_GENAI_API_KEY[:10]}... length={len(GOOGLE_GENAI_API_KEY)})")
 
     print(f"✅ RUFFTREE_STORE_NAME: {RUFFTREE_STORE_NAME}")
 
