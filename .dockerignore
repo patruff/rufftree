@@ -1,0 +1,58 @@
+# Git
+.git
+.github
+.gitignore
+
+# Python
+__pycache__
+*.pyc
+*.pyo
+*.pyd
+.Python
+*.so
+*.egg
+*.egg-info
+dist
+build
+.pytest_cache
+.coverage
+
+# Virtual environments
+venv/
+env/
+ENV/
+
+# IDE
+.vscode/
+.idea/
+*.swp
+*.swo
+
+# Documentation
+*.md
+!README.md
+
+# Test files
+tests/
+*_test.py
+test_*.py
+TEST_*.py
+
+# Scripts not needed for deployment
+*.sh
+Makefile
+
+# Environment files
+.env
+.env.local
+.env.example
+
+# Data files (too large for Docker image)
+ruffdirectory/
+generated_people/
+*.csv
+
+# Deployment configs
+fly.toml
+Dockerfile
+.dockerignore

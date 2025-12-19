@@ -1,0 +1,47 @@
+name: Deploy Voice Agent to Fly.io
+
+on:
+  push:
+    branches: [main]
+    paths:
+      - 'voice_server.py'
+      - 'voice_query.html'
+      - 'queries.html'
+      - 'requirements.txt'
+      - 'Dockerfile'
+      - 'fly.toml'
+      - '.github/workflows/deploy-voice-agent.yml'
+  workflow_dispatch:
+
+jobs:
+  deploy:
+    name: Deploy to Fly.io
+    runs-on: ubuntu-latest
+
+    steps:
+      - name: Checkout code
+        uses: actions/checkout@v4
+
+      - name: Setup Fly CLI
+        uses: superfly/flyctl-actions/setup-flyctl@master
+
+      - name: Deploy to Fly.io
+        run: flyctl deploy --remote-only
+        env:
+          FLY_API_TOKEN: ${{ secrets.FLY_API_TOKEN }}
+
+      - name: Set secrets on Fly.io
+        run: |
+          flyctl secrets set \
+            XAI_API_KEY="${{ secrets.XAI_API_KEY }}" \
+            GOOGLE_GENAI_API_KEY="${{ secrets.GOOGLE_GENAI_API_KEY }}" \
+            RUFFTREE_STORE_NAME="${{ secrets.RUFFTREE_STORE_NAME }}" \
+            --stage
+        env:
+          FLY_API_TOKEN: ${{ secrets.FLY_API_TOKEN }}
+
+      - name: Verify deployment
+        run: |
+          echo "Deployment complete!"
+          echo "App URL: https://rufftree-voice.fly.dev"
+          echo "Health check: https://rufftree-voice.fly.dev/health"
