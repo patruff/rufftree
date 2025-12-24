@@ -91,13 +91,22 @@
             min-height: 500px;
             padding: 40px;
             position: relative;
-            overflow: auto;
+            overflow: hidden;
+            background: #f5f5f5;
+            border-radius: 10px;
+            cursor: grab;
+        }
+
+        .tree-container.grabbing {
+            cursor: grabbing;
         }
 
         .tree-canvas {
             position: relative;
-            min-width: 800px;
-            min-height: 600px;
+            min-width: 2400px;
+            min-height: 1800px;
+            transform-origin: 0 0;
+            transition: transform 0.1s ease-out;
         }
 
         .person-node {
@@ -266,6 +275,47 @@
             transform: scale(1.05);
         }
 
+        .zoom-controls {
+            position: absolute;
+            bottom: 20px;
+            right: 20px;
+            display: flex;
+            flex-direction: column;
+            gap: 8px;
+            z-index: 100;
+        }
+
+        .zoom-controls button {
+            width: 40px;
+            height: 40px;
+            border-radius: 50%;
+            background: linear-gradient(135deg, #667eea 0%, #764ba2 100%);
+            color: white;
+            border: none;
+            font-size: 1.2em;
+            cursor: pointer;
+            transition: all 0.3s;
+            box-shadow: 0 4px 6px rgba(0, 0, 0, 0.1);
+            display: flex;
+            align-items: center;
+            justify-content: center;
+        }
+
+        .zoom-controls button:hover {
+            transform: scale(1.1);
+            box-shadow: 0 6px 12px rgba(0, 0, 0, 0.2);
+        }
+
+        .zoom-level {
+            background: rgba(255, 255, 255, 0.95);
+            color: #667eea;
+            font-size: 0.85em;
+            padding: 4px 8px;
+            border-radius: 12px;
+            font-weight: 600;
+            text-align: center;
+        }
+
         @media (max-width: 768px) {
             .container {
                 padding: 20px;
@@ -305,19 +355,27 @@
         <div class="instructions">
             <h3>🎯 How to Use</h3>
             <p>Click on any person's card to expand and reveal their <strong>spouse</strong>, <strong>siblings</strong>, <strong>parents</strong>, and <strong>children</strong>. Click again to collapse. Continue clicking to explore the entire family tree!</p>
+            <p style="margin-top: 10px;"><strong>Navigation:</strong> Drag to pan, scroll to zoom, or use the zoom controls in the bottom-right corner.</p>
         </div>
 
         <div class="controls">
             <button onclick="collapseAll()">Collapse All</button>
             <button onclick="expandAll()">Expand All</button>
+            <button onclick="zoomToFit()">Fit to Screen</button>
             <button onclick="resetView()">Reset View</button>
         </div>
 
         <div id="stats" class="stats"></div>
 
-        <div class="tree-container">
+        <div class="tree-container" id="tree-container">
             <div id="tree-canvas" class="tree-canvas">
                 <!-- Tree nodes will be rendered here -->
+            </div>
+            <div class="zoom-controls">
+                <button onclick="zoomIn()" title="Zoom In">+</button>
+                <div class="zoom-level" id="zoom-level">100%</div>
+                <button onclick="zoomOut()" title="Zoom Out">−</button>
+                <button onclick="zoomToFit()" title="Fit to Screen">⊡</button>
             </div>
         </div>
 
@@ -342,13 +400,21 @@
         let visibleNodes = new Set();
         let nodePositions = new Map();
 
-        // Layout configuration
+        // Zoom and pan state
+        let zoom = 0.5;
+        let panX = 0;
+        let panY = 0;
+        let isPanning = false;
+        let startX = 0;
+        let startY = 0;
+
+        // Layout configuration - increased spacing to prevent overlap
         const LAYOUT = {
             nodeWidth: 200,
             nodeHeight: 120,
-            horizontalSpacing: 80,
-            verticalSpacing: 150,
-            spouseSpacing: 250
+            horizontalSpacing: 300,
+            verticalSpacing: 250,
+            spouseSpacing: 350
         };
 
         async function loadFamilyData() {
@@ -398,6 +464,7 @@
             person.childrenIds.forEach(id => visibleNodes.add(id));
 
             renderTree();
+            setTimeout(zoomToFit, 50);
         }
 
         function collapseNode(personId) {
@@ -421,6 +488,7 @@
             });
 
             renderTree();
+            setTimeout(zoomToFit, 50);
         }
 
         function isNodeNeeded(personId) {
@@ -1041,6 +1109,7 @@
             visibleNodes.add(familyData.startPerson);
             renderTree();
             updateStats();
+            setTimeout(zoomToFit, 50);
         }
 
         function expandAll() {
@@ -1050,14 +1119,123 @@
             });
             renderTree();
             updateStats();
+            setTimeout(zoomToFit, 50);
         }
 
         function resetView() {
             collapseAll();
+            zoom = 0.5;
+            panX = 0;
+            panY = 0;
+            updateTransform();
+        }
+
+        // Zoom and pan functions
+        function updateTransform() {
+            const canvas = document.getElementById('tree-canvas');
+            canvas.style.transform = `translate(${panX}px, ${panY}px) scale(${zoom})`;
+            document.getElementById('zoom-level').textContent = `${Math.round(zoom * 100)}%`;
+        }
+
+        function zoomIn() {
+            zoom = Math.min(zoom * 1.2, 3);
+            updateTransform();
+        }
+
+        function zoomOut() {
+            zoom = Math.max(zoom / 1.2, 0.1);
+            updateTransform();
+        }
+
+        function zoomToFit() {
+            if (nodePositions.size === 0) return;
+
+            // Calculate bounds of all visible nodes
+            let minX = Infinity, minY = Infinity, maxX = -Infinity, maxY = -Infinity;
+            nodePositions.forEach((pos) => {
+                minX = Math.min(minX, pos.x);
+                minY = Math.min(minY, pos.y);
+                maxX = Math.max(maxX, pos.x + LAYOUT.nodeWidth);
+                maxY = Math.max(maxY, pos.y + LAYOUT.nodeHeight);
+            });
+
+            const container = document.getElementById('tree-container');
+            const containerWidth = container.clientWidth;
+            const containerHeight = container.clientHeight;
+
+            const treeWidth = maxX - minX + 100;
+            const treeHeight = maxY - minY + 100;
+
+            // Calculate zoom to fit
+            const zoomX = containerWidth / treeWidth;
+            const zoomY = containerHeight / treeHeight;
+            zoom = Math.min(zoomX, zoomY, 1) * 0.9;
+
+            // Center the tree
+            panX = (containerWidth - treeWidth * zoom) / 2 - minX * zoom;
+            panY = (containerHeight - treeHeight * zoom) / 2 - minY * zoom;
+
+            updateTransform();
+        }
+
+        // Setup panning
+        function setupPanning() {
+            const container = document.getElementById('tree-container');
+
+            container.addEventListener('mousedown', (e) => {
+                if (e.target === container || e.target.id === 'tree-canvas' || e.target.classList.contains('connection-line')) {
+                    isPanning = true;
+                    startX = e.clientX - panX;
+                    startY = e.clientY - panY;
+                    container.classList.add('grabbing');
+                    e.preventDefault();
+                }
+            });
+
+            container.addEventListener('mousemove', (e) => {
+                if (isPanning) {
+                    panX = e.clientX - startX;
+                    panY = e.clientY - startY;
+                    updateTransform();
+                    e.preventDefault();
+                }
+            });
+
+            container.addEventListener('mouseup', () => {
+                isPanning = false;
+                container.classList.remove('grabbing');
+            });
+
+            container.addEventListener('mouseleave', () => {
+                isPanning = false;
+                container.classList.remove('grabbing');
+            });
+
+            // Mouse wheel zoom
+            container.addEventListener('wheel', (e) => {
+                e.preventDefault();
+                const delta = e.deltaY > 0 ? 0.9 : 1.1;
+                const newZoom = Math.max(0.1, Math.min(3, zoom * delta));
+
+                // Zoom towards mouse position
+                const rect = container.getBoundingClientRect();
+                const mouseX = e.clientX - rect.left;
+                const mouseY = e.clientY - rect.top;
+
+                panX = mouseX - (mouseX - panX) * (newZoom / zoom);
+                panY = mouseY - (mouseY - panY) * (newZoom / zoom);
+
+                zoom = newZoom;
+                updateTransform();
+            }, { passive: false });
         }
 
         // Load the tree on page load
-        loadFamilyData();
+        loadFamilyData().then(() => {
+            setupPanning();
+            updateTransform();
+            setTimeout(zoomToFit, 100);
+        });
     </script>
 </body>
 </html>
