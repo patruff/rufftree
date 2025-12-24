@@ -170,6 +170,30 @@
             opacity: 0.8;
         }
 
+        .person-card .sibling-button {
+            position: absolute;
+            top: 5px;
+            left: 8px;
+            font-size: 0.85em;
+            background: rgba(255, 255, 255, 0.3);
+            border: 1px solid rgba(255, 255, 255, 0.5);
+            border-radius: 4px;
+            padding: 2px 6px;
+            cursor: pointer;
+            font-weight: bold;
+            transition: all 0.2s;
+        }
+
+        .person-card .sibling-button:hover {
+            background: rgba(255, 255, 255, 0.5);
+            transform: scale(1.1);
+        }
+
+        .person-card .sibling-button.active {
+            background: rgba(255, 255, 255, 0.6);
+            border-color: rgba(255, 255, 255, 0.8);
+        }
+
         .connection-line {
             position: absolute;
             background: #667eea;
@@ -354,7 +378,7 @@
 
         <div class="instructions">
             <h3>🎯 How to Use</h3>
-            <p>Click on any person's card to expand and reveal their <strong>spouse</strong>, <strong>siblings</strong>, <strong>parents</strong>, and <strong>children</strong>. Click again to collapse. Continue clicking to explore the entire family tree!</p>
+            <p>Click on any person's card to expand and reveal their <strong>spouse</strong>, <strong>parents</strong>, and <strong>children</strong>. Click the <strong>S button</strong> (top-left) to show siblings separately. Click again to collapse.</p>
             <p style="margin-top: 10px;"><strong>Navigation:</strong> Drag to pan, scroll to zoom, or use the zoom controls in the bottom-right corner.</p>
         </div>
 
@@ -389,7 +413,7 @@
                 <span>Living</span>
             </div>
             <div class="legend-item">
-                <span>💡 <strong>Tip:</strong> Click cards to expand/collapse</span>
+                <span>💡 <strong>Tip:</strong> Click + to expand, S to show siblings</span>
             </div>
         </div>
     </div>
@@ -401,20 +425,24 @@
         let nodePositions = new Map();
 
         // Zoom and pan state
-        let zoom = 0.5;
+        let zoom = 1.0;
         let panX = 0;
         let panY = 0;
         let isPanning = false;
         let startX = 0;
         let startY = 0;
 
+        // Sibling expansion tracking (separate from main expansion)
+        let expandedSiblings = new Set();
+
         // Layout configuration - increased spacing to prevent overlap
         const LAYOUT = {
             nodeWidth: 200,
             nodeHeight: 120,
-            horizontalSpacing: 300,
-            verticalSpacing: 250,
-            spouseSpacing: 350
+            horizontalSpacing: 350,
+            verticalSpacing: 280,
+            spouseSpacing: 380,
+            siblingSpacing: 400
         };
 
         async function loadFamilyData() {
@@ -454,12 +482,11 @@
 
             expandedNodes.add(personId);
 
-            // Add related people to visible set
+            // Add related people to visible set (but NOT siblings - they have separate button)
             if (person.spouseId) {
                 visibleNodes.add(person.spouseId);
             }
 
-            person.siblingIds.forEach(id => visibleNodes.add(id));
             person.parentIds.forEach(id => visibleNodes.add(id));
             person.childrenIds.forEach(id => visibleNodes.add(id));
 
@@ -467,8 +494,33 @@
             setTimeout(zoomToFit, 50);
         }
 
+        function toggleSiblings(personId, event) {
+            event.stopPropagation(); // Prevent triggering the main card click
+
+            const person = getPerson(personId);
+            if (!person) return;
+
+            if (expandedSiblings.has(personId)) {
+                // Collapse siblings
+                expandedSiblings.delete(personId);
+                person.siblingIds.forEach(id => {
+                    if (!isNodeNeeded(id)) {
+                        visibleNodes.delete(id);
+                    }
+                });
+            } else {
+                // Expand siblings
+                expandedSiblings.add(personId);
+                person.siblingIds.forEach(id => visibleNodes.add(id));
+            }
+
+            renderTree();
+            setTimeout(zoomToFit, 50);
+        }
+
         function collapseNode(personId) {
             expandedNodes.delete(personId);
+            expandedSiblings.delete(personId); // Also collapse siblings
 
             // Remove related people from visible set (but keep if they're expanded or referenced by others)
             const person = getPerson(personId);
@@ -501,9 +553,16 @@
                 if (!expanded) continue;
 
                 if (expanded.spouseId === personId) return true;
-                if (expanded.siblingIds.includes(personId)) return true;
                 if (expanded.parentIds.includes(personId)) return true;
                 if (expanded.childrenIds.includes(personId)) return true;
+            }
+
+            // Check if any node with expanded siblings references this person
+            for (const expandedId of expandedSiblings) {
+                const expanded = getPerson(expandedId);
+                if (!expanded) continue;
+
+                if (expanded.siblingIds.includes(personId)) return true;
             }
 
             return false;
@@ -512,10 +571,8 @@
         function calculateLayout() {
             nodePositions.clear();
 
-            // Simple force-directed-ish layout
-            const nodes = Array.from(visibleNodes);
-            const centerX = 400;
-            const centerY = 300;
+            const centerX = 1200;
+            const centerY = 900;
 
             // Start person in center
             const startPerson = familyData.startPerson;
@@ -538,32 +595,50 @@
                     }
                 }
 
-                // Position parents above
-                person.parentIds.forEach((parentId, index) => {
-                    if (visibleNodes.has(parentId) && !nodePositions.has(parentId)) {
+                // Calculate couple center (for positioning parents and children)
+                const coupleX = person.spouseId && visibleNodes.has(person.spouseId)
+                    ? basePos.x + LAYOUT.spouseSpacing / 2
+                    : basePos.x;
+
+                // Position parents above, centered over the couple
+                const visibleParents = person.parentIds.filter(id => visibleNodes.has(id));
+                visibleParents.forEach((parentId, index) => {
+                    if (!nodePositions.has(parentId)) {
+                        const offset = (index - (visibleParents.length - 1) / 2) * LAYOUT.spouseSpacing;
                         nodePositions.set(parentId, {
-                            x: basePos.x + (index - 0.5) * LAYOUT.spouseSpacing,
+                            x: coupleX + offset,
                             y: basePos.y - LAYOUT.verticalSpacing
                         });
                     }
                 });
 
-                // Position children below
-                person.childrenIds.forEach((childId, index) => {
-                    if (visibleNodes.has(childId) && !nodePositions.has(childId)) {
-                        const offset = (index - (person.childrenIds.length - 1) / 2) * LAYOUT.horizontalSpacing;
+                // Position children below, centered under the couple
+                const visibleChildren = person.childrenIds.filter(id => visibleNodes.has(id));
+                visibleChildren.forEach((childId, index) => {
+                    if (!nodePositions.has(childId)) {
+                        const offset = (index - (visibleChildren.length - 1) / 2) * LAYOUT.horizontalSpacing;
                         nodePositions.set(childId, {
-                            x: basePos.x + offset,
+                            x: coupleX + offset,
                             y: basePos.y + LAYOUT.verticalSpacing
                         });
                     }
                 });
+            });
 
-                // Position siblings to the left/right
-                person.siblingIds.forEach((siblingId, index) => {
-                    if (visibleNodes.has(siblingId) && !nodePositions.has(siblingId)) {
+            // Position siblings for nodes with expanded siblings
+            expandedSiblings.forEach(expandedId => {
+                const person = getPerson(expandedId);
+                if (!person) return;
+
+                const basePos = nodePositions.get(expandedId);
+                if (!basePos) return;
+
+                const visibleSiblings = person.siblingIds.filter(id => visibleNodes.has(id));
+                visibleSiblings.forEach((siblingId, index) => {
+                    if (!nodePositions.has(siblingId)) {
+                        // Position siblings to the left, with increasing offset
                         nodePositions.set(siblingId, {
-                            x: basePos.x - LAYOUT.horizontalSpacing * (index + 1),
+                            x: basePos.x - LAYOUT.siblingSpacing * (index + 1),
                             y: basePos.y
                         });
                     }
@@ -574,8 +649,8 @@
             visibleNodes.forEach(nodeId => {
                 if (!nodePositions.has(nodeId)) {
                     nodePositions.set(nodeId, {
-                        x: centerX + (Math.random() - 0.5) * 400,
-                        y: centerY + (Math.random() - 0.5) * 400
+                        x: centerX + (Math.random() - 0.5) * 600,
+                        y: centerY + (Math.random() - 0.5) * 600
                     });
                 }
             });
@@ -622,8 +697,16 @@
                         }
                     }
                 });
+            });
 
-                // Draw lines to siblings
+            // Draw sibling connections only for nodes with expanded siblings
+            expandedSiblings.forEach(expandedId => {
+                const person = getPerson(expandedId);
+                if (!person) return;
+
+                const fromPos = nodePositions.get(expandedId);
+                if (!fromPos) return;
+
                 person.siblingIds.forEach(siblingId => {
                     if (visibleNodes.has(siblingId)) {
                         const toPos = nodePositions.get(siblingId);
@@ -686,9 +769,11 @@
             const generation = person.generation ? person.generation : '';
 
             const hasRelatives = person.spouseId ||
-                                person.siblingIds.length > 0 ||
                                 person.parentIds.length > 0 ||
                                 person.childrenIds.length > 0;
+
+            const hasSiblings = person.siblingIds.length > 0;
+            const siblingsExpanded = expandedSiblings.has(personId);
 
             // Format tooltip with ethnicity and heritable risk
             let tooltip = '';
@@ -792,6 +877,7 @@
                 <div class="person-card ${isAlive ? 'alive' : ''} ${isExpanded ? 'expanded' : ''}"
                      onclick="toggleNode('${personId}')"
                      ${tooltip ? `title="${tooltip}"` : ''}>
+                    ${hasSiblings ? `<div class="sibling-button ${siblingsExpanded ? 'active' : ''}" onclick="toggleSiblings('${personId}', event)">S</div>` : ''}
                     ${hasRelatives ? `<div class="expand-indicator">${isExpanded ? '−' : '+'}</div>` : ''}
                     <div class="name">${person.name}</div>
                     <div class="dates">${lifespan}</div>
@@ -1105,6 +1191,7 @@
 
         function collapseAll() {
             expandedNodes.clear();
+            expandedSiblings.clear();
             visibleNodes.clear();
             visibleNodes.add(familyData.startPerson);
             renderTree();
@@ -1124,7 +1211,7 @@
 
         function resetView() {
             collapseAll();
-            zoom = 0.5;
+            zoom = 1.0;
             panX = 0;
             panY = 0;
             updateTransform();
