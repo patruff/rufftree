@@ -363,6 +363,7 @@
             <button onclick="expandAll()">Expand All</button>
             <button onclick="zoomToFit()">Fit to Screen</button>
             <button onclick="resetView()">Reset View</button>
+            <button onclick="exportFullTreeCSV()" style="background: linear-gradient(135deg, #11998e 0%, #38ef7d 100%);">📥 Export Full Tree CSV</button>
         </div>
 
         <div id="stats" class="stats"></div>
@@ -1228,6 +1229,220 @@
                 zoom = newZoom;
                 updateTransform();
             }, { passive: false });
+        }
+
+        // Export full tree to CSV
+        function exportFullTreeCSV() {
+            if (!familyData || !familyData.people) {
+                alert('Family data not loaded yet. Please wait...');
+                return;
+            }
+
+            // Helper function to escape CSV values
+            function escapeCsv(value) {
+                if (value === null || value === undefined) return '';
+                const str = String(value);
+                if (str.includes(',') || str.includes('"') || str.includes('\n')) {
+                    return '"' + str.replace(/"/g, '""') + '"';
+                }
+                return str;
+            }
+
+            // Helper function to parse name
+            function parseName(fullName) {
+                const parts = fullName.trim().split(' ');
+                if (parts.length === 0) return { first: '', last: '' };
+                if (parts.length === 1) return { first: parts[0], last: '' };
+                const firstName = parts[0];
+                const lastName = parts[parts.length - 1];
+                return { first: firstName, last: lastName };
+            }
+
+            // Process all people
+            const people = Object.values(familyData.people).map(person => {
+                const { first, last } = parseName(person.name);
+                const currentYear = new Date().getFullYear();
+                const birthYear = parseInt(person.dob);
+                const isAlive = person.dod === 'alive';
+                const deathYear = isAlive ? null : parseInt(person.dod);
+
+                // Calculate age
+                let age = '';
+                if (!isNaN(birthYear)) {
+                    if (isAlive) {
+                        age = currentYear - birthYear;
+                    } else if (!isNaN(deathYear)) {
+                        age = deathYear - birthYear;
+                    }
+                }
+
+                // Format ethnicity
+                let ethnicityStr = '';
+                if (person.ethnicity && typeof person.ethnicity === 'object') {
+                    ethnicityStr = Object.entries(person.ethnicity)
+                        .sort((a, b) => b[1] - a[1])
+                        .map(([country, pct]) => `${country}: ${pct}%`)
+                        .join('; ');
+                }
+
+                // Format health conditions
+                let healthConditions = '';
+                if (Array.isArray(person.health_condition)) {
+                    healthConditions = person.health_condition.join('; ');
+                }
+
+                // Format heritable risk
+                let heritableRisk = '';
+                if (person.heritable_risk && typeof person.heritable_risk === 'object') {
+                    heritableRisk = Object.entries(person.heritable_risk)
+                        .map(([condition, level]) => `${condition}: ${level}`)
+                        .join('; ');
+                }
+
+                // Format heritable traits
+                let heritableTraits = '';
+                if (person.heritable_traits && typeof person.heritable_traits === 'object') {
+                    heritableTraits = Object.entries(person.heritable_traits)
+                        .map(([trait, data]) => {
+                            const genotype = data.genotype || '';
+                            const phenotype = data.phenotype || '';
+                            return `${trait}: ${genotype} (${phenotype})`;
+                        })
+                        .join('; ');
+                }
+
+                return {
+                    firstName: first,
+                    lastName: last,
+                    age: age,
+                    dob: person.dob || '',
+                    dod: isAlive ? 'alive' : (person.dod || ''),
+                    generation: person.generation || '',
+                    occupation: person.occupation || '',
+                    phone: person.phone || '',
+                    email: person.email || '',
+                    address: person.address || '',
+                    address2: person.address2 || '',
+                    city: person.city || '',
+                    state: person.state || '',
+                    home_city: person.home_city || '',
+                    home_state: person.home_state || '',
+                    zip: person.zip || '',
+                    ethnicity: ethnicityStr,
+                    health_condition: healthConditions,
+                    causeOfDeath: person.causeOfDeath || '',
+                    heritable_risk: heritableRisk,
+                    heritable_traits: heritableTraits,
+                    completion_percentage: person.completion_percentage || '',
+                    from_pat: person.from_pat !== undefined ? person.from_pat : '',
+                    num_children: person.childrenIds ? person.childrenIds.length : 0,
+                    num_siblings: person.siblingIds ? person.siblingIds.length : 0,
+                    num_parents: person.parentIds ? person.parentIds.length : 0,
+                    spouse: person.spouseId || '',
+                    y_chromosome_line: person.y_chromosome_line || '',
+                    y_chromosome_final: person.y_chromosome_final ? 'Yes' : '',
+                    mtdna_line: person.mtdna_line || '',
+                    mtdna_final: person.mtdna_final ? 'Yes' : '',
+                    lineage: person.lineage || '',
+                    lineageFounder: person.lineageFounder || '',
+                    cemetery_name: person.cemetery_name || '',
+                    cemetery_city: person.cemetery_city || '',
+                    cemetery_state: person.cemetery_state || '',
+                    maidenName: person.maidenName || '',
+                    marriedName: person.marriedName || '',
+                    marriedIntoFamily: person.marriedIntoFamily ? 'Yes' : '',
+                    suffix: person.suffix || '',
+                    notes: person.notes || '',
+                    ageValue: age // For sorting
+                };
+            });
+
+            // Sort by age (oldest to youngest)
+            people.sort((a, b) => {
+                const ageA = parseInt(a.ageValue) || 0;
+                const ageB = parseInt(b.ageValue) || 0;
+                return ageB - ageA; // Descending order (oldest first)
+            });
+
+            // Build CSV header
+            const headers = [
+                'First Name', 'Last Name', 'Age', 'Date of Birth', 'Date of Death',
+                'Generation', 'Occupation', 'Phone', 'Email',
+                'Address', 'Address 2', 'City', 'State',
+                'Home City', 'Home State', 'Zip',
+                'Ethnicity', 'Health Conditions', 'Cause of Death',
+                'Heritable Risk', 'Heritable Traits',
+                'Profile Completion %', 'Distance from Patrick',
+                'Number of Children', 'Number of Siblings', 'Number of Parents', 'Spouse ID',
+                'Y Chromosome Line', 'Y Chromosome Final', 'mtDNA Line', 'mtDNA Final',
+                'Lineage', 'Lineage Founder',
+                'Cemetery Name', 'Cemetery City', 'Cemetery State',
+                'Maiden Name', 'Married Name', 'Married Into Family', 'Suffix', 'Notes'
+            ];
+
+            let csv = headers.join(',') + '\n';
+
+            // Add data rows
+            people.forEach(person => {
+                const row = [
+                    person.firstName,
+                    person.lastName,
+                    person.age,
+                    person.dob,
+                    person.dod,
+                    person.generation,
+                    person.occupation,
+                    person.phone,
+                    person.email,
+                    person.address,
+                    person.address2,
+                    person.city,
+                    person.state,
+                    person.home_city,
+                    person.home_state,
+                    person.zip,
+                    person.ethnicity,
+                    person.health_condition,
+                    person.causeOfDeath,
+                    person.heritable_risk,
+                    person.heritable_traits,
+                    person.completion_percentage,
+                    person.from_pat,
+                    person.num_children,
+                    person.num_siblings,
+                    person.num_parents,
+                    person.spouse,
+                    person.y_chromosome_line,
+                    person.y_chromosome_final,
+                    person.mtdna_line,
+                    person.mtdna_final,
+                    person.lineage,
+                    person.lineageFounder,
+                    person.cemetery_name,
+                    person.cemetery_city,
+                    person.cemetery_state,
+                    person.maidenName,
+                    person.marriedName,
+                    person.marriedIntoFamily,
+                    person.suffix,
+                    person.notes
+                ];
+                csv += row.map(escapeCsv).join(',') + '\n';
+            });
+
+            // Download CSV
+            const blob = new Blob([csv], { type: 'text/csv;charset=utf-8;' });
+            const url = URL.createObjectURL(blob);
+            const link = document.createElement('a');
+            link.href = url;
+            const filename = `ruff_family_tree_full_${new Date().toISOString().split('T')[0]}.csv`;
+            link.download = filename;
+            document.body.appendChild(link);
+            link.click();
+            document.body.removeChild(link);
+            URL.revokeObjectURL(url);
+
+            alert(`CSV exported successfully! ${people.length} people exported, sorted by age (oldest to youngest).`);
         }
 
         // Load the tree on page load
